@@ -54,7 +54,7 @@ export default function Portfolio() {
           <div className="flex items-center justify-between">
             <Link href="#hero">
               <Avatar>
-                <AvatarFallback></AvatarFallback>
+                <AvatarFallback>AM</AvatarFallback>
                 <AvatarImage
                   src={"/abdallemo.jpg"}
                   className="text-lg font-bold text-foreground hover:text-primary transition-colors"
@@ -105,12 +105,13 @@ export default function Portfolio() {
                 animate={{ scale: 1 }}
                 transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
                 className="relative">
-                <div className="h-24 w-24 rounded-2xl bg-linear-to-br from-primary/80 to-primary/40 flex items-center justify-center text-primary-foreground text-3xl font-bold shadow-lg">
+                <div className="h-24 w-24 rounded-2xl bg-linear-to-br from-primary/80 to-primary/40 flex items-center justify-center text-primary-foreground text-3xl font-bold shadow-lg ">
                   <Image
                     fill
                     src={"/abdallemo.jpg"}
-                    alt="abdallemo"
-                    className="rounded-2xl"
+                    alt="AM"
+                    className="rounded-2xl text-center"
+                    
                   />
                 </div>
                 <motion.div
