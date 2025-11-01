@@ -111,7 +111,6 @@ export default function Portfolio() {
                     src={"/abdallemo.jpg"}
                     alt="AM"
                     className="rounded-2xl text-center"
-                    
                   />
                 </div>
                 <motion.div
@@ -384,6 +383,7 @@ export default function Portfolio() {
                     <div>
                       <p className="text-sm text-muted-foreground">Email</p>
                       <a
+                        target="_blank"
                         href="mailto:engabdallemo@gmail.com"
                         className="text-foreground hover:text-primary transition-colors">
                         engabdallemo@gmail.com
