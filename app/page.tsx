@@ -412,7 +412,7 @@ export default function Portfolio() {
                     <div>
                       <p className="text-sm text-muted-foreground">LinkedIn</p>
                       <a
-                        href="https://www.linkedin.com/in/abdullahi-mohamed"
+                        href="https://www.linkedin.com/in/abdullahi-mohamed-208b49163/"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-foreground hover:text-primary transition-colors">
@@ -432,8 +432,7 @@ export default function Portfolio() {
       <footer className="border-t border-border/40">
         <div className="mx-auto max-w-6xl px-6 py-8 lg:px-8">
           <p className="text-center text-sm text-muted-foreground">
-            © 2025 Abdullahi Mohamed. Crafted with Next.js, TypeScript &
-            Tailwind CSS.
+            © 2025 Abdullahi Mohamed.
           </p>
         </div>
       </footer>
