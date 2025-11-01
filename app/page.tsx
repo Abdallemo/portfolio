@@ -384,9 +384,9 @@ export default function Portfolio() {
                     <div>
                       <p className="text-sm text-muted-foreground">Email</p>
                       <a
-                        href="mailto:learn3038it@gmail.com"
+                        href="mailto:engabdallemo@gmail.com"
                         className="text-foreground hover:text-primary transition-colors">
-                        learn3038it@gmail.com
+                        engabdallemo@gmail.com
                       </a>
                     </div>
                   </div>

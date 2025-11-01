@@ -2,12 +2,12 @@
 
 import type React from "react"
 
-import { useState } from "react"
-import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { Send, CheckCircle2 } from "lucide-react"
+import { motion } from "framer-motion"
+import { CheckCircle2, Send } from "lucide-react"
+import { useState } from "react"
 
 export function ContactForm() {
   const [submitted, setSubmitted] = useState(false)
@@ -22,7 +22,7 @@ export function ContactForm() {
     // Create mailto link
     const subject = `Portfolio Contact from ${name}`
     const body = `Name: ${name}%0D%0AEmail: ${email}%0D%0A%0D%0AMessage:%0D%0A${message}`
-    window.location.href = `mailto:learn3038it@gmail.com?subject=${subject}&body=${body}`
+    window.location.href = `mailto:engabdallemo@gmail.com?subject=${subject}&body=${body}`
 
     setSubmitted(true)
     setTimeout(() => setSubmitted(false), 3000)
