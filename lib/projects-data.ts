@@ -54,12 +54,12 @@ export const projects: Project[] = [
     longDescription:
       "SolveIt is a comprehensive SaaS platform designed to bridge the gap between students seeking academic help and those offering expertise. The platform leverages AI for intelligent task categorization, implements secure payment processing through Stripe, and features a sophisticated reputation system to ensure quality interactions. Built with a modern tech stack, it handles real-time updates via WebSocket connections and provides detailed analytics for both students and mentors.",
     tech: [
-      "Next.js",
       "TypeScript",
+      "Go",
+      "Next.js",
       "Drizzle ORM",
       "PostgreSQL",
       "Stripe",
-      "Go",
       "S3",
       "NextAuth",
       "WebSocket",
@@ -137,9 +137,9 @@ export const projects: Project[] = [
         send:   make(chan []byte, 256),
         userID: userID,
     }
-    
+
     h.register <- client
-    
+
     go client.writePump()
     go client.readPump()
 }
@@ -149,7 +149,7 @@ func (c *Client) readPump() {
         c.hub.unregister <- c
         c.conn.Close()
     }()
-    
+
     for {
         _, message, err := c.conn.ReadMessage()
         if err != nil {
@@ -336,15 +336,15 @@ const fileFilter = (req, file, cb) => {
   const allowedTypes = /jpeg|jpg|png|pdf|doc|docx/;
   const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
   const mimetype = allowedTypes.test(file.mimetype);
-  
+
   if (mimetype && extname) {
     return cb(null, true);
   }
   cb(new Error('Invalid file type'));
 };
 
-const upload = multer({ 
-  storage, 
+const upload = multer({
+  storage,
   fileFilter,
   limits: { fileSize: 5 * 1024 * 1024 } // 5MB
 });`,
@@ -428,10 +428,10 @@ const upload = multer({
       language: "typescript",
       code: `io.on('connection', (socket: Socket) => {
   const userId = socket.handshake.auth.userId;
-  
+
   // Join user's personal room
   socket.join(\`user:\${userId}\`);
-  
+
   // Handle new messages
   socket.on('message:send', async (data) => {
     const message = await saveMessage({
@@ -439,19 +439,19 @@ const upload = multer({
       recipientId: data.recipientId,
       content: data.content,
     });
-    
+
     // Emit to recipient
     io.to(\`user:\${data.recipientId}\`).emit('message:new', message);
-    
+
     // Confirm to sender
     socket.emit('message:sent', message);
   });
-  
+
   // Handle typing indicators
   socket.on('typing:start', (recipientId) => {
     io.to(\`user:\${recipientId}\`).emit('typing:user', userId);
   });
-  
+
   socket.on('disconnect', () => {
     // Update user status
     updateUserStatus(userId, 'offline');
@@ -508,17 +508,17 @@ const upload = multer({
       code: `function calculateCurrentWeek() {
   const semesterStart = new Date('2024-09-01');
   const today = new Date();
-  
+
   // Calculate days difference
   const diffTime = Math.abs(today - semesterStart);
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  
+
   // Calculate week number (accounting for breaks)
   const breaks = [
     { start: new Date('2024-10-15'), end: new Date('2024-10-22') },
     { start: new Date('2024-12-20'), end: new Date('2025-01-05') }
   ];
-  
+
   let breakDays = 0;
   breaks.forEach(breakPeriod => {
     if (today > breakPeriod.start) {
@@ -526,7 +526,7 @@ const upload = multer({
       breakDays += Math.ceil((breakEnd - breakPeriod.start) / (1000 * 60 * 60 * 24));
     }
   });
-  
+
   const weekNumber = Math.ceil((diffDays - breakDays) / 7);
   return weekNumber;
 }`,
@@ -584,13 +584,13 @@ const upload = multer({
 class _DeliveryTrackerState extends State<DeliveryTracker> {
   GoogleMapController? _mapController;
   StreamSubscription<Position>? _positionStream;
-  
+
   @override
   void initState() {
     super.initState();
     _startTracking();
   }
-  
+
   void _startTracking() {
     _positionStream = Geolocator.getPositionStream(
       locationSettings: LocationSettings(
@@ -601,13 +601,13 @@ class _DeliveryTrackerState extends State<DeliveryTracker> {
       _updateDriverLocation(position);
     });
   }
-  
+
   void _updateDriverLocation(Position position) {
     final latLng = LatLng(position.latitude, position.longitude);
     _mapController?.animateCamera(
       CameraUpdate.newLatLng(latLng),
     );
-    
+
     // Update Firebase with new location
     FirebaseDatabase.instance
       .ref('deliveries/\${widget.orderId}/location')
