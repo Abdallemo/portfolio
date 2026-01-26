@@ -169,7 +169,7 @@ func (c *Client) readPump() {
       coverage: "85%",
       types: ["Unit Tests", "Integration Tests", "E2E Tests", "Load Tests"],
     },
-    link: "https://github.com/Abdallemo/solveit-saas",
+    link: "https://github.com/Abdallemo/solveit",
     category: "Full-Stack SaaS",
     year: "2024",
     role: "Full-Stack Developer",
