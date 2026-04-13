@@ -46,44 +46,39 @@ type Line = {
 };
 
 export default function Terminal() {
-  const [history, setHistory] = useState<Line[]>([]);
+  const [history, setHistory] = useState<Line[]>([{ type: "fetch", content: null }]);
   const [inputValue, setInputValue] = useState("");
   const [currentPath, setCurrentPath] = useState("/");
   const [commandHistory, setCommandHistory] = useState<string[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
+  const [completions, setCompletions] = useState<string[]>([]);
+  const [completionIndex, setCompletionIndex] = useState(-1);
   const [isOpen, setIsOpen] = useState(true);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
   useEffect(() => {
-    setHistory([{ type: "fetch", content: null }]);
-  }, []);
-
-  useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, [history]);
+  }, [history, completions]);
 
   const handleCommand = (cmd: string) => {
     const trimmed = cmd.trim();
+    setCompletions([]);
+    setCompletionIndex(-1);
+    if (trimmed === "") return;
+
     const parts = trimmed.split(" ");
     const command = parts[0].toLowerCase();
     const args = parts.slice(1);
+    const directories = ["projects", "tools", "blog"];
     let response: any = null;
 
-    if (trimmed === "") return;
-
-    setHistory((prev) => [
-      ...prev,
-      { type: "cmd", content: trimmed, path: currentPath },
-    ]);
-    setCommandHistory((prev) => [trimmed, ...prev]);
-    setHistoryIndex(-1);
-
-    const directories = ["projects", "tools", "blog"];
-
+    const newHistoryEntry: Line = { type: "cmd", content: trimmed, path: currentPath };
+    
+    // Command Logic
     switch (command) {
       case "help":
         response = [
@@ -103,6 +98,14 @@ export default function Terminal() {
 
       case "ls":
         const targetDir = args[0] || "";
+        if (targetDir.startsWith("-")) {
+          response = [
+            `ls: unknown option ${targetDir}`,
+            "Usage: ls [directory]",
+            "Try 'ls --help' for more information."
+          ];
+          break;
+        }
         if (currentPath === "/") {
           if (!targetDir) {
             response = directories.map((d) => `${d}/`);
@@ -110,6 +113,8 @@ export default function Terminal() {
             response = projects.map((p) => p.slug);
           } else if (targetDir === "tools") {
             response = tools.map((t) => t.slug);
+          } else if (targetDir === "blog") {
+            response = ["readme.md"];
           } else {
             response = `ls: cannot access '${targetDir}': No such directory`;
           }
@@ -130,14 +135,20 @@ export default function Terminal() {
         } else if (directories.includes(path)) {
           setCurrentPath(`/${path}`);
         } else {
-          response = `cd: no such directory: ${path}`;
+          response = [
+            `cd: no such directory: ${path}`,
+            "Usage: cd [directory]"
+          ];
         }
         break;
 
       case "cat":
         const file = args[0];
         if (!file) {
-          response = "usage: cat [filename]";
+          response = [
+            "cat: missing operand",
+            "Usage: cat [file]"
+          ];
         } else {
           const item =
             projects.find((p) => p.slug === file) ||
@@ -163,25 +174,42 @@ export default function Terminal() {
         const target = args[0];
         if (target) {
           const isCategory = directories.includes(target);
-          const path = isCategory
-            ? `/${target}`
-            : projects.find((p) => p.slug === target)
-              ? `/projects/${target}`
-              : `/tools/${target}`;
-          response = `Launching ${path}...`;
-          router.push(path);
+          const projectItem = projects.find((p) => p.slug === target);
+          const toolItem = tools.find((t) => t.slug === target);
+          
+          if (isCategory || projectItem || toolItem) {
+            const path = isCategory
+              ? `/${target}`
+              : projectItem
+                ? `/projects/${target}`
+                : `/tools/${target}`;
+            response = `Launching ${path}...`;
+            router.push(path);
+          } else {
+            response = [
+              `open: cannot open '${target}': No such entry`,
+              "Usage: open [target]"
+            ];
+          }
         } else {
-          response = "usage: open [target]";
+          response = [
+            "open: missing target",
+            "Usage: open [target]"
+          ];
         }
         break;
 
       case "fastfetch":
       case "neofetch":
-        setHistory((prev) => [...prev, { type: "fetch", content: null }]);
+        setHistory((prev) => [...prev, newHistoryEntry, { type: "fetch", content: null }]);
+        setCommandHistory((prev) => [trimmed, ...prev]);
+        setHistoryIndex(-1);
         return;
 
       case "clear":
         setHistory([]);
+        setCommandHistory((prev) => [trimmed, ...prev]);
+        setHistoryIndex(-1);
         return;
 
       case "exit":
@@ -189,16 +217,53 @@ export default function Terminal() {
         return;
 
       default:
-        response = `zsh: command not found: ${command}\n try typing help`;
+        response = [
+          `zsh: command not found: ${command}`,
+          "Run 'help' for a list of available commands."
+        ];
     }
 
-    if (response) {
-      setHistory((prev) => [...prev, { type: "resp", content: response }]);
-    }
+    // Update State in one batch
+    setHistory((prev) => {
+      const updated = [...prev, newHistoryEntry];
+      if (response) {
+        updated.push({ type: "resp", content: response });
+      }
+      return updated;
+    });
+    setCommandHistory((prev) => [trimmed, ...prev]);
+    setHistoryIndex(-1);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
+    // Reset completions if any key other than Tab is pressed
+    if (e.key !== "Tab" && e.key !== "Enter" && e.key !== "ArrowUp" && e.key !== "ArrowDown") {
+      setCompletions([]);
+      setCompletionIndex(-1);
+    }
+
+    if (e.key === "Enter") {
+      if (completions.length > 0 && completionIndex !== -1) {
+        e.preventDefault();
+        const parts = inputValue.trimStart().split(" ");
+        const selected = completions[completionIndex];
+        if (parts.length === 1) {
+          setInputValue(selected + " ");
+        } else {
+          setInputValue(`${parts[0]} ${selected}`);
+        }
+        setCompletions([]);
+        setCompletionIndex(-1);
+        return;
+      }
+    }
+
     if (e.key === "ArrowUp") {
+      if (completions.length > 0) {
+        e.preventDefault();
+        setCompletionIndex((prev) => (prev <= 0 ? completions.length - 1 : prev - 1));
+        return;
+      }
       e.preventDefault();
       const nextIndex = historyIndex + 1;
       if (nextIndex < commandHistory.length) {
@@ -206,6 +271,11 @@ export default function Terminal() {
         setInputValue(commandHistory[nextIndex]);
       }
     } else if (e.key === "ArrowDown") {
+      if (completions.length > 0) {
+        e.preventDefault();
+        setCompletionIndex((prev) => (prev >= completions.length - 1 ? 0 : prev + 1));
+        return;
+      }
       e.preventDefault();
       const nextIndex = historyIndex - 1;
       if (nextIndex >= 0) {
@@ -217,21 +287,45 @@ export default function Terminal() {
       }
     } else if (e.key === "Tab") {
       e.preventDefault();
-      const commands = [
-        "help",
-        "ls",
-        "cd",
-        "cat",
-        "open",
-        "whoami",
-        "fastfetch",
-        "clear",
-        "exit",
-      ];
-      const match = commands.find((c) =>
-        c.startsWith(inputValue.toLowerCase()),
-      );
-      if (match) setInputValue(match);
+      const parts = inputValue.trimStart().split(" ");
+      const cmd = parts[0].toLowerCase();
+      const arg = parts[1] || "";
+      const directories = ["projects", "tools", "blog"];
+
+      if (completions.length > 0) {
+        setCompletionIndex((prev) => (prev >= completions.length - 1 ? 0 : prev + 1));
+        return;
+      }
+
+      let matches: string[] = [];
+
+      if (parts.length === 1) {
+        const commands = ["help", "ls", "cd", "cat", "open", "whoami", "fastfetch", "clear", "exit"];
+        matches = commands.filter((c) => c.startsWith(cmd));
+      } else if (parts.length === 2) {
+        let options: string[] = [];
+        if (cmd === "cd" || cmd === "ls" || cmd === "open") {
+          if (currentPath === "/") options = directories;
+        }
+        if (cmd === "cat" || cmd === "open") {
+          const category = currentPath.replace("/", "");
+          if (category === "projects" || currentPath === "/") {
+            options.push(...projects.map((p) => p.slug));
+          }
+          if (category === "tools" || currentPath === "/") {
+            options.push(...tools.map((t) => t.slug));
+          }
+        }
+        matches = options.filter((o) => o.startsWith(arg.toLowerCase()));
+      }
+
+      if (matches.length === 1) {
+        if (parts.length === 1) setInputValue(matches[0] + " ");
+        else setInputValue(`${parts[0]} ${matches[0]}`);
+      } else if (matches.length > 1) {
+        setCompletions(matches);
+        setCompletionIndex(0);
+      }
     }
   };
 
@@ -273,7 +367,11 @@ export default function Terminal() {
       <div
         className="flex-1 overflow-y-auto p-6 space-y-2 scrollbar-hide selection:bg-[#3b82f6]/30"
         ref={scrollRef}
-        onClick={() => inputRef.current?.focus()}
+        onClick={() => {
+          if (window.getSelection()?.toString() === "") {
+            inputRef.current?.focus();
+          }
+        }}
       >
         {history.map((item, i) => (
           <div key={i} className="space-y-1">
@@ -349,6 +447,23 @@ export default function Terminal() {
             autoComplete="off"
           />
         </form>
+
+        {completions.length > 0 && (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 ml-6 pt-2 pb-4 border-l border-[#1a1a1a] pl-4">
+            {completions.map((comp, i) => (
+              <div
+                key={comp}
+                className={`text-[10px] px-2 py-0.5 font-bold transition-colors ${
+                  i === completionIndex
+                    ? "bg-[#3b82f6] text-[#050505]"
+                    : "text-[#444] hover:text-[#888]"
+                }`}
+              >
+                {comp}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="pointer-events-none absolute inset-0 opacity-[0.02] bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_2px,3px_100%]" />
