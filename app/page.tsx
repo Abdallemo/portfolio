@@ -55,10 +55,8 @@ export default async function Home() {
           </div>
           <div className="space-y-3 font-mono">
             <div className="flex justify-between text-[11px]">
-              <span className="text-[#444]">REGIONAL_RANK</span>
-              <span className="text-[#3b82f6] font-bold">
-                {siteConfig.stats.githubRanking}
-              </span>
+              <span className="text-[#444]">GITHUB_STATUS</span>
+              <span className="text-[#3b82f6] font-bold">{siteConfig.stats.githubRanking}</span>
             </div>
             <div className="flex justify-between text-[11px]">
               <span className="text-[#444]">STATUS</span>

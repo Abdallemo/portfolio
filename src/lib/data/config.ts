@@ -3,7 +3,7 @@ import { SiteConfig } from "../types";
 export const siteConfig: SiteConfig = {
   name: "Abdullahi Mohamed",
   role: "Software Engineer",
-  bio: "Focused on high-performance backend systems and developer tooling. Top 30 GitHub contributor in Malaysia.",
+  bio: "Focused on high-performance backend systems and developer tooling.",
   location: "Johor, Malaysia",
   email: "engabdallemo@gmail.com",
   links: {
@@ -19,8 +19,8 @@ export const siteConfig: SiteConfig = {
     git: "https://git.abdallemo.dev",
   },
   stats: {
-    githubRanking: "#27 in Malaysia",
+    githubRanking: "Active // Public",
     location: "Johor, MY",
-    status: "Active // Internship",
+    status: "Available // Internship",
   },
 };
