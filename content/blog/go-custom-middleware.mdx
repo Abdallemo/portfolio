@@ -11,6 +11,7 @@ When I first started my Go journey, I kept looking for the "Express" or "NestJS"
 I wanted to stop relying on heavy frameworks just to handle basic things like Auth, CORS, or Logging. So, I decided to build my own middleware suite. It’s less than 100 lines of core logic, and it gives me total control over how my API behaves.
 
 ### The Core Pattern
+
 I used a simple pattern I found on a [Dreams of Code](https://www.youtube.com/watch?v=H7tbjKFSg58&t=551s) video and tweaked it to fit my project. The secret sauce is just a function that takes an `http.Handler` and returns an `http.Handler`.
 
 ```go
@@ -31,6 +32,7 @@ func (m *Middleware) CreateStack(xs ...MiddlewareFunc) MiddlewareFunc {
 This `CreateStack` helper is what lets me write my routes in a clean, readable way without nesting ten functions deep.
 
 ### The Logging Struggle (and SSE)
+
 One thing I learned the hard way was that a simple logging middleware can break things like **Server-Sent Events (SSE)** or **WebSockets** if you aren't careful. If you wrap the `ResponseWriter` to capture the status code, you might lose the ability to "Flush" or "Hijack" the connection.
 
 I had to build a `wrappedWriter` that implements those interfaces so my streams wouldn't buffer:
@@ -81,6 +83,7 @@ func (m *Middleware) Logging(next http.Handler) http.Handler {
 ```
 
 ### Adding Rate Limiting
+
 Because I’m building this myself, adding something like rate limiting was surprisingly easy using `golang.org/x/time/rate`. I wanted it to be smart: if a user is logged in, limit them by their **UserID**; if they are anonymous, limit them by their **IP address**.
 
 ```go
@@ -93,10 +96,17 @@ func (m *Middleware) RateLimit() MiddlewareFunc {
 			if uid != "" {
 				key = uid
 			} else {
+
 				key = GetClientIP(r)
 			}
 
 			m.mu.Lock()
+			// limter here is map[string]*client
+			// where the client is a custom struct 
+			// type client struct {
+			// 	limiter  *rate.Limiter //<-  from golang.org/x/time/rate
+			// 	lastSeen time.Time
+			// }
 			v, exists := m.limiters[key]
 			if !exists {
 				v = &client{
@@ -104,6 +114,7 @@ func (m *Middleware) RateLimit() MiddlewareFunc {
 				}
 				m.limiters[key] = v
 			}
+
 			v.lastSeen = time.Now()
 			m.mu.Unlock()
 
@@ -116,18 +127,106 @@ func (m *Middleware) RateLimit() MiddlewareFunc {
 		})
 	}
 }
+
 ```
 
+### Authorization and RBAC
+
+I also wanted a clean way to handle permissions. I built an `IsAuthorized` check that verifies the session and injects the `UserID` into the context, followed by a `HasPermission` gatekeeper for more granular control.
+
+```go
+func (m *Middleware) IsAuthorized(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+
+		uidString := m.session.GetString(r.Context(), string(UserIDKey))
+		if uidString == "" {
+			WriteJSON(w, ResponseMessage{Message: "Unauthorized"}, http.StatusUnauthorized)
+			return
+		}
+
+		uid, err := uuid.Parse(uidString)
+		if err != nil {
+			WriteJSON(w, ResponseMessage{Message: "Invalid session data"}, http.StatusInternalServerError)
+			return
+		}
+
+		ctx := context.WithValue(r.Context(), UserIDKey, uid)
+		next.ServeHTTP(w, r.WithContext(ctx))
+	})
+}
+
+func (m *Middleware) HasPermission(requiredPermission ...user.UserPermission) MiddlewareFunc {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			uid, ok := GetUserID(r.Context())
+			if !ok {
+				WriteJSON(w, ResponseMessage{Message: "Unauthorized Access"}, http.StatusUnauthorized)
+				return
+			}
+
+			u, err := m.userService.GetUser(r.Context(), uid)
+			if err != nil {
+				WriteJSON(w, ResponseMessage{Message: "User not found"}, http.StatusForbidden)
+				return
+			}
+
+			hasPerm, err := m.userService.HasPermissions(r.Context(), u.Role, requiredPermission...)
+			if err != nil || !hasPerm {
+				WriteJSON(w, ResponseMessage{Message: "Forbidden: Missing Permission"}, http.StatusForbidden)
+				return
+			}
+			ctx := context.WithValue(r.Context(), UserKey, u)
+
+			next.ServeHTTP(w, r.WithContext(ctx))
+		})
+	}
+}
+
+```
+
+The cool thing about this is how readable it makes the routes. I can wrap a whole mux or just a single endpoint like this:
+
+```go
+mux.Handle("GET /chat", mw.HasPermissions(h.AskAIAssistant, user.PermAITutorAccess))
+```
+
+### The Timeout "Gotcha"
+
+The standard `http.TimeoutHandler` is great, but it buffers responses, which completely breaks **Server-Sent Events (SSE)**. I had to write a custom timeout middleware that detects the `Accept: text/event-stream` header and handles it differently.
+
+```go
+func (m *Middleware) Timeout(d time.Duration) MiddlewareFunc {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+
+			if r.Header.Get("Accept") == "text/event-stream" {
+				ctx, cancel := context.WithTimeout(r.Context(), d)
+				defer cancel()
+				next.ServeHTTP(w, r.WithContext(ctx))
+				return
+			}
+
+			h := http.TimeoutHandler(next, d, `{"message": "Service Timeout"}`)
+			w.Header().Set("Content-Type", "application/json")
+			h.ServeHTTP(w, r)
+		})
+	}
+}
+
+```
+
+
 ### Putting it all together
+
 Now, my routing tree looks like a real pipeline. I separate public routes from secured ones and apply the "Global Stack" to everything.
 
 ```go
 func (s *Server) routes() http.Handler {
 	pubMux := http.NewServeMux()
 
-	// Public Routes
+
 	s.authHandler.RouteRegister(pubMux, s.middleware)
-	
+
 	securedMux := http.NewServeMux()
 	authStack := s.middleware.CreateStack(s.middleware.IsAuthorized)
 
@@ -147,5 +246,5 @@ func (s *Server) routes() http.Handler {
 }
 ```
 
-### Why this matters
+
 Building this myself taught me more about the HTTP lifecycle than any framework ever could. I’m not fighting against a library’s opinion—I’m just using the language the way it was designed. It’s fast, it’s readable, and I know exactly what every line of code is doing.
