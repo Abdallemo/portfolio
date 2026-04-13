@@ -4,7 +4,7 @@ import { ArrowLeft, Calendar } from "lucide-react";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import rehypeHighlight from "rehype-highlight";
+import { Tag } from "@/src/components/ui/Tag";
 
 export async function generateStaticParams() {
   const slugs = await getSlugs("blog");
@@ -41,8 +41,17 @@ export default async function BlogPostPage({
           <h1 className="text-4xl font-bold tracking-tighter text-[#ededed]">
             {post.meta.title}
           </h1>
-          <div className="flex items-center gap-4 text-xs font-mono text-[#555] uppercase tracking-widest">
-            <Calendar size={14} className="text-[#333]" /> {post.meta.date}
+          <div className="flex flex-wrap items-center gap-4 text-xs font-mono text-[#555] uppercase tracking-widest">
+            <div className="flex items-center gap-2">
+              <Calendar size={14} className="text-[#333]" /> {post.meta.date}
+            </div>
+            {post.meta.tags && (
+              <div className="flex gap-2">
+                {post.meta.tags.map((tag: string) => (
+                  <Tag key={tag} tag={tag} />
+                ))}
+              </div>
+            )}
           </div>
         </header>
 

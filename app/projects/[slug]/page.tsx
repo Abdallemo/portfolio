@@ -6,8 +6,9 @@ import {
   ExternalLink,
   Github,
   ShieldCheck,
-  Tag,
+  Tag as TagIcon,
 } from "lucide-react";
+import { Tag } from "@/src/components/ui/Tag";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -80,7 +81,7 @@ export default async function ProjectPage({
                 {project.meta.year}
               </div>
               <div className="flex items-center gap-2 text-[#888]">
-                <Tag size={14} className="text-[#333]" />{" "}
+                <TagIcon size={14} className="text-[#333]" />{" "}
                 {project.meta.category}
               </div>
               <div className="flex gap-4 pt-2">
@@ -121,12 +122,7 @@ export default async function ProjectPage({
             </h3>
             <div className="flex flex-wrap gap-2 pt-2">
               {project.meta.tech.map((t: string) => (
-                <span
-                  key={t}
-                  className="text-[10px] uppercase border border-[#1a1a1a] px-2 py-0.5 text-[#555]"
-                >
-                  {t}
-                </span>
+                <Tag key={t} tag={t} />
               ))}
             </div>
           </div>
