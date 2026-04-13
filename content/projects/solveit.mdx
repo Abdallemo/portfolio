@@ -1,9 +1,9 @@
 ---
 title: "SolveIt"
 date: "2024-05-15"
-excerpt: "AI-Powered Student Job Board & Mentoring Platform"
+excerpt: "A platform I built for students to exchange academic help and mentoring safely."
 tech: ["Next.js", "Go", "PostgreSQL", "Stripe", "WebSocket", "OpenAI"]
-features: ["AI task categorization", "Secure payments", "Real-time chat", "Bidding system", "Reputation system"]
+features: ["Task categorization", "Stripe payments", "Real-time chat", "Bidding system"]
 github: "https://github.com/Abdallemo/solveit"
 category: "Full-Stack SaaS"
 year: "2024"
@@ -13,23 +13,22 @@ images:
   gallery: ["/solveit0.png", "/solveit1.png", "/solveit2.png"]
 ---
 
-### The Origin Story
-The idea for **SolveIt** came from observing the friction in student communities when it came to peer-to-peer academic help. Most students were using fragmented WhatsApp groups or Discord servers, where tasks were easily buried and payments were unsecured. I wanted to build a centralized "Workbench" where students could post tasks, mentors could bid, and the entire transaction—from categorization to payment—was handled within a secure, professional environment.
+I noticed that student communities often use WhatsApp or Discord to ask for academic help, but it's hard to track tasks and payments aren't always secure. I wanted to try building a centralized place where this could happen more professionally.
 
-### The Problem vs. Solution
-**The Problem**: Fragmented, insecure, and unorganized peer-to-peer mentoring. 
-**The Solution**: A unified SaaS platform that leverages AI for organization and Go-based WebSockets for real-time interaction. It ensures that every task is categorized correctly and every payment is protected via Stripe's escrow-style integration.
+### Why I built this
+I wanted to solve the friction in peer-to-peer help. By making a dedicated dashboard, students can post what they need help with, and others can bid to mentor them.
 
-### Deep Tech Specs
-- **AI-Powered Categorization**: We use OpenAI's GPT models to analyze the task description and automatically assign it to the correct subject and sub-category. This reduces the manual effort for students and ensures mentors find relevant tasks faster.
-- **Real-time Engine (The Go Microservice)**: While the main app is Next.js, the real-time chat and notification system is a standalone Go service. This allows us to handle high-concurrency WebSocket connections with minimal overhead.
-- **Database Architecture**: PostgreSQL with Drizzle ORM. We used a relational schema to handle the complex bidding and reputation logic, ensuring referential integrity across tasks, bids, and user ratings.
+### How it works
+- **Next.js & Tailwind**: The main interface is built with Next.js. I kept the design clean so it's easy to use.
+- **Go for Real-time**: I used a small Go service to handle the chat and notifications because Go's goroutines make it really easy to manage multiple concurrent WebSocket connections without much lag.
+- **AI Categorization**: I integrated OpenAI to help sort the tasks. It just reads the student's description and suggests the subject so I don't have to categorize everything manually.
+- **Payments**: Since this involves money, I used Stripe to handle the transactions securely.
 
-### Technical Hurdle: Real-time Concurrency
-The hardest part was managing bidirectional communication between students and mentors at scale. I chose Go for the WebSocket server because of its lightweight goroutines. Handling thousands of concurrent connections while maintaining sub-50ms latency was a challenge that required careful implementation of the "Hub" pattern to broadcast messages efficiently.
+### A technical challenge
+One of the trickiest parts was the real-time chat. I had to learn how to keep the student and mentor in sync without the page refreshing. Using Go's "Hub" pattern for WebSockets was a great learning experience.
 
 ```go
-// Real-time WebSocket Handler in Go
+// A look at the Hub pattern I used for chat
 func (h *Hub) HandleConnection(conn *websocket.Conn, userID string) {
     client := &Client{
         hub:    h,
@@ -37,32 +36,14 @@ func (h *Hub) HandleConnection(conn *websocket.Conn, userID string) {
         send:   make(chan []byte, 256),
         userID: userID,
     }
-
     h.register <- client
-
     go client.writePump()
     go client.readPump()
 }
-
-func (c *Client) readPump() {
-    defer func() {
-        c.hub.unregister <- c
-        c.conn.Close()
-    }()
-
-    for {
-        _, message, err := c.conn.ReadMessage()
-        if err != nil {
-            break
-        }
-        c.hub.broadcast <- message
-    }
-}
 ```
 
-### Lessons Learned
-**PostgreSQL Performance**: Early on, I realized that as the number of bids grew, simple queries on the `tasks` table were slowing down. I had to implement proper indexing on `mentorId` and `status` fields, and I learned the importance of "database-first" thinking when designing SaaS features.
+### Things I learned
+I struggled with database performance as I added more features. I realized that just adding fields to PostgreSQL wasn't enough; I had to learn about indexing on things like `mentorId` to keep the queries fast. It made me realize how important database design is even for hobby projects.
 
-### Future Roadmap
-- **Integrated Video Mentoring**: Moving beyond chat to include WebRTC-based video sessions directly in the dashboard.
-- **AI-Driven Pricing Suggestions**: Suggesting "fair market value" for tasks based on historical data.
+### What's next
+I'm thinking about adding video chat using WebRTC so mentors can explain things better, and maybe more detailed analytics for the dashboard.

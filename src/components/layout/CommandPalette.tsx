@@ -34,7 +34,7 @@ export default function CommandPalette() {
         onClick={() => setOpen(true)}
       >
         <span className="flex items-center gap-1"><kbd className="border border-[#1a1a1a] px-1">Ctrl</kbd> + <kbd className="border border-[#1a1a1a] px-1">K</kbd></span>
-        <span className="font-bold tracking-widest uppercase">Workbench Command</span>
+        <span className="font-bold tracking-widest uppercase">Command Palette</span>
       </div>
 
       <Command.Dialog
@@ -43,6 +43,7 @@ export default function CommandPalette() {
         label="Global Command Palette"
         className="fixed top-[20%] left-1/2 -translate-x-1/2 w-full max-w-xl bg-black border border-[#1a1a1a] p-2 font-mono shadow-2xl z-50 animate-in fade-in zoom-in duration-150"
       >
+        {/* Visually Hidden Title for Accessibility */}
         <div className="sr-only">
           <h2>Command Palette</h2>
           <p>Search for projects, tools, and blog posts.</p>
@@ -51,7 +52,7 @@ export default function CommandPalette() {
         <div className="flex items-center gap-2 border-b border-[#1a1a1a] px-3 pb-2 mb-2">
           <Search size={14} className="text-[#333]" />
           <Command.Input
-            placeholder="Type a command or search..."
+            placeholder="Search..."
             className="w-full bg-transparent border-none outline-none text-sm py-1 text-[#ededed] placeholder-[#333]"
           />
         </div>
@@ -60,16 +61,16 @@ export default function CommandPalette() {
 
           <Command.Group heading="Navigation" className="text-[10px] uppercase tracking-[0.2em] text-[#333] px-2 py-1 mb-1 font-bold">
             <Command.Item onSelect={() => runCommand(() => router.push("/"))} className="command-item">
-              <Layout size={14} /> <span>Go to Dashboard</span>
+              <Layout size={14} /> <span>Dashboard</span>
             </Command.Item>
             <Command.Item onSelect={() => runCommand(() => router.push("/projects"))} className="command-item">
-              <Folder size={14} /> <span>Browse Projects</span>
+              <Folder size={14} /> <span>Projects</span>
             </Command.Item>
             <Command.Item onSelect={() => runCommand(() => router.push("/tools"))} className="command-item">
-              <Terminal size={14} /> <span>View Workbench</span>
+              <Terminal size={14} /> <span>Tools</span>
             </Command.Item>
             <Command.Item onSelect={() => runCommand(() => router.push("/blog"))} className="command-item">
-              <FileText size={14} /> <span>Read Blog & Logs</span>
+              <FileText size={14} /> <span>Blog</span>
             </Command.Item>
           </Command.Group>
 

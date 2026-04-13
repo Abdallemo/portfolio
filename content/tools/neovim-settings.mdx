@@ -1,54 +1,37 @@
 ---
 title: "Neovim Settings"
 date: "2024-01-10"
-excerpt: "Personalized Neovim configuration optimized for Go and TypeScript."
+excerpt: "How I set up Neovim for my Go and TypeScript workflow."
 tech: ["Lua", "Neovim", "LSP"]
 github: "https://github.com/Abdallemo/neovim-settings"
 type: "dotfiles"
 ---
 
-### The Origin Story
-I moved from VS Code to **Neovim** to get a more efficient, terminal-based editing experience. I spent weeks learning the ropes and decided to build my own configuration from scratch using Lua to ensure I only have the plugins I actually need.
+I used to use VS Code, but I wanted a more lightweight, terminal-based editor. I spent a lot of time tinkering with different setups and eventually landed on a configuration that works for my full-stack workflow.
 
-### The Problem vs. Solution
-**The Problem**: Modern IDEs are heavy and often opaque in their behavior. On the other hand, a "vanilla" Neovim is too bare-bones for professional full-stack development.
+### My Setup
+My configuration isn't something I wrote entirely from scratch. It's a mix of **NvChad** and **LazyVim** patterns that I combined with different plugins I found useful. I wanted something that was fast but still had the IDE features I'm used to, like LSP (Language Server Protocol) and auto-formatting.
 
-**The Solution**: A curated Lua-based configuration that integrates the best of both worlds—the speed and minimalism of Neovim with the powerful LSP, linting, and formatting features of an IDE.
+### How I use it
+- **LSP Integration**: I use `nvim-lspconfig` to manage my language servers. It's really helpful for Go and TypeScript because it gives me definitions and auto-completion without having to leave the terminal.
+- **Go Support**: I've optimized it for Go development, so it works well with `gopls` and other Go-specific tools.
+- **Plugin Management**: I use `lazy.nvim` to manage everything. It's really efficient and makes sure only the plugins I need are loaded.
 
-### Deep Tech Specs
-- **LSP Config**: Using `nvim-lspconfig` to manage multiple language servers with custom settings.
-- **Plugin Management**: Built with `lazy.nvim` for fast, efficient plugin loading.
-- **Go Optimization**: Deep integration with `gopls` and specialized Go tools to make it a first-class citizen in the editor.
-
-### The "Clever" Logic: LSP Setup
-The core of the configuration is how LSPs are attached to buffers to ensure zero-lag performance.
+### Tinkering with Lua
+One of the best parts of using Neovim is that the configuration is written in Lua. It took me a while to get used to it, but it's really satisfying to be able to script my editor.
 
 ```lua
--- LSP setup in Lua
+-- A look at how I set up keybindings for LSP
 local on_attach = function(client, bufnr)
-  -- Keybindings for LSP features
   local nmap = function(keys, func, desc)
     if desc then desc = 'LSP: ' .. desc end
     vim.keymap.set('n', keys, func, { buffer = bufnr, desc = desc })
   end
-
   nmap('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
   nmap('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
   nmap('gd', vim.lsp.buf.definition, '[G]oto [D]efinition')
 end
-
--- Server setup
-require('lspconfig').gopls.setup({
-  on_attach = on_attach,
-  settings = {
-    gopls = {
-      analyses = { unusedparams = true },
-      staticcheck = true,
-    },
-  },
-})
 ```
 
-### Future Roadmap
-- **Treesitter Refinement**: Better syntax highlighting for obscure file types.
-- **DAP Integration**: Improving the Debug Adapter Protocol (DAP) experience for Go and TypeScript.
+### What's next
+I'm always tweaking my setup. I want to improve my **Treesitter** configuration for better syntax highlighting and maybe try out some new debuggers. It's a never-ending hobby.

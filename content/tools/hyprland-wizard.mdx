@@ -1,41 +1,36 @@
 ---
 title: "Hyprland Easy Setup Wizard"
 date: "2024-01-20"
-excerpt: "One-click Hyprland customization tool for Arch and Ubuntu."
+excerpt: "A script I built to automate my Hyprland configuration."
 tech: ["Bash", "Hyprland", "Kitty"]
 github: "https://github.com/Abdallemo/hyprland-wizzard"
 type: "script"
 ---
 
-### The Origin Story
-Switching to a tiling window manager (TWM) like **Hyprland** can be intimidating for new Linux users. I built this wizard to automate the "boring" parts of the setup—installing the right waybar, configuring the compositor, and setting up a terminal—so users can jump straight into the productivity gains.
+I really like tiling window managers, but setting up **Hyprland** from scratch can be a bit tedious with all the different components like Waybar and Rofi. I built this wizard to automate that process for myself and others.
 
-### The Problem vs. Solution
-**The Problem**: Hyprland requires a lot of "glue" software to be useful (Waybar, Rofi, Dunst, etc.). Configuring these manually is time-consuming and prone to errors.
+### Why I made this
+I wanted a way to get a functional Hyprland desktop with just one command. I use both Arch and Ubuntu, so I made sure the script can detect which one you're on and install the right packages.
 
-**The Solution**: A set of Bash scripts that detect your distribution (Arch or Ubuntu) and install a curated set of tools and configurations. It's a "batteries-included" approach to the Hyprland desktop environment.
+### How it works
+It's a collection of Bash scripts. It checks for your distribution and then installs a curated list of tools like Kitty for the terminal and Waybar for the status bar. I also included some pre-configured settings so the workflow feels smooth right out of the box.
 
-### The "Clever" Logic: Distro Detection
-The script uses `lsb_release` and `/etc/os-release` to determine the package manager and dependency names for different systems.
+### Distro Detection
+The script handles the differences between `pacman` and `apt` so I don't have to worry about manual installation.
 
 ```bash
-# Distribution Detection logic
+# How I detect the distribution
 if [ -f /etc/arch-release ]; then
     PKM="sudo pacman -S --noconfirm"
-    DEPS=("hyprland" "kitty" "waybar" "rofi-wayland")
+    DEPS=("hyprland" "kitty" "waybar")
 elif [ -f /etc/lsb-release ]; then
     PKM="sudo apt install -y"
-    DEPS=("hyprland" "kitty" "waybar" "rofi")
+    DEPS=("hyprland" "kitty")
 fi
-
-for dep in "${DEPS[@]}"; do
-    $PKM $dep
-done
 ```
 
-### Lessons Learned
-**Cross-Distro Compatibility**: Building for both Arch and Ubuntu taught me a lot about the differences in package naming conventions. It reinforced the importance of using abstraction in scripts to handle distribution-specific logic.
+### Things I learned
+Building this taught me a lot about Wayland and how it differs from X11. I had to learn about different compositor settings and how to handle Nvidia GPUs, which was a real challenge at first.
 
-### Future Roadmap
-- **Nvidia GPU Auto-config**: Automatically applying the necessary environment variables for Nvidia users.
-- **Theme Switcher**: Integrating a simple CLI-based theme switcher for Waybar and Kitty.
+### What's next
+I want to try adding a simple theme switcher and maybe some automatic configuration for different monitor setups.

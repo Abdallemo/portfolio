@@ -1,19 +1,18 @@
 ---
-title: "Solving Type-Safe Routing: The go-route-gen Origin"
+title: "Solving my own routing problems with go-route-gen"
 date: "2024-04-10"
-excerpt: "How I automated type-safe routing between Go backends and TypeScript frontends to eliminate manual boilerplate."
+excerpt: "How I tried to automate type-safe routing between my Go backends and TypeScript frontends."
 ---
 
-I got tired of manually syncing my Go standard library routes with my TypeScript frontend. The constant back-and-forth and the risk of typos in endpoint strings were frustrating.
+I got really tired of manually syncing my Go routes with my TypeScript frontend. It felt like I was doing the same work twice, and I kept making mistakes in the endpoint strings.
 
-I built **go-route-gen** to bridge this gap. It's a Go AST scraper that extracts `net/http` route patterns and generates a strictly-typed Axios client.
+### Scratching an itch
+I built **go-route-gen** because I wanted to see if I could use Go's AST packages to find my routes automatically. I'm not an expert in compilers, but tinkering with the `go/ast` package taught me a lot about how code is actually structured.
 
-### Why not tRPC?
-tRPC is great, but it requires switching to a specific ecosystem. I wanted something that works with standard `net/http` handlers and standard Axios.
+### Why I didn't use existing tools
+I looked at things like tRPC, but they felt a bit too heavy for what I needed. I just wanted to keep using standard `net/http` handlers and Axios, but with some extra safety.
 
-### The result
-- 100% type-safe endpoint strings.
-- Path parameter validation at compile time.
-- Automatic request/response typing.
+### What happened
+It started as a small script, but it worked well enough that I decided to publish it. Now I use it in all my Go projects. It's not perfect, but it saves me a lot of time and prevents those annoying "404 Not Found" errors that come from simple typos.
 
-It started as a small script to scratch my own itch, and now it's on NPM and getting organic downloads.
+I'm still learning how to make it better, but it's been a fun experiment so far.

@@ -1,30 +1,28 @@
 ---
 title: "Arch-Setup"
 date: "2024-02-15"
-excerpt: "My daily driver reproducible setup for Arch Linux."
+excerpt: "How I automate my Arch Linux setup so I can get back to coding faster."
 tech: ["Bash", "Yay", "Distrobox"]
 github: "https://github.com/Abdallemo/Arch-Setup"
 type: "script"
 ---
 
-### The Origin Story
-As an Arch Linux power user, I've had to reinstall my system several times due to hardware changes or purely for experimentation. Manually configuring everything from AUR packages to symlinking dotfiles was a waste of time. I built **Arch-Setup** to be my "System Infrastructure as Code."
+As an Arch Linux user, I've had to reinstall my system more times than I'd like to admit—sometimes because of hardware changes, but usually just because I was experimenting. I got tired of manually configuring everything, so I built this setup to be my "System as Code."
 
-### The Problem vs. Solution
-**The Problem**: A fresh Arch Linux install is a blank slate. Configuring the desktop environment, dev tools, and specific containers for software like DaVinci Resolve usually takes hours of manual work.
+### Why I made this
+A fresh Arch install is just a terminal. It takes hours to get it back to being a useful workstation. This setup automates the "boring" parts like installing AUR packages, symlinking my dotfiles, and setting up system services.
 
-**The Solution**: A set of modular Bash scripts that handle everything from package installation to complex container setups. It's built to be idempotent—you can run it on a fresh system or an existing one to sync your configuration.
+### How it's structured
+I broke the setup into modular scripts to keep it manageable:
+- **packages.sh**: Uses `yay` to install all my core tools and AUR packages.
+- **config.sh**: Handles the symlinking for things like Neovim and Kitty. It also sets up a **Distrobox** container for DaVinci Resolve so I can keep it in a stable environment.
+- **services.sh**: Sets up the background services I need.
 
-### Deep Tech Specs
-- **Modular Scripts**: The setup is broken into specialized scripts (`packages.sh`, `config.sh`, `services.sh`) to keep the logic clean and maintainable.
-- **Yay Integration**: It uses the `yay` helper to manage both official and AUR packages seamlessly.
-- **Distrobox for DaVinci**: I use Distrobox to run DaVinci Resolve in a stable container environment while keeping the rest of my system rolling-release.
-
-### The "Clever" Logic: Modular Sourcing
-The main `install.sh` is designed to be a thin wrapper that sources other scripts while maintaining a global state.
+### How I run it
+The main `install.sh` script is just a wrapper that sources the other parts. I tried to make it robust so it can track which parts failed.
 
 ```bash
-# Sourcing sub-scripts with global state
+# How I source my sub-scripts
 export FAILED_PACKAGES=()
 export ACTIONS_TODO=()
 
@@ -33,10 +31,9 @@ source scripts/packages.sh
 source scripts/config.sh
 
 if [ ${#FAILED_PACKAGES[@]} -gt 0 ]; then
-    echo "The following packages failed to install: ${FAILED_PACKAGES[@]}"
+    echo "Some packages didn't install: ${FAILED_PACKAGES[@]}"
 fi
 ```
 
-### Future Roadmap
-- **Hyprland Integration**: Moving my primary configuration to Hyprland for a smoother tiling experience.
-- **Automatic Backup**: Integrating `restic` or `borg` for automated system snapshots.
+### What's next
+I'm planning to integrate more of my **Hyprland** configuration into this setup and maybe add some automatic backup logic using `restic`.

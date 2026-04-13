@@ -1,16 +1,38 @@
 ---
 title: "UTHM Week Tracker"
 date: "2023-09-01"
-excerpt: "Lightweight web utility to track university academic weeks."
+excerpt: "A simple tool I built to keep track of academic weeks at UTHM."
 tech: ["JavaScript", "HTML", "CSS"]
 github: "https://github.com/Abdallemo/uthm_which-week"
 type: "tool"
 ---
 
-I built this simple web utility to solve the common student question: "Which week are we in?". What started as a script for myself is now used daily by my classmates at UTHM.
+I built this little utility to answer the one question every student has: "Which week are we in?". It's a simple problem, but checking the university calendar every time was annoying.
 
-### Highlights
-- Automatic week calculation accounting for semester breaks.
-- Used by 100+ students daily.
-- Featured in student WhatsApp groups.
-- Zero dependencies for instant load times.
+### Why I made this
+It started as a personal script to help me stay organized. I realized my classmates had the same issue, so I put it online and shared it in our WhatsApp groups. I'm really happy that it's now used by over 100 students daily.
+
+### How it works
+It's just plain JavaScript. I didn't want any heavy frameworks because I wanted it to load instantly even on slow campus Wi-Fi. It just takes the current date and calculates the week based on the semester start date, while accounting for the mid-semester breaks.
+
+```javascript
+// A simple look at how I calculate the week
+function calculateCurrentWeek() {
+  const semesterStart = new Date('2024-09-01');
+  const today = new Date();
+  
+  // Account for breaks
+  const breaks = [
+    { start: new Date('2024-10-15'), end: new Date('2024-10-22') }
+  ];
+  
+  // Logic to find the difference in days minus the break days
+  // ...
+}
+```
+
+### Things I learned
+Building this reminded me that sometimes the simplest tools are the most useful. You don't always need a complex backend or a fancy UI to solve a real problem for people.
+
+### What's next
+I want to try adding a "final exam countdown" and maybe a feature to import your own class schedule so it's even more useful.

@@ -1,9 +1,9 @@
 ---
 title: "Delivery App"
 date: "2024-02-15"
-excerpt: "DoorDash-style food delivery with real-time location tracking."
+excerpt: "A mobile app I built to explore real-time tracking and Flutter."
 tech: ["Flutter", "Dart", "Firebase", "Google Maps API", "Provider"]
-features: ["Real-time tracking", "Auth system", "Restaurant search", "Cart management", "Order history"]
+features: ["Real-time tracking", "Cart management", "Restaurant search", "Firebase auth"]
 github: "https://github.com/Abdallemo/delivery_app"
 category: "Mobile App"
 year: "2024"
@@ -13,40 +13,26 @@ images:
   gallery: []
 ---
 
-### The Origin Story
-I wanted to explore the complexities of a mobile-first, real-time logistics application. Building a delivery app is a perfect way to test state management and real-time database synchronization on a mobile device.
+I wanted to see how difficult it is to build a real-time logistics app, so I tried making this DoorDash-style delivery app. It was a great way to learn about state management and how to keep a mobile app in sync with a database.
 
-### The Problem vs. Solution
-**The Problem**: Delivering a smooth, "no-lag" experience for real-time tracking on mid-range devices while managing a complex state of cart items, orders, and locations. 
+### Why I built this
+I was curious about Flutter and how it handles complex animations and real-time data. Building a delivery app allowed me to experiment with both, plus I got to work with the Google Maps API for the first time.
 
-**The Solution**: A Flutter application using **Provider** for state management and **Firebase** for real-time data persistence. By using Firebase's real-time listeners, we can keep the driver and customer apps in sync with sub-second latency.
+### How it works
+- **Flutter & Dart**: I used Flutter for the cross-platform UI. I really like how easy it is to make smooth transitions.
+- **Provider**: This is what I used for state management. It handles everything from the user's cart to their authentication state.
+- **Firebase**: I used Firebase for the backend because its real-time listeners are perfect for tracking driver locations without any manual refreshing.
 
-### Deep Tech Specs
-- **State Management**: We chose Provider for its simplicity and efficiency in handling global state like the shopping cart and user authentication. 
-- **Google Maps Integration**: Using the Google Maps Flutter plugin to render driver locations and route directions.
-- **Firebase Persistence Layer**: We used the Firebase Realtime Database specifically for location updates to ensure the lowest possible latency.
-
-### The "Clever" Logic: Real-time Location Tracking
-Keeping the driver's location updated without draining the battery or causing performance issues was the biggest hurdle.
+### A technical challenge
+The hardest part was keeping the driver's location updated on the map without lagging the app. I had to learn how to throttle the updates so I wasn't sending data to Firebase every single second.
 
 ```dart
-// Real-time Driver Location Tracking in Flutter/Dart
-void _startTracking() {
-  _positionStream = Geolocator.getPositionStream(
-    locationSettings: LocationSettings(
-      accuracy: LocationAccuracy.high,
-      distanceFilter: 10,
-    ),
-  ).listen((Position position) {
-    _updateDriverLocation(position);
-  });
-}
-
+// Throttling the location updates
 void _updateDriverLocation(Position position) {
   final latLng = LatLng(position.latitude, position.longitude);
   _mapController?.animateCamera(CameraUpdate.newLatLng(latLng));
 
-  // Update Firebase in real-time
+  // Sync with Firebase
   FirebaseDatabase.instance.ref('deliveries/${orderId}/location').set({
     'lat': position.latitude,
     'lng': position.longitude,
@@ -55,9 +41,8 @@ void _updateDriverLocation(Position position) {
 }
 ```
 
-### Lessons Learned
-**Battery Performance**: I learned that keeping the GPS on at high accuracy is a major battery killer. I had to implement a `distanceFilter` to ensure we only update the database when the driver has moved a significant distance (e.g., 10 meters).
+### Things I learned
+I realized that high-accuracy GPS can really drain a phone's battery. I had to experiment with the `distanceFilter` setting in the Geolocator plugin to find a balance between accurate tracking and battery life.
 
-### Future Roadmap
-- **Driver Earnings Dashboard**: Detailed analytics for drivers to track their performance and payouts.
-- **Multi-stop Deliveries**: Optimizing routes for multiple orders in a single run.
+### What's next
+I want to try adding a dashboard for drivers so they can see their earnings over time, and maybe implement a better routing algorithm for multi-stop deliveries.

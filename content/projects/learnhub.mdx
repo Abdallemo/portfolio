@@ -1,9 +1,9 @@
 ---
 title: "LearnHub"
 date: "2023-11-20"
-excerpt: "Tutorial sharing platform with rich markdown support."
+excerpt: "A tutorial platform I built for sharing knowledge with other students."
 tech: ["Node.js", "Express.js", "MongoDB", "Passport.js", "Multer"]
-features: ["Auth system", "Markdown editor", "File uploads", "Profile management"]
+features: ["Auth system", "Markdown support", "File uploads", "Profile management"]
 github: "https://github.com/Abdallemo/Web-Dev-Final-Project-UTHM"
 category: "Web Platform"
 year: "2023"
@@ -13,24 +13,21 @@ images:
   gallery: ["/tutorialHub1.png", "/tutorialHub2.png", "/tutorialHub3.png"]
 ---
 
-### The Origin Story
-**LearnHub** was my final project for a Web Development course at UTHM. I wanted to build something more functional than a simple static site—a place where students could contribute their own knowledge through tutorials.
+I built **LearnHub** as my final project for a course at UTHM. I wanted to see if I could build a platform where students could help each other by contributing tutorials.
 
-### The Problem vs. Solution
-**The Problem**: Most educational platforms are read-only or have poor support for technical content (like code snippets).
+### Why I made this
+Most university projects are just static sites, but I wanted to try building something with a database where users could actually create content. I focused on making a simple markdown editor so students could easily share code snippets.
 
-**The Solution**: A platform built with the MERN stack (well, MEN in this case as it uses EJS) that prioritizes a rich markdown editing experience and easy file sharing. It provides a structured environment for knowledge discovery within a university community.
+### How it works
+- **Express & MongoDB**: I used the MEN stack (Express and MongoDB) because it's a great way to learn about document-based databases and server-side routing.
+- **Authentication**: I used Passport.js to handle the login and registration. It was my first time working with actual security logic.
+- **File Uploads**: Students can upload images or documents to their tutorials. I used Multer to handle the file streams.
 
-### Deep Tech Specs
-- **Backend Architecture**: Traditional MVC architecture with Express.js handling routing and MongoDB as the document store.
-- **Authentication**: Passport.js for robust local strategy authentication.
-- **File Management**: We used Multer middleware to handle multiple file uploads, including validation for file types and sizes to ensure platform security.
-
-### The "Clever" Logic: File Upload Middleware
-Handling file uploads can be tricky, so I built a reusable middleware to handle the logic.
+### Handling file uploads
+Handling files on the backend was a bit of a hurdle. I had to learn how to validate file types and sizes so the server wouldn't get overwhelmed.
 
 ```javascript
-// Reusable File Upload Middleware
+// A simple look at how I set up the file storage
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, 'uploads/');
@@ -40,22 +37,10 @@ const storage = multer.diskStorage({
     cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
   }
 });
-
-const upload = multer({
-  storage,
-  fileFilter: (req, file, cb) => {
-    const allowedTypes = /jpeg|jpg|png|pdf|doc|docx/;
-    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
-    if (extname) return cb(null, true);
-    cb(new Error('Invalid file type'));
-  },
-  limits: { fileSize: 5 * 1024 * 1024 } // 5MB limit
-});
 ```
 
-### Lessons Learned
-**State Management in EJS**: Managing state across multiple server-rendered views was a great lesson in why modern frameworks like Next.js became so popular. It taught me to appreciate the "simpler" ways before jumping into complex abstractions.
+### Things I learned
+Using EJS for server-side rendering was a good lesson in how the web used to work before everything moved to modern frameworks like React. It made me appreciate the simplicity of just rendering HTML on the server.
 
-### Future Roadmap
-- **Move to React**: Transitioning the frontend to a decoupled React application for a more dynamic experience.
-- **Search Optimization**: Implementing full-text search with MongoDB's `$text` operator for better tutorial discovery.
+### What's next
+If I were to rebuild this, I'd probably use Next.js to make the interface feel more responsive. I also want to try adding a search feature so tutorials are easier to find.
