@@ -1,0 +1,18 @@
+---
+title: "Arch-Setup"
+date: "2024-02-15"
+excerpt: "My daily driver reproducible setup for Arch Linux."
+tech: ["Bash", "Yay", "Distrobox"]
+github: "https://github.com/Abdallemo/Arch-Setup"
+type: "script"
+---
+
+This is my reproducible setup that takes a fresh Arch install to a fully ready development environment.
+
+### Components
+- **packages.sh**: Uses `yay` to install core tools and AUR packages.
+- **config.sh**: Manages symlinking for dotfiles (Nvim, Kitty, etc.) and sets up the DaVinci Resolve Distrobox container.
+- **services.sh**: Configures system-level services.
+- **helper.sh**: Utility functions for the installation process.
+
+The `install.sh` entry point sources these sub-scripts, ensuring that global variables like the `FAILED` list and `actions_todo` stay consistent across the entire run.

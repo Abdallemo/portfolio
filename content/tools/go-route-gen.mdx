@@ -1,0 +1,18 @@
+---
+title: "go-route-gen"
+date: "2024-04-10"
+excerpt: "End-to-end type-safe routing for Go 1.22+ and TypeScript."
+tech: ["Go", "TypeScript", "AST"]
+github: "https://github.com/Abdallemo/go-route-gen"
+npm: "https://www.npmjs.com/package/@abdallemo/routegen-client"
+type: "cli"
+---
+
+I built **go-route-gen** to solve a specific pain point: the manual syncing of Go backend routes with TypeScript frontends. It's a Go AST scraper that extracts your standard `net/http` route definitions and generates a strictly-typed Axios client.
+
+### Features
+- **Strict Route Matching**: TypeScript won't let you request a route that doesn't exist in your backend.
+- **Path Parameter Validation**: Automatically detects `{id}` segments in your Go routes.
+- **Global Lifecycle Hooks**: Centralized `onError` and `onUnauthorized` handling.
+
+This tool gives you tRPC-style type safety across the network boundary without having to switch to a heavy backend framework.

@@ -45,10 +45,7 @@ export interface Project extends BaseContent {
   };
 }
 
-export interface Tool {
-  slug: string;
-  title: string;
-  description: string;
+export interface Tool extends BaseContent {
   tech: string[];
   github: string;
   npm?: string;
@@ -56,5 +53,7 @@ export interface Tool {
   isPinned?: boolean;
 }
 
-export interface Log extends BaseContent {}
-export interface BlogPost extends BaseContent {}
+export interface BlogPost extends BaseContent {
+  tags?: string[];
+  category: "technical" | "general" | "career";
+}

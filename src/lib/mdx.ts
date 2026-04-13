@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
 
-export type ContentType = "projects" | "logs" | "blog";
+export type ContentType = "projects" | "blog" | "tools";
 
 export function getDirectory(type: ContentType) {
   return path.join(process.cwd(), `content/${type}`);

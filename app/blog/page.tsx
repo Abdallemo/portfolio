@@ -1,38 +1,68 @@
 import { getAllContent } from "@/src/lib/mdx";
 import Link from "next/link";
-import { ArrowUpRight, Calendar } from "lucide-react";
+import { ArrowUpRight, Clock, FileText, Code } from "lucide-react";
 
 export default async function BlogPage() {
   const posts = await getAllContent("blog");
+  
+  // Distinguish between technical (logs) and general blog posts
+  const technicalPosts = posts.filter(p => p.meta.category === "technical" || p.slug.includes("origin") || p.slug.includes("log"));
+  const generalPosts = posts.filter(p => !technicalPosts.includes(p));
 
   return (
-    <main className="max-w-4xl mx-auto px-6 py-12 md:py-20 space-y-16">
+    <main className="max-w-4xl mx-auto px-6 py-12 md:py-20 space-y-16 font-mono">
       <header className="space-y-4">
-        <h1 className="text-3xl font-bold tracking-tighter">Personal Blog</h1>
-        <p className="text-[#888] max-w-lg">
-          Reflections on career, life as an IT student at UTHM, and general tech opinions.
+        <h1 className="text-3xl font-bold tracking-tighter">Writing</h1>
+        <p className="text-[#888] max-w-lg text-sm">
+          A collection of technical logs, engineering deep dives, and general reflections.
         </p>
       </header>
 
-      <div className="space-y-12">
-        {posts.map((post) => (
-          <Link 
-            key={post.slug} 
-            href={`/blog/${post.slug}`} 
-            className="block group space-y-3"
-          >
-            <div className="flex justify-between items-baseline border-b border-[#1a1a1a] pb-4 group-hover:border-[#3b82f6] transition-all">
-              <div className="space-y-1">
-                <h3 className="text-xl font-bold group-hover:text-[#3b82f6] transition-colors">{post.meta.title}</h3>
+      {technicalPosts.length > 0 && (
+        <section className="space-y-8">
+          <h2 className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#333] flex items-center gap-2 border-b border-[#1a1a1a] pb-2">
+            <Code size={14} /> Technical Logs
+          </h2>
+          <div className="space-y-2">
+            {technicalPosts.map((post) => (
+              <Link 
+                key={post.slug} 
+                href={`/blog/${post.slug}`} 
+                className="flex items-center justify-between p-4 border border-transparent hover:border-[#1a1a1a] hover:bg-[#0d0d0d] transition-all group"
+              >
+                <div className="flex items-center gap-4">
+                  <span className="text-[10px] text-[#333] w-24">{post.meta.date}</span>
+                  <span className="text-sm font-bold group-hover:text-[#3b82f6] transition-colors">{post.meta.title}</span>
+                </div>
+                <ArrowUpRight size={14} className="text-[#1a1a1a] group-hover:text-[#3b82f6]" />
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {generalPosts.length > 0 && (
+        <section className="space-y-8">
+          <h2 className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#333] flex items-center gap-2 border-b border-[#1a1a1a] pb-2">
+            <FileText size={14} /> Reflections & Thoughts
+          </h2>
+          <div className="space-y-6">
+            {generalPosts.map((post) => (
+              <Link 
+                key={post.slug} 
+                href={`/blog/${post.slug}`} 
+                className="block group space-y-2"
+              >
+                <div className="flex justify-between items-baseline">
+                  <h3 className="text-lg font-bold group-hover:text-[#3b82f6] transition-colors">{post.meta.title}</h3>
+                  <span className="text-[10px] text-[#444] uppercase tracking-widest">{post.meta.date}</span>
+                </div>
                 <p className="text-sm text-[#666] leading-relaxed max-w-2xl">{post.meta.excerpt}</p>
-              </div>
-              <div className="text-[10px] font-mono text-[#444] uppercase tracking-[0.2em] flex items-center gap-2">
-                {post.meta.date} <ArrowUpRight size={14} className="text-[#1a1a1a] group-hover:text-[#3b82f6]" />
-              </div>
-            </div>
-          </Link>
-        ))}
-      </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
     </main>
   );
 }
