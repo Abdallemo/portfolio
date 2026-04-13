@@ -1,7 +1,6 @@
 import { getAllContent } from "@/src/lib/mdx";
 import { ArrowUpRight, Cpu, FileJson, Terminal } from "lucide-react";
 import Link from "next/link";
-import { Tag } from "@/src/components/ui/Tag";
 
 export default async function ToolsPage() {
   const tools = await getAllContent("tools");
@@ -39,42 +38,38 @@ export default async function ToolsPage() {
               </h2>
               <div className="border border-[#1a1a1a] divide-y divide-[#1a1a1a]">
                 {catTools.map((tool) => (
-                  <div
+                  <Link
                     key={tool.slug}
+                    href={`/tools/${tool.slug}`}
                     className="flex flex-col md:flex-row md:items-center justify-between p-4 hover:bg-[#0d0d0d] transition-colors group relative overflow-hidden"
                   >
                     <div className="space-y-1 relative z-10">
                       <div className="flex items-center gap-3">
-                        <Link href={`/tools/${tool.slug}`}>
-                          <h3 className="text-sm font-bold group-hover:text-[#3b82f6] transition-colors">
-                            {tool.meta.title}
-                          </h3>
-                        </Link>
+                        <h3 className="text-sm font-bold group-hover:text-[#3b82f6] transition-colors">
+                          {tool.meta.title}
+                        </h3>
                         <div className="flex gap-1.5">
                           {tool.meta.tech.map((t: string) => (
-                            <Tag 
-                              key={t} 
-                              tag={t} 
-                              className="px-1 py-0 border-[#1a1a1a] text-[#444] hover:border-[#3b82f6] hover:text-[#3b82f6] text-[9px]" 
-                            />
+                            <span
+                              key={t}
+                              className="text-[9px] text-[#444] uppercase tracking-tighter border border-[#1a1a1a] px-1 group-hover:border-[#2a2a2a] transition-colors"
+                            >
+                              {t}
+                            </span>
                           ))}
                         </div>
                       </div>
-                      <Link href={`/tools/${tool.slug}`}>
-                        <p className="text-[11px] text-[#666] max-w-xl leading-relaxed">
-                          {tool.meta.excerpt}
-                        </p>
-                      </Link>
+                      <p className="text-[11px] text-[#666] max-w-xl leading-relaxed">
+                        {tool.meta.excerpt}
+                      </p>
                     </div>
                     <div className="flex items-center gap-4 mt-4 md:mt-0 relative z-10">
-                      <Link href={`/tools/${tool.slug}`}>
-                        <ArrowUpRight
-                          size={16}
-                          className="text-[#1a1a1a] group-hover:text-[#3b82f6] transition-all"
-                        />
-                      </Link>
+                      <ArrowUpRight
+                        size={16}
+                        className="text-[#1a1a1a] group-hover:text-[#3b82f6] transition-all"
+                      />
                     </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
             </section>
