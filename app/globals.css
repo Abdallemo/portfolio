@@ -4,17 +4,28 @@
 @theme {
     --font-sans: var(--font-sans), system-ui, sans-serif;
     --font-mono: var(--font-mono), monospace;
-    
-    /* Core Colors */
+
     --color-background: #0a0a0a;
     --color-foreground: #ededed;
     --color-border: #1a1a1a;
     --color-accent: #3b82f6;
-    
-    /* Semantic UI Colors - Better Readability */
-    --color-muted: #888888;
-    --color-muted-foreground: #666666;
-    --color-dim: #333333;
+
+    --color-primary: #ededed;
+    --color-primary-foreground: #0a0a0a;
+
+    --color-secondary: #1a1a1a;
+    --color-secondary-foreground: #ededed;
+
+    --color-muted: #111111;
+    --color-muted-foreground: #a1a1aa;
+
+    --color-accent: #3b82f6;
+    --color-accent-foreground: #ededed;
+
+    --color-destructive: #ef4444;
+    --color-destructive-foreground: #ededed;
+
+    --color-dim: #71717a;
     --color-card-bg: #0d0d0d;
 }
 
@@ -23,13 +34,12 @@
     --foreground: #ededed;
     --border: #1a1a1a;
     --accent: #3b82f6;
-    
-    /* Readability Levels */
-    --text-primary: #ededed;    /* Strong headers/text */
-    --text-secondary: #a1a1aa;  /* Main body text */
-    --text-muted: #888888;      /* Navigation/Sub-info */
-    --text-dim: #555555;        /* Metadata/Dividers */
-    
+
+    --text-primary: #ededed;
+    --text-secondary: #a1a1aa;
+    --text-muted: #a1a1aa;
+    --text-dim: #71717a;
+
     --radius: 0px;
     font-size: 110%;
 }
@@ -50,19 +60,22 @@ code,
     font-family: var(--font-mono);
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
     font-family: var(--font-sans);
     font-weight: 700;
     letter-spacing: -0.025em;
     color: var(--text-primary);
 }
 
-/* Global Link Styles */
 a {
     transition: all 0.2s ease;
 }
 
-/* Prose (Markdown) Link Styling */
 .prose a {
     color: var(--accent);
     text-decoration: none;
@@ -97,21 +110,21 @@ a {
     background-color: var(--color-card-bg);
 }
 
-/* Scrollbars */
 ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 4px;
+    height: 4px;
 }
 
 @layer base {
     ::-webkit-scrollbar-track {
-        @apply bg-muted;
+        background: var(--background);
     }
     ::-webkit-scrollbar-thumb {
-        @apply bg-border rounded-full;
+        background: var(--border);
+        border-radius: 9999px;
     }
     ::-webkit-scrollbar-thumb:hover {
-        @apply bg-muted-foreground;
+        background: var(--color-dim);
     }
 }
 
