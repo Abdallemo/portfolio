@@ -16,14 +16,15 @@
   --border: #1a1a1a;
   --accent: #3b82f6;
   --radius: 0px;
+  font-size: 110%; /* Global scale for desktop */
 }
 
 body {
   background-color: var(--background);
   color: #a1a1aa; /* zinc-400 */
   font-family: var(--font-sans);
-  font-size: 1.1rem;
-  line-height: 1.6;
+  font-size: 1rem;
+  line-height: 1.7;
   -webkit-font-smoothing: antialiased;
   -moz-osx-smoothing: grayscale;
 }
