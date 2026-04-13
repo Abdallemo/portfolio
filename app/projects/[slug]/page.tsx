@@ -10,6 +10,7 @@ import {
 import { MDXRemote } from "next-mdx-remote/rsc";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import rehypeHighlight from "rehype-highlight";
 
 export async function generateStaticParams() {
   const slugs = await getSlugs("projects");
@@ -33,7 +34,7 @@ export default async function ProjectPage({
   }
 
   return (
-    <main className="max-w-4xl mx-auto px-6 py-12 md:py-20 space-y-16">
+    <main className="max-w-4xl mx-auto px-6 py-12 md:py-20 space-y-16 font-sans">
       <Link
         href="/projects"
         className="text-xs font-mono text-[#555] hover:text-[#3b82f6] transition-colors mb-12 flex items-center gap-2 uppercase tracking-widest"
@@ -44,22 +45,29 @@ export default async function ProjectPage({
       <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
         <div className="md:col-span-3 space-y-12">
           <header className="space-y-4">
-            <h1 className="text-4xl font-bold tracking-tighter">
+            <h1 className="text-4xl font-bold tracking-tighter text-[#ededed]">
               {project.meta.title}
             </h1>
-            <p className="text-lg text-[#888] leading-relaxed max-w-2xl">
+            <p className="text-lg text-[#a1a1aa] leading-relaxed max-w-2xl">
               {project.meta.excerpt}
             </p>
           </header>
 
-          <div className="prose prose-invert max-w-none prose-sm prose-pre:bg-black prose-pre:border prose-pre:border-[#1a1a1a] prose-pre:rounded-none prose-h3:text-sm prose-h3:uppercase prose-h3:tracking-widest prose-h3:text-[#3b82f6]">
-            <MDXRemote source={project.content} />
+          <div className="prose prose-invert max-w-none prose-sm">
+            <MDXRemote
+              source={project.content}
+              options={{
+                mdxOptions: {
+                  rehypePlugins: [rehypeHighlight],
+                },
+              }}
+            />
           </div>
         </div>
 
-        <aside className="md:col-span-1 space-y-8">
+        <aside className="md:col-span-1 space-y-8 font-mono">
           <div className="space-y-2">
-            <h3 className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#333] border-b border-[#1a1a1a] pb-2">
+            <h3 className="text-[10px] font-bold uppercase tracking-widest text-[#333] border-b border-[#1a1a1a] pb-2">
               Meta
             </h3>
             <div className="space-y-4 pt-2">
@@ -93,14 +101,14 @@ export default async function ProjectPage({
           </div>
 
           <div className="space-y-2">
-            <h3 className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#333] border-b border-[#1a1a1a] pb-2">
+            <h3 className="text-[10px] font-bold uppercase tracking-widest text-[#333] border-b border-[#1a1a1a] pb-2">
               Tech Stack
             </h3>
             <div className="flex flex-wrap gap-2 pt-2">
               {project.meta.tech.map((t: string) => (
                 <span
                   key={t}
-                  className="text-[10px] font-mono uppercase border border-[#1a1a1a] px-2 py-0.5 text-[#555]"
+                  className="text-[10px] uppercase border border-[#1a1a1a] px-2 py-0.5 text-[#555]"
                 >
                   {t}
                 </span>
@@ -109,7 +117,7 @@ export default async function ProjectPage({
           </div>
 
           <div className="space-y-2">
-            <h3 className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#333] border-b border-[#1a1a1a] pb-2">
+            <h3 className="text-[10px] font-bold uppercase tracking-widest text-[#333] border-b border-[#1a1a1a] pb-2">
               Features
             </h3>
             <div className="space-y-2 pt-2">
@@ -127,13 +135,13 @@ export default async function ProjectPage({
         </aside>
       </div>
 
-      <footer className="pt-20 border-t border-[#1a1a1a] flex justify-between items-center">
-        <span className="text-[10px] font-mono text-[#333] uppercase tracking-widest">
+      <footer className="pt-20 border-t border-[#1a1a1a] flex justify-between items-center font-mono">
+        <span className="text-[10px] text-[#333] uppercase tracking-widest">
           End of segment // {project.slug}
         </span>
         <Link
           href="/projects"
-          className="text-[10px] font-mono text-[#555] hover:text-[#3b82f6] uppercase tracking-widest"
+          className="text-[10px] text-[#555] hover:text-[#3b82f6] uppercase tracking-widest transition-colors"
         >
           View all projects
         </Link>

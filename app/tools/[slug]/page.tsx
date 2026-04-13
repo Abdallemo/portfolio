@@ -3,6 +3,7 @@ import { ArrowLeft, ExternalLink, Github, Tag, Terminal } from "lucide-react";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import rehypeHighlight from "rehype-highlight";
 
 export async function generateStaticParams() {
   const slugs = await getSlugs("tools");
@@ -36,33 +37,40 @@ export default async function ToolPage({
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
         <div className="md:col-span-3 space-y-12">
-          <header className="space-y-4">
+          <header className="space-y-4 font-sans">
             <div className="flex items-center gap-3 text-[#3b82f6]">
               <Terminal size={24} />
-              <span className="text-[10px] font-bold uppercase tracking-widest text-[#333]">
+              <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#333]">
                 /usr/bin/{slug}
               </span>
             </div>
             <h1 className="text-4xl font-bold tracking-tighter text-[#ededed]">
               {tool.meta.title}
             </h1>
-            <p className="text-lg text-[#888] leading-relaxed max-w-2xl">
+            <p className="text-lg text-[#a1a1aa] leading-relaxed max-w-2xl">
               {tool.meta.excerpt}
             </p>
           </header>
 
-          <div className="prose prose-invert max-w-none prose-sm prose-pre:bg-black prose-pre:border prose-pre:border-[#1a1a1a] prose-pre:rounded-none prose-h3:text-[11px] prose-h3:uppercase prose-h3:tracking-widest prose-h3:text-[#3b82f6] prose-h3:font-bold border-t border-[#1a1a1a] pt-12">
-            <MDXRemote source={tool.content} />
+          <div className="prose prose-invert max-w-none prose-sm">
+            <MDXRemote
+              source={tool.content}
+              options={{
+                mdxOptions: {
+                  rehypePlugins: [rehypeHighlight],
+                },
+              }}
+            />
           </div>
         </div>
 
         <aside className="md:col-span-1 space-y-8">
-          <div className="space-y-2">
+          <div className="space-y-2 text-xs">
             <h3 className="text-[10px] font-bold uppercase tracking-widest text-[#333] border-b border-[#1a1a1a] pb-2">
               Technical Info
             </h3>
             <div className="space-y-4 pt-2">
-              <div className="flex items-center gap-2 text-[11px] text-[#888]">
+              <div className="flex items-center gap-2 text-[#888]">
                 <Tag size={14} className="text-[#333]" />{" "}
                 {tool.meta.type.toUpperCase()}
               </div>

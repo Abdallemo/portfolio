@@ -1,20 +1,25 @@
 import { getAllContent } from "@/src/lib/mdx";
+import { ArrowUpRight, Code, FileText } from "lucide-react";
 import Link from "next/link";
-import { ArrowUpRight, Clock, FileText, Code } from "lucide-react";
 
 export default async function BlogPage() {
   const posts = await getAllContent("blog");
-  
-  // Distinguish between technical (logs) and general blog posts
-  const technicalPosts = posts.filter(p => p.meta.category === "technical" || p.slug.includes("origin") || p.slug.includes("log"));
-  const generalPosts = posts.filter(p => !technicalPosts.includes(p));
+
+  const technicalPosts = posts.filter(
+    (p) =>
+      p.meta.category === "technical" ||
+      p.slug.includes("origin") ||
+      p.slug.includes("log"),
+  );
+  const generalPosts = posts.filter((p) => !technicalPosts.includes(p));
 
   return (
     <main className="max-w-4xl mx-auto px-6 py-12 md:py-20 space-y-16 font-mono">
       <header className="space-y-4">
         <h1 className="text-3xl font-bold tracking-tighter">Writing</h1>
         <p className="text-[#888] max-w-lg text-sm">
-          A collection of technical logs, engineering deep dives, and general reflections.
+          A collection of technical logs, engineering deep dives, and general
+          reflections.
         </p>
       </header>
 
@@ -25,16 +30,23 @@ export default async function BlogPage() {
           </h2>
           <div className="space-y-2">
             {technicalPosts.map((post) => (
-              <Link 
-                key={post.slug} 
-                href={`/blog/${post.slug}`} 
+              <Link
+                key={post.slug}
+                href={`/blog/${post.slug}`}
                 className="flex items-center justify-between p-4 border border-transparent hover:border-[#1a1a1a] hover:bg-[#0d0d0d] transition-all group"
               >
                 <div className="flex items-center gap-4">
-                  <span className="text-[10px] text-[#333] w-24">{post.meta.date}</span>
-                  <span className="text-sm font-bold group-hover:text-[#3b82f6] transition-colors">{post.meta.title}</span>
+                  <span className="text-[10px] text-[#333] w-24">
+                    {post.meta.date}
+                  </span>
+                  <span className="text-sm font-bold group-hover:text-[#3b82f6] transition-colors">
+                    {post.meta.title}
+                  </span>
                 </div>
-                <ArrowUpRight size={14} className="text-[#1a1a1a] group-hover:text-[#3b82f6]" />
+                <ArrowUpRight
+                  size={14}
+                  className="text-[#1a1a1a] group-hover:text-[#3b82f6]"
+                />
               </Link>
             ))}
           </div>
@@ -48,16 +60,22 @@ export default async function BlogPage() {
           </h2>
           <div className="space-y-6">
             {generalPosts.map((post) => (
-              <Link 
-                key={post.slug} 
-                href={`/blog/${post.slug}`} 
+              <Link
+                key={post.slug}
+                href={`/blog/${post.slug}`}
                 className="block group space-y-2"
               >
                 <div className="flex justify-between items-baseline">
-                  <h3 className="text-lg font-bold group-hover:text-[#3b82f6] transition-colors">{post.meta.title}</h3>
-                  <span className="text-[10px] text-[#444] uppercase tracking-widest">{post.meta.date}</span>
+                  <h3 className="text-lg font-bold group-hover:text-[#3b82f6] transition-colors">
+                    {post.meta.title}
+                  </h3>
+                  <span className="text-[10px] text-[#444] uppercase tracking-widest">
+                    {post.meta.date}
+                  </span>
                 </div>
-                <p className="text-sm text-[#666] leading-relaxed max-w-2xl">{post.meta.excerpt}</p>
+                <p className="text-sm text-[#666] leading-relaxed max-w-2xl">
+                  {post.meta.excerpt}
+                </p>
               </Link>
             ))}
           </div>

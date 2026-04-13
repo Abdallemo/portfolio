@@ -7,7 +7,10 @@ export const tools: Tool[] = [
     description: "End-to-end type-safe routing for Go 1.22+ and TypeScript.",
     tech: ["Go", "TypeScript", "AST"],
     github: "https://github.com/Abdallemo/go-route-gen",
-    type: "cli"
+    type: "cli",
+    date: "2024-04-10",
+    excerpt: "End-to-end type-safe routing for Go 1.22+ and TypeScript.",
+    content: ""
   },
   {
     slug: "routegen-client",
@@ -16,7 +19,10 @@ export const tools: Tool[] = [
     tech: ["TypeScript", "Axios"],
     github: "https://github.com/Abdallemo/go-route-gen",
     npm: "https://www.npmjs.com/package/@abdallemo/routegen-client",
-    type: "cli"
+    type: "cli",
+    date: "2024-04-12",
+    excerpt: "Strictly-typed Axios wrapper for go-route-gen routes.",
+    content: ""
   },
   {
     slug: "arch-setup",
@@ -24,15 +30,10 @@ export const tools: Tool[] = [
     description: "Daily driver reproducible Arch Linux setup with automated scripts.",
     tech: ["Bash", "Yay", "Distrobox"],
     github: "https://github.com/Abdallemo/Arch-Setup",
-    type: "script"
-  },
-  {
-    slug: "ros2-docker",
-    title: "ROS2 Docker Launcher",
-    description: "Cross-platform ROS2 environment launcher with GUI support.",
-    tech: ["Docker", "Bash", "X11", "ROS2"],
-    github: "https://github.com/Abdallemo/ros2Docker",
-    type: "tool" as any // It's a tool, but I defined it as cli|script|dotfiles. I'll use script for now.
+    type: "script",
+    date: "2024-02-15",
+    excerpt: "My daily driver reproducible setup for Arch Linux.",
+    content: ""
   },
   {
     slug: "hyprland-wizard",
@@ -40,7 +41,10 @@ export const tools: Tool[] = [
     description: "All-in-one Hyprland customization tool for Arch and Ubuntu.",
     tech: ["Bash", "Hyprland", "Kitty"],
     github: "https://github.com/Abdallemo/hyprland-wizzard",
-    type: "script"
+    type: "script",
+    date: "2024-01-20",
+    excerpt: "One-click Hyprland customization tool for Arch and Ubuntu.",
+    content: ""
   },
   {
     slug: "neovim-settings",
@@ -48,14 +52,20 @@ export const tools: Tool[] = [
     description: "Personalized Neovim configuration optimized for Go and TS.",
     tech: ["Lua", "Neovim", "LSP"],
     github: "https://github.com/Abdallemo/neovim-settings",
-    type: "dotfiles"
+    type: "dotfiles",
+    date: "2024-01-10",
+    excerpt: "Personalized Neovim configuration optimized for Go and TypeScript.",
+    content: ""
   },
   {
-    slug: "week-tracker",
+    slug: "uthm-week-tracker",
     title: "UTHM Week Tracker",
     description: "Lightweight web utility to track university academic weeks.",
     tech: ["JavaScript", "HTML", "CSS"],
     github: "https://github.com/Abdallemo/uthm_which-week",
-    type: "script"
+    type: "tool",
+    date: "2023-09-01",
+    excerpt: "Lightweight web utility to track university academic weeks.",
+    content: ""
   }
 ];

@@ -16,30 +16,33 @@ export const projects: Project[] = [
     github: "https://github.com/Abdallemo/solveit",
     category: "Full-Stack SaaS",
     year: "2024",
+    pinned: true,
     images: {
       hero: "/solveit1.1.png",
       gallery: ["/solveit0.png", "/solveit1.png", "/solveit2.png"]
-    }
+    },
+    date: "2024-05-15",
+    excerpt: "AI-Powered Student Job Board & Mentoring Platform",
+    content: ""
   },
   {
-    slug: "realtime-chat",
-    title: "Real-Time Chat Application",
-    description: "Modern chat app with instant messaging capabilities",
-    longDescription: "A real-time chat application featuring instant message delivery, user authentication, and a responsive interface. Uses Socket.io for bidirectional communication.",
-    tech: ["Next.js", "Socket.io", "PostgreSQL", "Prisma", "TypeScript"],
-    features: [
-      "Real-time bidirectional messaging",
-      "Typing indicators and read receipts",
-      "Message history persistence",
-      "Secure NextAuth integration"
-    ],
-    github: "https://github.com/Abdallemo/real-time-Chat_nextjs_socketio",
-    category: "Real-Time App",
+    slug: "ros2-docker",
+    title: "ROS2 Docker Launcher",
+    description: "Cross-platform ROS2 environment launcher with GUI support",
+    longDescription: "A developer tool that simplifies the setup and deployment of ROS2 (Robot Operating System 2) environments using Docker containers.",
+    tech: ["Docker", "Bash", "X11", "ROS2"],
+    features: ["One-command setup", "GUI support via X11", "Cross-platform", "Automatic dependency checks"],
+    github: "https://github.com/Abdallemo/ros2Docker",
+    category: "DevOps Tool",
     year: "2024",
+    pinned: true,
     images: {
-      hero: "/modern-chat-app.png",
+      hero: "/ros2docker.png",
       gallery: []
-    }
+    },
+    date: "2024-03-20",
+    excerpt: "Cross-platform ROS2 environment launcher with GUI support",
+    content: ""
   },
   {
     slug: "learnhub",
@@ -56,15 +59,19 @@ export const projects: Project[] = [
     github: "https://github.com/Abdallemo/Web-Dev-Final-Project-UTHM",
     category: "Web Platform",
     year: "2023",
+    pinned: false,
     images: {
       hero: "/webdevTuto.png",
       gallery: ["/tutorialHub1.png", "/tutorialHub2.png", "/tutorialHub3.png"]
-    }
+    },
+    date: "2023-11-20",
+    excerpt: "Tutorial sharing platform with rich markdown support.",
+    content: ""
   },
   {
     slug: "delivery-app",
-    title: "DoorDash-Style Delivery App",
-    description: "Flutter-based food delivery with real-time tracking",
+    title: "Delivery App",
+    description: "DoorDash-style food delivery with real-time tracking",
     longDescription: "A mobile food delivery application inspired by DoorDash. Features smooth animations and real-time order tracking with Firebase.",
     tech: ["Flutter", "Dart", "Firebase", "Google Maps API"],
     features: [
@@ -76,9 +83,13 @@ export const projects: Project[] = [
     github: "https://github.com/Abdallemo/delivery_app",
     category: "Mobile App",
     year: "2024",
+    pinned: false,
     images: {
       hero: "/placeholder.jpg",
       gallery: []
-    }
+    },
+    date: "2024-02-15",
+    excerpt: "DoorDash-style food delivery with real-time location tracking.",
+    content: ""
   }
 ];

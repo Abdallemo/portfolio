@@ -1,11 +1,11 @@
 "use client";
 
+import { useState, useEffect } from "react";
+import { Command } from "cmdk";
+import { useRouter } from "next/navigation";
 import { projects } from "@/src/lib/data/projects";
 import { tools } from "@/src/lib/data/tools";
-import { Command } from "cmdk";
-import { Folder, Layout, Search, Terminal } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Search, Folder, Terminal, FileText, Layout } from "lucide-react";
 
 export default function CommandPalette() {
   const [open, setOpen] = useState(false);
@@ -29,85 +29,61 @@ export default function CommandPalette() {
 
   return (
     <>
-      <div
-        className="fixed bottom-6 right-6 border border-[#2a2a2a] bg-[#0a0a0a] px-3 py-1.5 text-[10px] text-[#555] font-mono cursor-pointer hover:border-[#3b82f6] transition-colors flex items-center gap-2 z-40 hidden md:flex"
+      <div 
+        className="fixed bottom-6 right-6 border border-[#1a1a1a] bg-[#0a0a0a] px-3 py-1.5 text-[10px] text-[#555] font-mono cursor-pointer hover:border-[#3b82f6] transition-colors flex items-center gap-2 z-40 hidden md:flex"
         onClick={() => setOpen(true)}
       >
-        <span className="flex items-center gap-1">
-          <kbd>Ctrl</kbd> + <kbd>K</kbd>
-        </span>
-        <span>COMMAND PALETTE</span>
+        <span className="flex items-center gap-1"><kbd className="border border-[#1a1a1a] px-1">Ctrl</kbd> + <kbd className="border border-[#1a1a1a] px-1">K</kbd></span>
+        <span className="font-bold tracking-widest uppercase">Workbench Command</span>
       </div>
 
       <Command.Dialog
         open={open}
         onOpenChange={setOpen}
         label="Global Command Palette"
-        className="fixed top-[20%] left-1/2 -translate-x-1/2 w-full max-w-xl bg-black border border-[#2a2a2a] p-2 font-mono shadow-2xl z-50 animate-in fade-in zoom-in duration-150"
+        className="fixed top-[20%] left-1/2 -translate-x-1/2 w-full max-w-xl bg-black border border-[#1a1a1a] p-2 font-mono shadow-2xl z-50 animate-in fade-in zoom-in duration-150"
       >
-        <div className="flex items-center gap-2 border-b border-[#2a2a2a] px-3 pb-2 mb-2">
-          <Search size={14} className="text-[#555]" />
+        <div className="sr-only">
+          <h2>Command Palette</h2>
+          <p>Search for projects, tools, and blog posts.</p>
+        </div>
+        
+        <div className="flex items-center gap-2 border-b border-[#1a1a1a] px-3 pb-2 mb-2">
+          <Search size={14} className="text-[#333]" />
           <Command.Input
             placeholder="Type a command or search..."
-            className="w-full bg-transparent border-none outline-none text-sm py-1 text-[#ededed] placeholder-[#555]"
+            className="w-full bg-transparent border-none outline-none text-sm py-1 text-[#ededed] placeholder-[#333]"
           />
         </div>
         <Command.List className="max-h-[300px] overflow-y-auto overflow-x-hidden space-y-1 p-1">
-          <Command.Empty className="text-xs text-[#555] p-2">
-            No results found.
-          </Command.Empty>
+          <Command.Empty className="text-xs text-[#555] p-2 font-mono">No results found.</Command.Empty>
 
-          <Command.Group
-            heading="Navigation"
-            className="text-[10px] uppercase tracking-widest text-[#444] px-2 py-1 mb-1"
-          >
-            <Command.Item
-              onSelect={() => runCommand(() => router.push("/"))}
-              className="command-item"
-            >
+          <Command.Group heading="Navigation" className="text-[10px] uppercase tracking-[0.2em] text-[#333] px-2 py-1 mb-1 font-bold">
+            <Command.Item onSelect={() => runCommand(() => router.push("/"))} className="command-item">
               <Layout size={14} /> <span>Go to Dashboard</span>
             </Command.Item>
-            <Command.Item
-              onSelect={() => runCommand(() => router.push("/projects"))}
-              className="command-item"
-            >
+            <Command.Item onSelect={() => runCommand(() => router.push("/projects"))} className="command-item">
               <Folder size={14} /> <span>Browse Projects</span>
             </Command.Item>
-            <Command.Item
-              onSelect={() => runCommand(() => router.push("/tools"))}
-              className="command-item"
-            >
+            <Command.Item onSelect={() => runCommand(() => router.push("/tools"))} className="command-item">
               <Terminal size={14} /> <span>View Workbench</span>
+            </Command.Item>
+            <Command.Item onSelect={() => runCommand(() => router.push("/blog"))} className="command-item">
+              <FileText size={14} /> <span>Read Blog & Logs</span>
             </Command.Item>
           </Command.Group>
 
-          <Command.Group
-            heading="Projects"
-            className="text-[10px] uppercase tracking-widest text-[#444] px-2 py-1 mb-1"
-          >
+          <Command.Group heading="Projects" className="text-[10px] uppercase tracking-[0.2em] text-[#333] px-2 py-1 mb-1 font-bold">
             {projects.map((p) => (
-              <Command.Item
-                key={p.slug}
-                onSelect={() =>
-                  runCommand(() => router.push(`/projects/${p.slug}`))
-                }
-                className="command-item"
-              >
+              <Command.Item key={p.slug} onSelect={() => runCommand(() => router.push(`/projects/${p.slug}`))} className="command-item">
                 <Folder size={14} /> <span>{p.title}</span>
               </Command.Item>
             ))}
           </Command.Group>
 
-          <Command.Group
-            heading="Tools"
-            className="text-[10px] uppercase tracking-widest text-[#444] px-2 py-1 mb-1"
-          >
+          <Command.Group heading="Tools" className="text-[10px] uppercase tracking-[0.2em] text-[#333] px-2 py-1 mb-1 font-bold">
             {tools.map((t) => (
-              <Command.Item
-                key={t.slug}
-                onSelect={() => runCommand(() => router.push(`/tools`))}
-                className="command-item"
-              >
+              <Command.Item key={t.slug} onSelect={() => runCommand(() => router.push(`/tools/${t.slug}`))} className="command-item">
                 <Terminal size={14} /> <span>{t.title}</span>
               </Command.Item>
             ))}
@@ -118,15 +94,16 @@ export default function CommandPalette() {
           .command-item {
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 8px;
-            font-size: 13px;
-            color: #888;
+            gap: 12px;
+            padding: 10px;
+            font-size: 12px;
+            color: #555;
             cursor: pointer;
             border-radius: 0px;
+            transition: all 0.1s ease;
           }
           .command-item[data-selected="true"] {
-            background-color: #1a1a1a;
+            background-color: #0d0d0d;
             color: #3b82f6;
           }
         `}</style>

@@ -3,6 +3,7 @@ import { ArrowLeft, Calendar } from "lucide-react";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import rehypeHighlight from "rehype-highlight";
 
 export async function generateStaticParams() {
   const slugs = await getSlugs("blog");
@@ -36,7 +37,7 @@ export default async function BlogPostPage({
 
       <article className="space-y-12">
         <header className="space-y-4">
-          <h1 className="text-4xl font-bold tracking-tighter">
+          <h1 className="text-4xl font-bold tracking-tighter text-[#ededed]">
             {post.meta.title}
           </h1>
           <div className="flex items-center gap-4 text-xs font-mono text-[#555] uppercase tracking-widest">
@@ -44,8 +45,15 @@ export default async function BlogPostPage({
           </div>
         </header>
 
-        <div className="prose prose-invert max-w-none prose-sm prose-pre:bg-black prose-pre:border prose-pre:border-[#1a1a1a] prose-pre:rounded-none prose-h2:text-sm prose-h2:uppercase prose-h2:tracking-widest prose-h2:text-[#3b82f6] prose-h2:font-bold border-t border-[#1a1a1a] pt-12">
-          <MDXRemote source={post.content} />
+        <div className="prose prose-invert max-w-none prose-sm border-t border-[#1a1a1a] pt-12">
+          <MDXRemote
+            source={post.content}
+            options={{
+              mdxOptions: {
+                rehypePlugins: [rehypeHighlight],
+              },
+            }}
+          />
         </div>
       </article>
 

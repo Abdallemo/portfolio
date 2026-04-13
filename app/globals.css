@@ -40,6 +40,46 @@ h1, h2, h3, h4, h5, h6 {
 
 .prose h1, .prose h2, .prose h3 {
   font-family: var(--font-sans);
+  margin-top: 2.5rem;
+  margin-bottom: 1.25rem;
+  color: #ededed;
+}
+
+.prose p {
+  margin-bottom: 1.5rem;
+  line-height: 1.8;
+}
+
+.prose pre {
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background-color: #050505 !important;
+  border: 1px solid #1a1a1a;
+  overflow-x: auto;
+}
+
+/* Minimalist Highlight.js Theme (Arch/Zed Vibe) */
+.hljs-comment, .hljs-quote { color: #555; font-style: italic; }
+.hljs-keyword, .hljs-selector-tag, .hljs-literal { color: #3b82f6; font-weight: bold; }
+.hljs-string, .hljs-meta .hljs-string, .hljs-doctag { color: #10b981; }
+.hljs-title, .hljs-section, .hljs-name { color: #ededed; font-weight: bold; }
+.hljs-variable, .hljs-template-variable, .hljs-attribute, .hljs-tag, .hljs-regexp, .hljs-link, .hljs-name, .hljs-selector-id, .hljs-selector-class { color: #888; }
+.hljs-number, .hljs-symbol, .hljs-bullet, .hljs-built_in, .hljs-builtin-name, .hljs-params, .hljs-type { color: #f59e0b; }
+.hljs-addition { color: #10b981; }
+.hljs-deletion { color: #ef4444; }
+.hljs-emphasis { font-style: italic; }
+.hljs-strong { font-weight: bold; }
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
 }
 
 * {
