@@ -1,0 +1,19 @@
+---
+title: "Solving Type-Safe Routing: The go-route-gen Origin"
+date: "2024-04-10"
+excerpt: "How I automated type-safe routing between Go backends and TypeScript frontends to eliminate manual boilerplate."
+---
+
+I got tired of manually syncing my Go standard library routes with my TypeScript frontend. The constant back-and-forth and the risk of typos in endpoint strings were frustrating.
+
+I built **go-route-gen** to bridge this gap. It's a Go AST scraper that extracts `net/http` route patterns and generates a strictly-typed Axios client.
+
+### Why not tRPC?
+tRPC is great, but it requires switching to a specific ecosystem. I wanted something that works with standard `net/http` handlers and standard Axios.
+
+### The result
+- 100% type-safe endpoint strings.
+- Path parameter validation at compile time.
+- Automatic request/response typing.
+
+It started as a small script to scratch my own itch, and now it's on NPM and getting organic downloads.
