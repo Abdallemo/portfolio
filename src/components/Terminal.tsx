@@ -327,21 +327,14 @@ export default function Terminal() {
           </div>
         ))}
 
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleCommand(inputValue);
-            setInputValue("");
-          }}
+        <form 
+          onSubmit={(e) => { e.preventDefault(); handleCommand(inputValue); setInputValue(""); }} 
           className="flex items-center gap-2"
         >
           <span className="text-[#10b981] font-bold text-xs">➜</span>
-          <span className="text-[#3b82f6] font-bold">
-            {currentPath === "/" ? "~" : currentPath.replace("/", "")}
-          </span>
+          <span className="text-[#3b82f6] font-bold">{currentPath === "/" ? "~" : currentPath.replace("/", "")}</span>
           <input
             ref={inputRef}
-            autoFocus
             className="flex-1 bg-transparent border-none outline-none text-[#ededed] p-0 m-0 focus:ring-0"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
