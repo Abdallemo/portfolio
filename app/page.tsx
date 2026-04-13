@@ -18,9 +18,7 @@ export default async function Home() {
         <div className="md:col-span-2 space-y-6">
           <div className="space-y-2">
             <h1 className="text-4xl md:text-5xl font-bold tracking-tighter text-[#ededed]">
-              {siteConfig.name.split(" ")[0]}
-              <span className="text-[#3b82f6]">.</span>
-              dev
+              {siteConfig.name}
             </h1>
             <p className="text-lg text-[#a1a1aa] font-medium leading-relaxed max-w-lg">
               {siteConfig.bio}
@@ -56,7 +54,9 @@ export default async function Home() {
           <div className="space-y-3 font-mono">
             <div className="flex justify-between text-[11px]">
               <span className="text-[#444]">GITHUB_STATUS</span>
-              <span className="text-[#3b82f6] font-bold">{siteConfig.stats.githubRanking}</span>
+              <span className="text-[#3b82f6] font-bold">
+                {siteConfig.stats.githubRanking}
+              </span>
             </div>
             <div className="flex justify-between text-[11px]">
               <span className="text-[#444]">STATUS</span>
@@ -72,7 +72,6 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Terminal Section */}
       <section className="space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-[#333]">
@@ -82,7 +81,6 @@ export default async function Home() {
         <Terminal />
       </section>
 
-      {/* Intro / Manifesto Section - Moved here with spacing */}
       <section className="py-12 border-l-2 border-[#1a1a1a] pl-8 space-y-8 max-w-2xl ml-4">
         <div className="space-y-6">
           <p className="text-[#a1a1aa] leading-relaxed italic">

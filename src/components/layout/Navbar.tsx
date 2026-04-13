@@ -4,9 +4,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const navLinks = [
+  { name: "Blog", href: "/blog" },
   { name: "Projects", href: "/projects" },
   { name: "Tools", href: "/tools" },
-  { name: "Blog", href: "/blog" },
 ];
 
 export default function Navbar() {
@@ -19,7 +19,7 @@ export default function Navbar() {
           href="/"
           className="text-sm font-bold tracking-tighter hover:text-[#3b82f6] transition-colors"
         >
-          Abdallemo
+          Abdallemo.dev
         </Link>
         <div className="flex gap-6">
           {navLinks.map((link) => (
