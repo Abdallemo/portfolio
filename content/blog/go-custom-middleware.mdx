@@ -1,0 +1,151 @@
+---
+title: "Ditching frameworks: Building a custom middleware stack in Go 1.22+"
+date: "2024-08-20"
+category: "technical"
+tags: ["Go", "Backend", "Systems", "net/http"]
+excerpt: "My brain was fried from the JS/TS ecosystem where there is a package for everything. Here is how I built a versatile, chained middleware system using nothing but the Go standard library."
+---
+
+When I first started my Go journey, I kept looking for the "Express" or "NestJS" of Go. I looked at Chi, Gorilla, and Gin, but the more I used them, the more I realized that after Go 1.22, the standard library is actually incredible on its own.
+
+I wanted to stop relying on heavy frameworks just to handle basic things like Auth, CORS, or Logging. So, I decided to build my own middleware suite. It’s less than 100 lines of core logic, and it gives me total control over how my API behaves.
+
+### The Core Pattern
+I used a simple pattern I found on a [Dreams of Code](https://www.youtube.com/watch?v=H7tbjKFSg58&t=551s) video and tweaked it to fit my project. The secret sauce is just a function that takes an `http.Handler` and returns an `http.Handler`.
+
+```go
+type MiddlewareFunc func(http.Handler) http.Handler
+
+// CreateStack allows you to chain multiple middleware functions together
+func (m *Middleware) CreateStack(xs ...MiddlewareFunc) MiddlewareFunc {
+	return func(next http.Handler) http.Handler {
+		for i := len(xs) - 1; i >= 0; i-- {
+			x := xs[i]
+			next = x(next)
+		}
+		return next
+	}
+}
+```
+
+This `CreateStack` helper is what lets me write my routes in a clean, readable way without nesting ten functions deep.
+
+### The Logging Struggle (and SSE)
+One thing I learned the hard way was that a simple logging middleware can break things like **Server-Sent Events (SSE)** or **WebSockets** if you aren't careful. If you wrap the `ResponseWriter` to capture the status code, you might lose the ability to "Flush" or "Hijack" the connection.
+
+I had to build a `wrappedWriter` that implements those interfaces so my streams wouldn't buffer:
+
+```go
+type wrappedWriter struct {
+	http.ResponseWriter
+	statusCode int
+}
+
+func (w *wrappedWriter) WriteHeader(statusCode int) {
+	w.ResponseWriter.WriteHeader(statusCode)
+	w.statusCode = statusCode
+}
+
+func (w *wrappedWriter) Hijack() (net.Conn, *bufio.ReadWriter, error) {
+	h, ok := w.ResponseWriter.(http.Hijacker)
+	if !ok {
+		return nil, nil, http.ErrNotSupported
+	}
+	return h.Hijack()
+}
+
+func (w *wrappedWriter) Flush() {
+	if f, ok := w.ResponseWriter.(http.Flusher); ok {
+		f.Flush()
+	}
+}
+
+func (m *Middleware) Logging(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		start := time.Now()
+		wrapped := &wrappedWriter{
+			ResponseWriter: w,
+			statusCode:     http.StatusOK,
+		}
+
+		next.ServeHTTP(wrapped, r)
+
+		slog.Info("http request",
+			"status", wrapped.statusCode,
+			"method", r.Method,
+			"path", r.URL.Path,
+			"duration", time.Since(start),
+		)
+	})
+}
+```
+
+### Adding Rate Limiting
+Because I’m building this myself, adding something like rate limiting was surprisingly easy using `golang.org/x/time/rate`. I wanted it to be smart: if a user is logged in, limit them by their **UserID**; if they are anonymous, limit them by their **IP address**.
+
+```go
+func (m *Middleware) RateLimit() MiddlewareFunc {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			var key string
+			uid := m.session.GetString(r.Context(), string(UserIDKey))
+
+			if uid != "" {
+				key = uid
+			} else {
+				key = GetClientIP(r)
+			}
+
+			m.mu.Lock()
+			v, exists := m.limiters[key]
+			if !exists {
+				v = &client{
+					limiter: rate.NewLimiter(m.rateLimiConfig.Rate, m.rateLimiConfig.Burst),
+				}
+				m.limiters[key] = v
+			}
+			v.lastSeen = time.Now()
+			m.mu.Unlock()
+
+			if !v.limiter.Allow() {
+				WriteJSON(w, ResponseMessage{Message: "Too Many Requests"}, http.StatusTooManyRequests)
+				return
+			}
+
+			next.ServeHTTP(w, r)
+		})
+	}
+}
+```
+
+### Putting it all together
+Now, my routing tree looks like a real pipeline. I separate public routes from secured ones and apply the "Global Stack" to everything.
+
+```go
+func (s *Server) routes() http.Handler {
+	pubMux := http.NewServeMux()
+
+	// Public Routes
+	s.authHandler.RouteRegister(pubMux, s.middleware)
+	
+	securedMux := http.NewServeMux()
+	authStack := s.middleware.CreateStack(s.middleware.IsAuthorized)
+
+	// Wrap the secured mux with auth
+	pubMux.Handle("/", authStack(securedMux))
+
+	// Global Pipeline
+	globalStack := s.middleware.CreateStack(
+		s.middleware.Timeout(s.config.Timeout),
+		s.middleware.Logging,
+		s.middleware.CORS(),
+		s.sessionManager.LoadAndSave,
+		s.middleware.RateLimit(),
+	)
+
+	return globalStack(pubMux)
+}
+```
+
+### Why this matters
+Building this myself taught me more about the HTTP lifecycle than any framework ever could. I’m not fighting against a library’s opinion—I’m just using the language the way it was designed. It’s fast, it’s readable, and I know exactly what every line of code is doing.
