@@ -19,8 +19,10 @@
 
 body {
   background-color: var(--background);
-  color: var(--foreground);
+  color: #a1a1aa; /* zinc-400 */
   font-family: var(--font-sans);
+  font-size: 1.1rem;
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -33,6 +35,7 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-sans);
   font-weight: 700;
   letter-spacing: -0.025em;
+  color: #ededed;
 }
 
 .prose h1, .prose h2, .prose h3 {

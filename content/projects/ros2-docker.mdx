@@ -13,12 +13,43 @@ images:
   gallery: []
 ---
 
-A developer tool that simplifies the setup and deployment of ROS2 (Robot Operating System 2) environments using Docker containers.
+### The Origin Story
+In robotics development, environment consistency is a major pain point. Installing **ROS2** (Robot Operating System 2) manually often involves hundreds of dependencies that can easily break your host system. I built this tool to provide a "one-click" isolated workspace that doesn't sacrifice GUI performance.
 
-### Why I built this
-ROS2 installation can be painful and inconsistent across systems. This tool provides a reproducible, isolated environment that just works.
+### The Problem vs. Solution
+**The Problem**: Manual ROS2 setup is brittle and often differs between Linux, macOS, and Windows. Running it in a container usually breaks GUI tools like **RViz2** or **Gazebo** because they can't access the host's display server.
 
-### Features
-- **X11 Forwarding**: Run GUI-based ROS2 tools (like RViz2 or Gazebo) directly from the container.
-- **Persistent Storage**: Maps local source folders to the container.
-- **Global Access**: Simple installation as a global CLI tool.
+**The Solution**: A refined set of Bash scripts and Docker configurations that handle the heavy lifting. It automatically configures **X11 forwarding** and **Wayland sessions**, ensuring that GUI-based robotics tools run with near-native performance inside a container.
+
+### Deep Tech Specs
+- **Bash Automation**: The CLI is a set of modular Bash scripts that check for Docker and X11 dependencies before launching.
+- **X11/Wayland Integration**: We map the host's `/tmp/.X11-unix` socket and the `XAUTHORITY` file to the container.
+- **Persistent Development**: The tool mounts your local workspace to the container, so you can code on your host (e.g., using VS Code or Neovim) while running the build inside the container.
+
+### The "Clever" Logic: X11 Forwarding
+The core challenge was getting the container to talk to the host's display server without compromising security.
+
+```bash
+# Docker Compose logic for X11 Forwarding
+services:
+  ros2:
+    build: .
+    image: robot:latest
+    container_name: ros2
+    volumes:
+      - .:/home/src
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - ${XAUTHORITY}:${XAUTHORITY}
+    environment:
+      - DISPLAY=${DISPLAY}            # Handle X11 or XWayland
+      - WAYLAND_DISPLAY=${WAYLAND_DISPLAY}  # Handle Wayland sessions
+      - QT_QPA_PLATFORM=xcb           # Explicitly use XCB for Qt apps
+    command: bash && colcon build
+```
+
+### Lessons Learned
+**Networking Concurrency**: I initially struggled with ROS2's DDS (Data Distribution Service) discovery inside Docker. I had to learn how to properly configure the network mode to `host` in certain cases to ensure that different containers could communicate with each other just like real robots on a network.
+
+### Future Roadmap
+- **Pre-configured Simulation Hub**: Adding one-click support for common simulators like Gazebo and Ignition.
+- **Docker Compose Profiles**: Allowing users to define multiple "robot" profiles for multi-robot simulations.

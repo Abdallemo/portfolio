@@ -7,12 +7,35 @@ github: "https://github.com/Abdallemo/hyprland-wizzard"
 type: "script"
 ---
 
-A complete customization tool for Hyprland on Arch-based and Ubuntu distributions.
+### The Origin Story
+Switching to a tiling window manager (TWM) like **Hyprland** can be intimidating for new Linux users. I built this wizard to automate the "boring" parts of the setup—installing the right waybar, configuring the compositor, and setting up a terminal—so users can jump straight into the productivity gains.
 
-### Features
-- One-click Hyprland configuration.
-- Pre-configured settings for optimal workflow.
-- Automated dependency checks and installation.
-- Integrated setup for Kitty terminal.
+### The Problem vs. Solution
+**The Problem**: Hyprland requires a lot of "glue" software to be useful (Waybar, Rofi, Dunst, etc.). Configuring these manually is time-consuming and prone to errors.
 
-This was built to make the transition to a tiling window manager as seamless as possible, handling all the complex configuration out of the box.
+**The Solution**: A set of Bash scripts that detect your distribution (Arch or Ubuntu) and install a curated set of tools and configurations. It's a "batteries-included" approach to the Hyprland desktop environment.
+
+### The "Clever" Logic: Distro Detection
+The script uses `lsb_release` and `/etc/os-release` to determine the package manager and dependency names for different systems.
+
+```bash
+# Distribution Detection logic
+if [ -f /etc/arch-release ]; then
+    PKM="sudo pacman -S --noconfirm"
+    DEPS=("hyprland" "kitty" "waybar" "rofi-wayland")
+elif [ -f /etc/lsb-release ]; then
+    PKM="sudo apt install -y"
+    DEPS=("hyprland" "kitty" "waybar" "rofi")
+fi
+
+for dep in "${DEPS[@]}"; do
+    $PKM $dep
+done
+```
+
+### Lessons Learned
+**Cross-Distro Compatibility**: Building for both Arch and Ubuntu taught me a lot about the differences in package naming conventions. It reinforced the importance of using abstraction in scripts to handle distribution-specific logic.
+
+### Future Roadmap
+- **Nvidia GPU Auto-config**: Automatically applying the necessary environment variables for Nvidia users.
+- **Theme Switcher**: Integrating a simple CLI-based theme switcher for Waybar and Kitty.

@@ -3,7 +3,7 @@ title: "SolveIt"
 date: "2024-05-15"
 excerpt: "AI-Powered Student Job Board & Mentoring Platform"
 tech: ["Next.js", "Go", "PostgreSQL", "Stripe", "WebSocket", "OpenAI"]
-features: ["AI task categorization", "Secure payments", "Real-time chat", "Bidding system"]
+features: ["AI task categorization", "Secure payments", "Real-time chat", "Bidding system", "Reputation system"]
 github: "https://github.com/Abdallemo/solveit"
 category: "Full-Stack SaaS"
 year: "2024"
@@ -13,15 +13,56 @@ images:
   gallery: ["/solveit0.png", "/solveit1.png", "/solveit2.png"]
 ---
 
-SolveIt is a comprehensive SaaS platform designed to bridge the gap between students seeking academic help and those offering expertise. 
+### The Origin Story
+The idea for **SolveIt** came from observing the friction in student communities when it came to peer-to-peer academic help. Most students were using fragmented WhatsApp groups or Discord servers, where tasks were easily buried and payments were unsecured. I wanted to build a centralized "Workbench" where students could post tasks, mentors could bid, and the entire transaction—from categorization to payment—was handled within a secure, professional environment.
 
-### Core Tech Stack
-- **Frontend**: Next.js 14, Tailwind CSS, Framer Motion
-- **Backend**: Go (for real-time features), Next.js API Routes
-- **Database**: PostgreSQL with Drizzle ORM
-- **Payments**: Stripe integration for secure escrow-style transactions
+### The Problem vs. Solution
+**The Problem**: Fragmented, insecure, and unorganized peer-to-peer mentoring. 
+**The Solution**: A unified SaaS platform that leverages AI for organization and Go-based WebSockets for real-time interaction. It ensures that every task is categorized correctly and every payment is protected via Stripe's escrow-style integration.
 
-### Key Features
-- **AI Categorization**: Uses OpenAI to automatically categorize student tasks.
-- **Real-time Engine**: Built with Go and WebSockets for instant messaging and notification delivery.
-- **Trust System**: A sophisticated reputation and review system to ensure quality.
+### Deep Tech Specs
+- **AI-Powered Categorization**: We use OpenAI's GPT models to analyze the task description and automatically assign it to the correct subject and sub-category. This reduces the manual effort for students and ensures mentors find relevant tasks faster.
+- **Real-time Engine (The Go Microservice)**: While the main app is Next.js, the real-time chat and notification system is a standalone Go service. This allows us to handle high-concurrency WebSocket connections with minimal overhead.
+- **Database Architecture**: PostgreSQL with Drizzle ORM. We used a relational schema to handle the complex bidding and reputation logic, ensuring referential integrity across tasks, bids, and user ratings.
+
+### Technical Hurdle: Real-time Concurrency
+The hardest part was managing bidirectional communication between students and mentors at scale. I chose Go for the WebSocket server because of its lightweight goroutines. Handling thousands of concurrent connections while maintaining sub-50ms latency was a challenge that required careful implementation of the "Hub" pattern to broadcast messages efficiently.
+
+```go
+// Real-time WebSocket Handler in Go
+func (h *Hub) HandleConnection(conn *websocket.Conn, userID string) {
+    client := &Client{
+        hub:    h,
+        conn:   conn,
+        send:   make(chan []byte, 256),
+        userID: userID,
+    }
+
+    h.register <- client
+
+    go client.writePump()
+    go client.readPump()
+}
+
+func (c *Client) readPump() {
+    defer func() {
+        c.hub.unregister <- c
+        c.conn.Close()
+    }()
+
+    for {
+        _, message, err := c.conn.ReadMessage()
+        if err != nil {
+            break
+        }
+        c.hub.broadcast <- message
+    }
+}
+```
+
+### Lessons Learned
+**PostgreSQL Performance**: Early on, I realized that as the number of bids grew, simple queries on the `tasks` table were slowing down. I had to implement proper indexing on `mentorId` and `status` fields, and I learned the importance of "database-first" thinking when designing SaaS features.
+
+### Future Roadmap
+- **Integrated Video Mentoring**: Moving beyond chat to include WebRTC-based video sessions directly in the dashboard.
+- **AI-Driven Pricing Suggestions**: Suggesting "fair market value" for tasks based on historical data.

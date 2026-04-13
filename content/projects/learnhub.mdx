@@ -1,0 +1,61 @@
+---
+title: "LearnHub"
+date: "2023-11-20"
+excerpt: "Tutorial sharing platform with rich markdown support."
+tech: ["Node.js", "Express.js", "MongoDB", "Passport.js", "Multer"]
+features: ["Auth system", "Markdown editor", "File uploads", "Profile management"]
+github: "https://github.com/Abdallemo/Web-Dev-Final-Project-UTHM"
+category: "Web Platform"
+year: "2023"
+pinned: false
+images:
+  hero: "/webdevTuto.png"
+  gallery: ["/tutorialHub1.png", "/tutorialHub2.png", "/tutorialHub3.png"]
+---
+
+### The Origin Story
+**LearnHub** was my final project for a Web Development course at UTHM. I wanted to build something more functional than a simple static site—a place where students could contribute their own knowledge through tutorials.
+
+### The Problem vs. Solution
+**The Problem**: Most educational platforms are read-only or have poor support for technical content (like code snippets).
+
+**The Solution**: A platform built with the MERN stack (well, MEN in this case as it uses EJS) that prioritizes a rich markdown editing experience and easy file sharing. It provides a structured environment for knowledge discovery within a university community.
+
+### Deep Tech Specs
+- **Backend Architecture**: Traditional MVC architecture with Express.js handling routing and MongoDB as the document store.
+- **Authentication**: Passport.js for robust local strategy authentication.
+- **File Management**: We used Multer middleware to handle multiple file uploads, including validation for file types and sizes to ensure platform security.
+
+### The "Clever" Logic: File Upload Middleware
+Handling file uploads can be tricky, so I built a reusable middleware to handle the logic.
+
+```javascript
+// Reusable File Upload Middleware
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/');
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+  }
+});
+
+const upload = multer({
+  storage,
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = /jpeg|jpg|png|pdf|doc|docx/;
+    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+    if (extname) return cb(null, true);
+    cb(new Error('Invalid file type'));
+  },
+  limits: { fileSize: 5 * 1024 * 1024 } // 5MB limit
+});
+```
+
+### Lessons Learned
+**State Management in EJS**: Managing state across multiple server-rendered views was a great lesson in why modern frameworks like Next.js became so popular. It taught me to appreciate the "simpler" ways before jumping into complex abstractions.
+
+### Future Roadmap
+- **Move to React**: Transitioning the frontend to a decoupled React application for a more dynamic experience.
+- **Search Optimization**: Implementing full-text search with MongoDB's `$text` operator for better tutorial discovery.

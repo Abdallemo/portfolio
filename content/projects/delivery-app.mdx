@@ -1,0 +1,63 @@
+---
+title: "Delivery App"
+date: "2024-02-15"
+excerpt: "DoorDash-style food delivery with real-time location tracking."
+tech: ["Flutter", "Dart", "Firebase", "Google Maps API", "Provider"]
+features: ["Real-time tracking", "Auth system", "Restaurant search", "Cart management", "Order history"]
+github: "https://github.com/Abdallemo/delivery_app"
+category: "Mobile App"
+year: "2024"
+pinned: false
+images:
+  hero: "/placeholder.jpg"
+  gallery: []
+---
+
+### The Origin Story
+I wanted to explore the complexities of a mobile-first, real-time logistics application. Building a delivery app is a perfect way to test state management and real-time database synchronization on a mobile device.
+
+### The Problem vs. Solution
+**The Problem**: Delivering a smooth, "no-lag" experience for real-time tracking on mid-range devices while managing a complex state of cart items, orders, and locations. 
+
+**The Solution**: A Flutter application using **Provider** for state management and **Firebase** for real-time data persistence. By using Firebase's real-time listeners, we can keep the driver and customer apps in sync with sub-second latency.
+
+### Deep Tech Specs
+- **State Management**: We chose Provider for its simplicity and efficiency in handling global state like the shopping cart and user authentication. 
+- **Google Maps Integration**: Using the Google Maps Flutter plugin to render driver locations and route directions.
+- **Firebase Persistence Layer**: We used the Firebase Realtime Database specifically for location updates to ensure the lowest possible latency.
+
+### The "Clever" Logic: Real-time Location Tracking
+Keeping the driver's location updated without draining the battery or causing performance issues was the biggest hurdle.
+
+```dart
+// Real-time Driver Location Tracking in Flutter/Dart
+void _startTracking() {
+  _positionStream = Geolocator.getPositionStream(
+    locationSettings: LocationSettings(
+      accuracy: LocationAccuracy.high,
+      distanceFilter: 10,
+    ),
+  ).listen((Position position) {
+    _updateDriverLocation(position);
+  });
+}
+
+void _updateDriverLocation(Position position) {
+  final latLng = LatLng(position.latitude, position.longitude);
+  _mapController?.animateCamera(CameraUpdate.newLatLng(latLng));
+
+  // Update Firebase in real-time
+  FirebaseDatabase.instance.ref('deliveries/${orderId}/location').set({
+    'lat': position.latitude,
+    'lng': position.longitude,
+    'timestamp': ServerValue.timestamp,
+  });
+}
+```
+
+### Lessons Learned
+**Battery Performance**: I learned that keeping the GPS on at high accuracy is a major battery killer. I had to implement a `distanceFilter` to ensure we only update the database when the driver has moved a significant distance (e.g., 10 meters).
+
+### Future Roadmap
+- **Driver Earnings Dashboard**: Detailed analytics for drivers to track their performance and payouts.
+- **Multi-stop Deliveries**: Optimizing routes for multiple orders in a single run.

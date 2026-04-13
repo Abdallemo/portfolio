@@ -7,12 +7,36 @@ github: "https://github.com/Abdallemo/Arch-Setup"
 type: "script"
 ---
 
-This is my reproducible setup that takes a fresh Arch install to a fully ready development environment.
+### The Origin Story
+As an Arch Linux power user, I've had to reinstall my system several times due to hardware changes or purely for experimentation. Manually configuring everything from AUR packages to symlinking dotfiles was a waste of time. I built **Arch-Setup** to be my "System Infrastructure as Code."
 
-### Components
-- **packages.sh**: Uses `yay` to install core tools and AUR packages.
-- **config.sh**: Manages symlinking for dotfiles (Nvim, Kitty, etc.) and sets up the DaVinci Resolve Distrobox container.
-- **services.sh**: Configures system-level services.
-- **helper.sh**: Utility functions for the installation process.
+### The Problem vs. Solution
+**The Problem**: A fresh Arch Linux install is a blank slate. Configuring the desktop environment, dev tools, and specific containers for software like DaVinci Resolve usually takes hours of manual work.
 
-The `install.sh` entry point sources these sub-scripts, ensuring that global variables like the `FAILED` list and `actions_todo` stay consistent across the entire run.
+**The Solution**: A set of modular Bash scripts that handle everything from package installation to complex container setups. It's built to be idempotent—you can run it on a fresh system or an existing one to sync your configuration.
+
+### Deep Tech Specs
+- **Modular Scripts**: The setup is broken into specialized scripts (`packages.sh`, `config.sh`, `services.sh`) to keep the logic clean and maintainable.
+- **Yay Integration**: It uses the `yay` helper to manage both official and AUR packages seamlessly.
+- **Distrobox for DaVinci**: I use Distrobox to run DaVinci Resolve in a stable container environment while keeping the rest of my system rolling-release.
+
+### The "Clever" Logic: Modular Sourcing
+The main `install.sh` is designed to be a thin wrapper that sources other scripts while maintaining a global state.
+
+```bash
+# Sourcing sub-scripts with global state
+export FAILED_PACKAGES=()
+export ACTIONS_TODO=()
+
+source scripts/helper.sh
+source scripts/packages.sh
+source scripts/config.sh
+
+if [ ${#FAILED_PACKAGES[@]} -gt 0 ]; then
+    echo "The following packages failed to install: ${FAILED_PACKAGES[@]}"
+fi
+```
+
+### Future Roadmap
+- **Hyprland Integration**: Moving my primary configuration to Hyprland for a smoother tiling experience.
+- **Automatic Backup**: Integrating `restic` or `borg` for automated system snapshots.

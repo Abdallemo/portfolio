@@ -1,0 +1,62 @@
+---
+title: "Real-Time Chat Application"
+date: "2024-06-15"
+excerpt: "Modern chat app with instant messaging capabilities."
+tech: ["Next.js", "Socket.io", "PostgreSQL", "Prisma", "TypeScript"]
+features: ["Real-time messaging", "Typing indicators", "Read receipts", "Online status", "Message persistence"]
+github: "https://github.com/Abdallemo/real-time-Chat_nextjs_socketio"
+category: "Real-Time App"
+year: "2024"
+pinned: false
+images:
+  hero: "/modern-chat-app.png"
+  gallery: []
+---
+
+### The Origin Story
+Chat apps are the "Hello World" of real-time systems, but I wanted to build one that felt truly modern—with sub-100ms message delivery and a robust persistence layer that didn't just rely on in-memory storage.
+
+### The Problem vs. Solution
+**The Problem**: Simple WebSocket implementations often lose messages if the user is offline or the connection drops. 
+
+**The Solution**: A Next.js application that uses Socket.io for the real-time layer and PostgreSQL with Prisma for the persistence layer. This ensures that every message is stored before it's delivered, and read receipts are tracked at the database level.
+
+### Deep Tech Specs
+- **Event-Driven Architecture**: The entire application is built around specific Socket.io events—`message:send`, `typing:start`, `user:online`. 
+- **Persistence Layer**: PostgreSQL with Prisma ORM. We use transactions to ensure that message delivery and receipt updates are atomic.
+- **Client State**: We use React state to manage the real-time message stream, but always sync it back to the database on reconnect.
+
+### The "Clever" Logic: Socket.io Event Handler
+Handling events efficiently means keeping the connection logic decoupled from the business logic.
+
+```typescript
+// Socket.io Event Handler logic
+io.on('connection', (socket: Socket) => {
+  const userId = socket.handshake.auth.userId;
+  socket.join(`user:${userId}`);
+
+  // Handle new messages
+  socket.on('message:send', async (data) => {
+    const message = await prisma.message.create({
+      data: {
+        senderId: userId,
+        recipientId: data.recipientId,
+        content: data.content,
+      },
+    });
+
+    // Emit to recipient's room
+    io.to(`user:${data.recipientId}`).emit('message:new', message);
+    
+    // Confirm to sender
+    socket.emit('message:sent', message);
+  });
+});
+```
+
+### Lessons Learned
+**Reconnection Logic**: The hardest part wasn't the initial messaging, but handling the "reconnection burst"—when a client reconnects after being offline and needs to fetch all missed messages in the correct order. It taught me the importance of sequential sequence numbers in chat databases.
+
+### Future Roadmap
+- **Group Chats**: Moving from 1-to-1 to multi-user rooms with granular permissions.
+- **End-to-End Encryption**: Implementing client-side encryption for message bodies.

@@ -1,16 +1,18 @@
 import Terminal from "@/src/components/Terminal";
-import { projects } from "@/src/lib/data/projects";
 import { siteConfig } from "@/src/lib/data/config";
 import { getAllContent } from "@/src/lib/mdx";
 import Link from "next/link";
 import { ArrowUpRight, Github, Twitter, Mail, MapPin, Activity } from "lucide-react";
 
 export default async function Home() {
-  const logs = (await getAllContent("logs")).slice(0, 3);
-  const pinnedProjects = projects.filter(p => p.pinned).slice(0, 3);
+  const allProjects = await getAllContent("projects");
+  const allBlogs = await getAllContent("blog");
+  
+  const pinnedProjects = allProjects.filter(p => p.meta.pinned).slice(0, 3);
+  const recentBlogs = allBlogs.slice(0, 3);
 
   return (
-    <main className="max-w-4xl mx-auto px-6 py-12 md:py-20 space-y-24">
+    <main className="max-w-4xl mx-auto px-6 py-12 md:py-20 space-y-24 font-sans">
       {/* System Status / Hero Section */}
       <section className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
         <div className="md:col-span-2 space-y-6">
@@ -20,7 +22,7 @@ export default async function Home() {
               <span className="text-[#3b82f6]">.</span>
               dev
             </h1>
-            <p className="text-lg text-[#888] font-medium leading-relaxed max-w-lg">
+            <p className="text-lg text-[#a1a1aa] font-medium leading-relaxed max-w-lg">
               {siteConfig.bio}
             </p>
           </div>
@@ -47,15 +49,15 @@ export default async function Home() {
           <div className="space-y-3 font-mono">
             <div className="flex justify-between text-[11px]">
               <span className="text-[#444]">REGIONAL_RANK</span>
-              <span className="text-[#3b82f6]">{siteConfig.stats.githubRanking}</span>
+              <span className="text-[#3b82f6] font-bold">{siteConfig.stats.githubRanking}</span>
             </div>
             <div className="flex justify-between text-[11px]">
               <span className="text-[#444]">STATUS</span>
-              <span className="text-green-500">{siteConfig.stats.status}</span>
+              <span className="text-green-500 font-bold">{siteConfig.stats.status}</span>
             </div>
             <div className="flex justify-between text-[11px]">
               <span className="text-[#444]">TECH_STACK</span>
-              <span className="text-[#ededed]">Go/TS/Arch</span>
+              <span className="text-[#ededed] font-bold">Go/TS/Arch</span>
             </div>
           </div>
         </div>
@@ -84,12 +86,12 @@ export default async function Home() {
             <Link key={project.slug} href={`/projects/${project.slug}`} className="group card flex flex-col justify-between">
               <div className="space-y-4">
                 <div className="flex justify-between items-start">
-                  <h3 className="text-lg font-bold group-hover:text-[#3b82f6] transition-colors">{project.title}</h3>
+                  <h3 className="text-lg font-bold group-hover:text-[#3b82f6] transition-colors">{project.meta.title}</h3>
                   <ArrowUpRight size={16} className="text-[#333] group-hover:text-[#3b82f6] transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                 </div>
-                <p className="text-sm text-[#888] leading-relaxed">{project.excerpt}</p>
+                <p className="text-[15px] text-[#a1a1aa] leading-relaxed line-clamp-2">{project.meta.excerpt}</p>
                 <div className="flex flex-wrap gap-2">
-                  {project.tech.map((t) => (
+                  {project.meta.tech.map((t: string) => (
                     <span key={t} className="text-[10px] font-mono uppercase border border-[#1a1a1a] px-2 py-0.5 text-[#555]">
                       {t}
                     </span>
@@ -101,20 +103,20 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Technical Logs Section */}
+      {/* Writing Section */}
       <section className="space-y-8">
         <div className="flex items-center justify-between border-b border-[#1a1a1a] pb-4">
-          <h2 className="text-sm font-bold uppercase tracking-widest text-[#ededed]">Latest Technical Logs</h2>
-          <Link href="/logs" className="text-[10px] font-mono uppercase tracking-widest text-[#555] hover:text-[#3b82f6] flex items-center gap-1 transition-colors">
-            Read Logs <ArrowUpRight size={12} />
+          <h2 className="text-sm font-bold uppercase tracking-widest text-[#ededed]">Latest Writing</h2>
+          <Link href="/blog" className="text-[10px] font-mono uppercase tracking-widest text-[#555] hover:text-[#3b82f6] flex items-center gap-1 transition-colors">
+            Read Blog <ArrowUpRight size={12} />
           </Link>
         </div>
         <div className="space-y-2">
-          {logs.map((log) => (
-            <Link key={log.slug} href={`/logs/${log.slug}`} className="flex items-center justify-between p-4 border border-transparent hover:border-[#1a1a1a] hover:bg-[#0d0d0d] transition-all group">
+          {recentBlogs.map((post) => (
+            <Link key={post.slug} href={`/blog/${post.slug}`} className="flex items-center justify-between p-4 border border-transparent hover:border-[#1a1a1a] hover:bg-[#0d0d0d] transition-all group">
               <div className="flex items-center gap-4">
-                <span className="text-[10px] font-mono text-[#333] w-20">{log.meta.date}</span>
-                <span className="text-sm font-bold group-hover:text-[#3b82f6]">{log.meta.title}</span>
+                <span className="text-[10px] font-mono text-[#333] w-20">{post.meta.date}</span>
+                <span className="text-sm font-bold group-hover:text-[#3b82f6] transition-colors">{post.meta.title}</span>
               </div>
               <ArrowUpRight size={14} className="text-[#222] group-hover:text-[#3b82f6]" />
             </Link>
@@ -122,11 +124,11 @@ export default async function Home() {
         </div>
       </section>
 
-      <footer className="pt-20 border-t border-[#1a1a1a] flex flex-col md:flex-row justify-between items-center gap-4">
-        <span className="text-[10px] font-mono text-[#333] uppercase tracking-[0.2em]">
+      <footer className="pt-20 border-t border-[#1a1a1a] flex flex-col md:flex-row justify-between items-center gap-4 font-mono">
+        <span className="text-[10px] text-[#333] uppercase tracking-[0.2em]">
           Built with Go, TypeScript, and Arch Linux
         </span>
-        <div className="flex gap-6 text-[10px] font-mono text-[#555] uppercase tracking-widest">
+        <div className="flex gap-6 text-[10px] text-[#555] uppercase tracking-widest">
           <a href={siteConfig.links.github} target="_blank" className="hover:text-[#3b82f6]">Github</a>
           <a href={siteConfig.links.twitter} target="_blank" className="hover:text-[#3b82f6]">Twitter</a>
           <a href={`mailto:${siteConfig.email}`} className="hover:text-[#3b82f6]">Contact</a>
