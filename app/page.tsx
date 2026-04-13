@@ -1,14 +1,14 @@
 import Terminal from "@/src/components/Terminal";
 import { siteConfig } from "@/src/lib/data/config";
 import { getAllContent } from "@/src/lib/mdx";
+import { Activity, ArrowUpRight, Github, Mail, MapPin } from "lucide-react";
 import Link from "next/link";
-import { ArrowUpRight, Github, Twitter, Mail, MapPin, Activity } from "lucide-react";
 
 export default async function Home() {
   const allProjects = await getAllContent("projects");
   const allBlogs = await getAllContent("blog");
-  
-  const pinnedProjects = allProjects.filter(p => p.meta.pinned).slice(0, 3);
+
+  const pinnedProjects = allProjects.filter((p) => p.meta.pinned).slice(0, 3);
   const recentBlogs = allBlogs.slice(0, 3);
 
   return (
@@ -27,10 +27,17 @@ export default async function Home() {
             </p>
           </div>
           <div className="flex flex-wrap gap-4 text-xs font-mono uppercase tracking-widest text-[#555]">
-            <a href={siteConfig.links.github} target="_blank" className="flex items-center gap-1.5 hover:text-[#3b82f6] transition-colors">
+            <a
+              href={siteConfig.links.github}
+              target="_blank"
+              className="flex items-center gap-1.5 hover:text-[#3b82f6] transition-colors"
+            >
               <Github size={14} /> Github
             </a>
-            <a href={`mailto:${siteConfig.email}`} className="flex items-center gap-1.5 hover:text-[#3b82f6] transition-colors">
+            <a
+              href={`mailto:${siteConfig.email}`}
+              className="flex items-center gap-1.5 hover:text-[#3b82f6] transition-colors"
+            >
               <Mail size={14} /> Contact
             </a>
             <span className="flex items-center gap-1.5 cursor-default">
@@ -38,7 +45,7 @@ export default async function Home() {
             </span>
           </div>
         </div>
-        
+
         <div className="border border-[#1a1a1a] p-5 space-y-4 bg-[#0d0d0d]/50">
           <div className="flex items-center justify-between border-b border-[#1a1a1a] pb-2">
             <span className="text-[10px] font-mono text-[#555] uppercase tracking-widest flex items-center gap-2">
@@ -49,11 +56,15 @@ export default async function Home() {
           <div className="space-y-3 font-mono">
             <div className="flex justify-between text-[11px]">
               <span className="text-[#444]">REGIONAL_RANK</span>
-              <span className="text-[#3b82f6] font-bold">{siteConfig.stats.githubRanking}</span>
+              <span className="text-[#3b82f6] font-bold">
+                {siteConfig.stats.githubRanking}
+              </span>
             </div>
             <div className="flex justify-between text-[11px]">
               <span className="text-[#444]">STATUS</span>
-              <span className="text-green-500 font-bold">{siteConfig.stats.status}</span>
+              <span className="text-green-500 font-bold">
+                {siteConfig.stats.status}
+              </span>
             </div>
             <div className="flex justify-between text-[11px]">
               <span className="text-[#444]">TECH_STACK</span>
@@ -73,26 +84,70 @@ export default async function Home() {
         <Terminal />
       </section>
 
+      {/* Intro / Manifesto Section - Moved here with spacing */}
+      <section className="py-12 border-l-2 border-[#1a1a1a] pl-8 space-y-8 max-w-2xl ml-4">
+        <div className="space-y-6">
+          <p className="text-[#a1a1aa] leading-relaxed italic">
+            "I've always spent a lot of time messing with computers and trying
+            out new tools. I wanted to build a place where I could keep track of
+            everything I'm working on, from my Arch Linux setup to the random
+            CLI tools I build during my internship."
+          </p>
+          <div className="space-y-3">
+            <h2 className="text-xs font-mono font-bold uppercase tracking-[0.2em] text-[#ededed]">
+              What this is for
+            </h2>
+            <p className="text-[#888] leading-relaxed text-[15px]">
+              This site is basically my{" "}
+              <span className="font-semibold">digital notebook.</span> I'm not
+              here to teach anyone—I'm just a student who likes to tinker and
+              build things. I wanted a way to show my work that feels authentic
+              to how I actually code, which is usually in a terminal or a highly
+              customized editor.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* Pinned Projects Section */}
       <section className="space-y-8">
         <div className="flex items-center justify-between border-b border-[#1a1a1a] pb-4">
-          <h2 className="text-sm font-bold uppercase tracking-widest text-[#ededed]">Pinned Projects</h2>
-          <Link href="/projects" className="text-[10px] font-mono uppercase tracking-widest text-[#555] hover:text-[#3b82f6] flex items-center gap-1 transition-colors">
+          <h2 className="text-sm font-bold uppercase tracking-widest text-[#ededed]">
+            Pinned Projects
+          </h2>
+          <Link
+            href="/projects"
+            className="text-[10px] font-mono uppercase tracking-widest text-[#555] hover:text-[#3b82f6] flex items-center gap-1 transition-colors"
+          >
             View All <ArrowUpRight size={12} />
           </Link>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {pinnedProjects.map((project) => (
-            <Link key={project.slug} href={`/projects/${project.slug}`} className="group card flex flex-col justify-between">
+            <Link
+              key={project.slug}
+              href={`/projects/${project.slug}`}
+              className="group card flex flex-col justify-between"
+            >
               <div className="space-y-4">
                 <div className="flex justify-between items-start">
-                  <h3 className="text-lg font-bold group-hover:text-[#3b82f6] transition-colors">{project.meta.title}</h3>
-                  <ArrowUpRight size={16} className="text-[#333] group-hover:text-[#3b82f6] transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                  <h3 className="text-lg font-bold group-hover:text-[#3b82f6] transition-colors">
+                    {project.meta.title}
+                  </h3>
+                  <ArrowUpRight
+                    size={16}
+                    className="text-[#333] group-hover:text-[#3b82f6] transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                  />
                 </div>
-                <p className="text-[15px] text-[#a1a1aa] leading-relaxed line-clamp-2">{project.meta.excerpt}</p>
+                <p className="text-[15px] text-[#a1a1aa] leading-relaxed line-clamp-2">
+                  {project.meta.excerpt}
+                </p>
                 <div className="flex flex-wrap gap-2">
                   {project.meta.tech.map((t: string) => (
-                    <span key={t} className="text-[10px] font-mono uppercase border border-[#1a1a1a] px-2 py-0.5 text-[#555]">
+                    <span
+                      key={t}
+                      className="text-[10px] font-mono uppercase border border-[#1a1a1a] px-2 py-0.5 text-[#555]"
+                    >
                       {t}
                     </span>
                   ))}
@@ -106,19 +161,35 @@ export default async function Home() {
       {/* Writing Section */}
       <section className="space-y-8">
         <div className="flex items-center justify-between border-b border-[#1a1a1a] pb-4">
-          <h2 className="text-sm font-bold uppercase tracking-widest text-[#ededed]">Latest Writing</h2>
-          <Link href="/blog" className="text-[10px] font-mono uppercase tracking-widest text-[#555] hover:text-[#3b82f6] flex items-center gap-1 transition-colors">
+          <h2 className="text-sm font-bold uppercase tracking-widest text-[#ededed]">
+            Latest Writing
+          </h2>
+          <Link
+            href="/blog"
+            className="text-[10px] font-mono uppercase tracking-widest text-[#555] hover:text-[#3b82f6] flex items-center gap-1 transition-colors"
+          >
             Read Blog <ArrowUpRight size={12} />
           </Link>
         </div>
         <div className="space-y-2">
           {recentBlogs.map((post) => (
-            <Link key={post.slug} href={`/blog/${post.slug}`} className="flex items-center justify-between p-4 border border-transparent hover:border-[#1a1a1a] hover:bg-[#0d0d0d] transition-all group">
+            <Link
+              key={post.slug}
+              href={`/blog/${post.slug}`}
+              className="flex items-center justify-between p-4 border border-transparent hover:border-[#1a1a1a] hover:bg-[#0d0d0d] transition-all group"
+            >
               <div className="flex items-center gap-4">
-                <span className="text-[10px] font-mono text-[#333] w-20">{post.meta.date}</span>
-                <span className="text-sm font-bold group-hover:text-[#3b82f6] transition-colors">{post.meta.title}</span>
+                <span className="text-[10px] font-mono text-[#333] w-20">
+                  {post.meta.date}
+                </span>
+                <span className="text-sm font-bold group-hover:text-[#3b82f6] transition-colors">
+                  {post.meta.title}
+                </span>
               </div>
-              <ArrowUpRight size={14} className="text-[#222] group-hover:text-[#3b82f6]" />
+              <ArrowUpRight
+                size={14}
+                className="text-[#222] group-hover:text-[#3b82f6]"
+              />
             </Link>
           ))}
         </div>
@@ -129,9 +200,26 @@ export default async function Home() {
           Built with Go, TypeScript, and Arch Linux
         </span>
         <div className="flex gap-6 text-[10px] text-[#555] uppercase tracking-widest">
-          <a href={siteConfig.links.github} target="_blank" className="hover:text-[#3b82f6]">Github</a>
-          <a href={siteConfig.links.twitter} target="_blank" className="hover:text-[#3b82f6]">Twitter</a>
-          <a href={`mailto:${siteConfig.email}`} className="hover:text-[#3b82f6]">Contact</a>
+          <a
+            href={siteConfig.links.github}
+            target="_blank"
+            className="hover:text-[#3b82f6]"
+          >
+            Github
+          </a>
+          <a
+            href={siteConfig.links.twitter}
+            target="_blank"
+            className="hover:text-[#3b82f6]"
+          >
+            Twitter
+          </a>
+          <a
+            href={`mailto:${siteConfig.email}`}
+            className="hover:text-[#3b82f6]"
+          >
+            Contact
+          </a>
         </div>
       </footer>
     </main>
