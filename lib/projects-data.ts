@@ -678,4 +678,27 @@ class _DeliveryTrackerState extends State<DeliveryTracker> {
       gallery: [],
     },
   },
+  {
+    slug: "vet-forensic-rag-platform",
+    title: "AI-Powered Veterinary Forensic e-Learning",
+    description: "Enterprise e-learning platform with RAG-based AI Tutoring",
+    longDescription: "A specialized TVET platform for veterinary forensic training, featuring an AI Tutor powered by Retrieval-Augmented Generation (RAG). The system manages complex educational workflows, including Role-Based Access Control (RBAC), competency mapping, and specialized assessment engines.",
+    tech: ["Go", "Next.js", "PostgreSQL", "RAG", "Vector-DB", "OpenAI"],
+    features: [
+      "AI RAG Tutor (Retrieval-Augmented Generation)",
+      "Granular RBAC (Admin, Trainer, Trainee)",
+      "Competency Mapping & Achievement Analytics",
+      "Specialized Assessment & Question Bank Engine",
+      "Real-time progress dashboards",
+      "Secure learning material repository"
+    ],
+    link: "Private",
+    category: "Enterprise AI Solution",
+    year: "2024",
+    role: "Lead Developer",
+    images: {
+      hero: "/placeholder.svg?height=600&width=1200",
+      gallery: [],
+    },
+  },
 ];

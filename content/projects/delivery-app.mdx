@@ -1,38 +1,33 @@
 ---
 title: "Delivery App"
-date: "2025-01-25"
+date: "2024-02-15"
+year: "2024"
+category: "Mobile App"
 excerpt: "A mobile app I built to explore real-time tracking and Flutter."
 tech: ["Flutter", "Dart", "Firebase", "Google Maps API", "Provider"]
 features: ["Real-time tracking", "Cart management", "Restaurant search", "Firebase auth"]
 github: "https://github.com/Abdallemo/delivery_app"
-category: "Mobile App"
-year: "2024"
 pinned: false
 images:
   hero: "/placeholder.jpg"
   gallery: []
 ---
 
-I wanted to see how difficult it is to build a real-time logistics app, so I tried making this DoorDash-style delivery app. It was a great way to learn about state management and how to keep a mobile app in sync with a database.
+I wanted to see how difficult it is to build a real-time logistics app, so I tried making this DoorDash-style delivery app. It was a great way to jump into mobile development and learn how to keep a mobile app in sync with a database.
 
-### Why I built this
-I was curious about Flutter and how it handles complex animations and real-time data. Building a delivery app allowed me to experiment with both, plus I got to work with the Google Maps API for the first time.
+### The "Hot Reload" Magic
+I really enjoyed working with **Flutter**. The speed of development was amazing—I used **Provider** for state management to handle everything from the user's cart to their authentication state without making the code too messy. 
 
-### How it works
-- **Flutter & Dart**: I used Flutter for the cross-platform UI. I really like how easy it is to make smooth transitions.
-- **Provider**: This is what I used for state management. It handles everything from the user's cart to their authentication state.
-- **Firebase**: I used Firebase for the backend because its real-time listeners are perfect for tracking driver locations without any manual refreshing.
-
-### A technical challenge
-The hardest part was keeping the driver's location updated on the map without lagging the app. I had to learn how to throttle the updates so I wasn't sending data to Firebase every single second.
+### Real-time Tracking
+The most challenging part was definitely the delivery tracking. I used **Firebase Realtime Database** because its listeners are perfect for location updates. 
 
 ```dart
-// Throttling the location updates
+// A small part of how I handled the driver's location updates
 void _updateDriverLocation(Position position) {
   final latLng = LatLng(position.latitude, position.longitude);
   _mapController?.animateCamera(CameraUpdate.newLatLng(latLng));
 
-  // Sync with Firebase
+  // Sync with Firebase to let the customer know where the driver is
   FirebaseDatabase.instance.ref('deliveries/${orderId}/location').set({
     'lat': position.latitude,
     'lng': position.longitude,
@@ -41,8 +36,7 @@ void _updateDriverLocation(Position position) {
 }
 ```
 
-### Things I learned
-I realized that high-accuracy GPS can really drain a phone's battery. I had to experiment with the `distanceFilter` setting in the Geolocator plugin to find a balance between accurate tracking and battery life.
+### Battery vs. Accuracy
+I didn't expect how much high-accuracy GPS drains a phone's battery. I spent a few late nights playing around with the `distanceFilter` and `accuracy` settings in the Geolocator plugin, trying to find a balance where the tracking still looked smooth but didn't kill the phone in 20 minutes.
 
-### What's next
-I want to try adding a dashboard for drivers so they can see their earnings over time, and maybe implement a better routing algorithm for multi-stop deliveries.
+This project taught me a lot about mobile UX and the importance of handling asynchronous data properly. If I were to keep working on it, I'd probably look into better routing algorithms for multi-stop deliveries, but for a first mobile app, I'm pretty happy with how it turned out.

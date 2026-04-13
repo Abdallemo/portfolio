@@ -1,6 +1,6 @@
 ---
 title: "go-route-gen"
-date: "2026-03-06"
+date: "2024-04-10"
 year: "2024"
 category: "Developer Tool"
 excerpt: "A tool I built to get type-safe routes between my Go backends and TypeScript frontends."
@@ -14,20 +14,14 @@ images:
   gallery: []
 ---
 
-I built this tool during my internship to save myself from the repetitive task of syncing my backend routes with my frontend. I was tired of manually writing endpoint strings and making typos in path parameters.
+I built this tool during my internship to save myself from the repetitive task of syncing my backend routes with my frontend. I was tired of manually writing endpoint strings and making typos in path parameters. It’s not fun to have a bug just because you wrote `{userid}` instead of `{user_id}`.
 
-### Why I made this
-I wanted a simple way to have the Go compiler tell the frontend what's available without having to switch to a heavy framework like tRPC.
+### The Lightbulb Moment: AST vs Regex
+I originally tried to solve this with simple regex to scrape my Go files for route definitions. It worked for about ten minutes, until my Go code got more complex (like nested handlers or custom formatting) and the regex completely fell apart. 
 
-### How it works
-- **The Go Scraper**: Written in Go, it uses the `go/ast` and `go/parser` packages to read my code and find where I've defined `net/http` routes. It looks for strings like `METHOD /path` and finds the path parameters.
-- **The Frontend Client**: This is a small TypeScript package I published to NPM that takes the map of routes and provides an Axios wrapper. It's strictly typed, so I can't request a route that doesn't exist.
-
-### Using Go's AST
-The core part of this is how it reads the Go code. I originally tried using regex, but it broke on complicated Go formatting. Switching to the AST (Abstract Syntax Tree) made it much more reliable.
+That’s when I decided to learn about **Abstract Syntax Trees (AST)**. Instead of treating my code like a big string, I used Go's `go/ast` and `go/parser` packages to actually parse the language. It was a huge learning curve, but it made the scraper 100% more reliable.
 
 ```go
-// A small part of the AST visitor I built
 func (v *Visitor) Visit(node ast.Node) ast.Visitor {
     call, ok := node.(*ast.CallExpr)
     if !ok { return v }
@@ -44,13 +38,7 @@ func (v *Visitor) Visit(node ast.Node) ast.Visitor {
 }
 ```
 
-### Installation
-```bash
-# Go CLI
-go install github.com/Abdallemo/go-route-gen@latest
-# Frontend Client
-npm install @abdallemo/routegen-client
-```
+### The result
+Now, the tool scrapes my Go code, finds where I've defined `net/http` routes, and generates a strictly-typed TypeScript client. My frontend uses template literal types, so the compiler actually yells at me if I try to request a route that doesn't exist.
 
-### What's next
-I want to try adding support for generating body schemas as well, so the request and response objects are typed too. I'm also thinking about better integration for custom authentication headers.
+It’s not perfect—I still want to add support for response body types so the whole thing is truly end-to-end typed—but for now, it's saved me hours of debugging "404 Not Found" errors.

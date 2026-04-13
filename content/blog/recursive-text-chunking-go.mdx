@@ -1,0 +1,96 @@
+---
+title: "Recursive text splitting: Porting LangChain concepts to Go"
+date: "2024-08-15"
+category: "technical"
+tags: ["Go", "AI", "RAG", "Algorithms"]
+excerpt: "LangChain has great text splitters, but I wanted something native to Go for my latest project. Here is how I built a recursive character splitter."
+---
+
+When building a RAG pipeline, how you split your text is just as important as how you retrieve it. If your chunks are too small, you lose context. If they’re too big, you hit the LLM’s token limit. 
+
+I’ve used LangChain in Python before, and I really liked their `RecursiveCharacterTextSplitter`. Since I'm doing most of my heavy lifting in **Go**, I decided to port that logic over. It’s a fun recursive algorithm that tries to split text at the most "semantically meaningful" points first (like paragraphs), falling back to smaller separators (like spaces or individual characters) only when necessary.
+
+### The Strategy
+The idea is to give the splitter a list of separators in order of importance: `\n\n`, `\n`, `" "`, and `""`. 
+
+1. It tries to split by the first separator.
+2. If a chunk is still larger than the `byteLimit`, it recursively calls itself on that chunk using the *next* separator in the list.
+3. It also handles **overlap**, so the end of Chunk A is the start of Chunk B, preserving context across the boundaries.
+
+Here is the implementation I came up with:
+
+```go
+// RecursiveSplitter attempts to divide text semantically using a hierarchy of separators.
+func RecursiveSplitter(args RecursiveSplitterArgs) []string {
+	args.SetDefaults()
+
+	if len(args.Text) <= *args.ByteLimit {
+		return []string{args.Text}
+	}
+
+	var separator string
+	var remainingSeps []string
+
+	found := false
+	for i, sep := range args.Separators {
+		if strings.Contains(args.Text, sep) {
+			separator = sep
+			remainingSeps = args.Separators[i+1:]
+			found = true
+			break
+		}
+	}
+
+	if !found {
+		// Fallback to a simpler chunker if no separators match
+		return ByteOverlapChunker(args.Text, *args.ByteLimit, *args.ByteOverlap)
+	}
+
+	parts := strings.Split(args.Text, separator)
+	var finalChunks []string
+	var currentDoc strings.Builder
+
+	for _, part := range parts {
+		if currentDoc.Len()+len(part)+len(separator) > *args.ByteLimit {
+			if currentDoc.Len() > 0 {
+				finalChunks = append(finalChunks, currentDoc.String())
+
+				// Handle overlap
+				byteOverlapText := currentDoc.String()
+				if len(byteOverlapText) > *args.ByteOverlap {
+					byteOverlapText = byteOverlapText[len(byteOverlapText)-*args.ByteOverlap:]
+				}
+				currentDoc.Reset()
+				currentDoc.WriteString(byteOverlapText)
+			}
+		}
+
+		if len(part) > *args.ByteLimit {
+			// Recursively split the oversized part
+			subChunks := RecursiveSplitter(RecursiveSplitterArgs{
+				Text:        part,
+				ByteLimit:   args.ByteLimit,
+				ByteOverlap: args.ByteOverlap,
+				Separators:  remainingSeps,
+			})
+			finalChunks = append(finalChunks, subChunks...)
+		} else {
+			if currentDoc.Len() > 0 && !strings.HasSuffix(currentDoc.String(), separator) {
+				currentDoc.WriteString(separator)
+			}
+			currentDoc.WriteString(part)
+		}
+	}
+
+	if currentDoc.Len() > 0 {
+		finalChunks = append(finalChunks, currentDoc.String())
+	}
+
+	return finalChunks
+}
+```
+
+### Why Go?
+Porting this to Go made a noticeable difference in my pipeline's performance. Go’s `strings.Builder` and slice management are extremely efficient for this kind of repetitive string manipulation. Plus, having it native to my Go backend means one less dependency on a Python process for the "non-AI" parts of my project.
+
+It's not as "mature" as the LangChain version yet, but it gives me great splitting results and fits perfectly into my existing architecture. It reminds me that even if a library exists in another language, sometimes building it yourself in your primary language is worth the effort for the control and speed you gain.

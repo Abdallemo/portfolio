@@ -1,33 +1,31 @@
 ---
 title: "ROS2 Docker Launcher"
-date: "2025-05-01"
+date: "2024-03-20"
+year: "2024"
+category: "DevOps Tool"
 excerpt: "Cross-platform ROS2 environment launcher with GUI support"
 tech: ["Docker", "Bash", "X11", "ROS2"]
 features: ["One-command setup", "GUI support via X11", "Cross-platform", "Automatic dependency checks"]
 github: "https://github.com/Abdallemo/ros2Docker"
-category: "DevOps Tool"
-year: "2024"
 pinned: true
 images:
   hero: "/ros2docker.png"
   gallery: []
 ---
 
-### The Origin Story
 In robotics development, environment consistency is a major pain point. Installing **ROS2** (Robot Operating System 2) manually often involves hundreds of dependencies that can easily break your host system. I built this tool to provide a "one-click" isolated workspace that doesn't sacrifice GUI performance.
 
-### The Problem vs. Solution
-**The Problem**: Manual ROS2 setup is brittle and often differs between Linux, macOS, and Windows. Running it in a container usually breaks GUI tools like **RViz2** or **Gazebo** because they can't access the host's display server.
+### The Origin Story
+I was so frustrated with the brittleness of manual ROS2 setups that I wanted to see if I could automate the configuration of **X11 forwarding** and **Wayland sessions**. It usually breaks GUI tools like **RViz2** or **Gazebo** inside a container because they can't access the host's display server. 
 
-**The Solution**: A refined set of Bash scripts and Docker configurations that handle the heavy lifting. It automatically configures **X11 forwarding** and **Wayland sessions**, ensuring that GUI-based robotics tools run with near-native performance inside a container.
+Building a refined set of Bash scripts and Docker configurations allows me to launch a functional environment with one command across Linux, macOS, and Windows.
 
-### Deep Tech Specs
 - **Bash Automation**: The CLI is a set of modular Bash scripts that check for Docker and X11 dependencies before launching.
 - **X11/Wayland Integration**: We map the host's `/tmp/.X11-unix` socket and the `XAUTHORITY` file to the container.
 - **Persistent Development**: The tool mounts your local workspace to the container, so you can code on your host (e.g., using VS Code or Neovim) while running the build inside the container.
 
-### The "Clever" Logic: X11 Forwarding
-The core challenge was getting the container to talk to the host's display server without compromising security.
+### The Nvidia Struggle
+The core challenge was getting the container to talk to the host's display server without compromising security. I spent a few late nights just trying to figure out which environment variables to set so things wouldn't flicker. 
 
 ```bash
 # Docker Compose logic for X11 Forwarding
@@ -48,8 +46,6 @@ services:
 ```
 
 ### Lessons Learned
-**Networking Concurrency**: I initially struggled with ROS2's DDS (Data Distribution Service) discovery inside Docker. I had to learn how to properly configure the network mode to `host` in certain cases to ensure that different containers could communicate with each other just like real robots on a network.
+I initially struggled with ROS2's DDS (Data Distribution Service) discovery inside Docker. I had to learn how to properly configure the network mode to `host` in certain cases to ensure that different containers could communicate with each other just like real robots on a network. 
 
-### Future Roadmap
-- **Pre-configured Simulation Hub**: Adding one-click support for common simulators like Gazebo and Ignition.
-- **Docker Compose Profiles**: Allowing users to define multiple "robot" profiles for multi-robot simulations.
+I'm thinking about adding a pre-configured simulation hub for Gazebo and Ignition, and maybe adding Docker Compose profiles so users can define multiple "robot" setups for multi-robot simulations.

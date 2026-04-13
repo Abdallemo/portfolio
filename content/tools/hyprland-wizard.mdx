@@ -7,19 +7,13 @@ github: "https://github.com/Abdallemo/hyprland-wizzard"
 type: "script"
 ---
 
-I really like tiling window managers, but setting up **Hyprland** from scratch can be a bit tedious with all the different components like Waybar and Rofi. I built this wizard to automate that process for myself and others.
+I’m a big fan of tiling window managers, but setting up **Hyprland** from scratch can be a real headache. Between configuring Waybar, Rofi, and Kitty, it takes a lot of manual tweaking to get it looking just right. I built this "wizard" to help myself—and anyone else—get a functional desktop with one command.
 
-### Why I made this
-I wanted a way to get a functional Hyprland desktop with just one command. <s>I use both Arch and Ubuntu</s> I use Arch, so I made sure the script can detect which one you're on and install the right packages.
-
-### How it works
-It's a collection of Bash scripts. It checks for your distribution and then installs a curated list of tools like Kitty for the terminal and Waybar for the status bar. I also included some pre-configured settings so the workflow feels smooth right out of the box.
-
-### Distro Detection
-The script handles the differences between `pacman` and `apt` so I don't have to worry about manual installation.
+### Getting Hyprland to work
+The goal was simple: one script that handles everything. I use Arch as my daily driver, but I also wanted to see if I could make it work on Ubuntu. The script detects which distro you're on and pulls the right packages.
 
 ```bash
-# How I detect the distribution
+# A small part of my distro-detection logic
 if [ -f /etc/arch-release ]; then
     PKM="sudo pacman -S --noconfirm"
     DEPS=("hyprland" "kitty" "waybar")
@@ -29,8 +23,8 @@ elif [ -f /etc/lsb-release ]; then
 fi
 ```
 
-### Things I learned
-Building this taught me a lot about Wayland and how it differs from X11. I had to learn about different compositor settings and how to handle Nvidia GPUs, which was a real challenge at first.
+### The Nvidia Struggle
+If you've ever tried running Wayland on an Nvidia GPU, you know the pain. I spent a few late nights just trying to figure out which environment variables to set so things wouldn't flicker. I ended up baking those fixes into the script so I never have to search for them again.
 
 ### What's next
-I want to try adding a simple theme switcher and maybe some automatic configuration for different monitor setups.
+I’m thinking about adding a simple theme switcher and maybe some automatic configuration for multi-monitor setups. It’s still a work in progress, but it makes the transition to a fresh Hyprland install so much smoother.

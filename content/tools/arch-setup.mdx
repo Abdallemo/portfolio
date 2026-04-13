@@ -7,22 +7,22 @@ github: "https://github.com/Abdallemo/Arch-Setup"
 type: "script"
 ---
 
-As an Arch Linux user, I've had to reinstall my system more times than I'd like to admit—sometimes because of hardware changes, but usually just because I was experimenting. I got tired of manually configuring everything, so I built this setup to be my "System as Code."
+As an Arch Linux user, I've had to reinstall my system more times than I'd like to admit. Sometimes it's because of a hardware swap, but usually it’s just me breaking things while experimenting. I got tired of spending hours manually configuring everything, so I finally sat down to build a "System as Code" setup.
 
-### Why I made this
-A fresh Arch install is just a terminal. It takes hours to get it back to being a useful workstation. This setup automates the "boring" parts like installing AUR packages, symlinking my dotfiles, and setting up system services.
+### The Problem with Fresh Installs
+A fresh Arch install is basically just a blinking cursor. It takes forever to get back to a useful workstation. This setup is my attempt to automate the "boring" parts like installing AUR packages, symlinking dotfiles, and setting up core system services.
 
-### How it's structured
-I broke the setup into modular scripts to keep it manageable:
-- **packages.sh**: Uses `yay` to install all my core tools and AUR packages.
-- **config.sh**: Handles the symlinking for things like Neovim and Kitty. It also sets up a **Distrobox** container for DaVinci Resolve so I can keep it in a stable environment.
-- **services.sh**: Sets up the background services I need.
+### How I structured the scripts
+I broke everything into modular Bash scripts to keep things from getting too messy:
+- **`packages.sh`**: Uses `yay` to install my core tools and AUR packages.
+- **`config.sh`**: Handles symlinking for Neovim, Kitty, and my shell aliases. It also sets up a **Distrobox** container for DaVinci Resolve so I can run it in a more stable environment.
+- **`services.sh`**: Just handles the background stuff I always forget to enable manually.
 
-### How I run it
-The main `install.sh` script is just a wrapper that sources the other parts. I tried to make it robust so it can track which parts failed.
+### Robust-ish Automation
+I tried to make the main `install.sh` script smart enough to track what failed so I don't have to restart the whole thing.
 
 ```bash
-# How I source my sub-scripts
+# A little trick I use to track failed packages
 export FAILED_PACKAGES=()
 export ACTIONS_TODO=()
 
@@ -31,9 +31,9 @@ source scripts/packages.sh
 source scripts/config.sh
 
 if [ ${#FAILED_PACKAGES[@]} -gt 0 ]; then
-    echo "Some packages didn't install: ${FAILED_PACKAGES[@]}"
+    echo "Looks like some packages didn't install: ${FAILED_PACKAGES[@]}"
 fi
 ```
 
-### What's next
-I'm planning to integrate more of my **Hyprland** configuration into this setup and maybe add some automatic backup logic using `restic`.
+### Future ideas
+I’m planning to integrate more of my **Hyprland** configuration into this setup and maybe add some automatic backup logic using `restic`. It’s definitely a work in progress, but it’s already saved me a ton of time during my last "experimental" reinstall.

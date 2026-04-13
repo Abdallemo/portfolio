@@ -1,0 +1,29 @@
+---
+title: "AI-Powered Veterinary Forensic e-Learning"
+date: "2024-08-01"
+year: "2024"
+category: "Enterprise AI Solution"
+excerpt: "A specialized TVET platform using RAG (Retrieval-Augmented Generation) to train veterinary forensic professionals."
+tech: ["Go", "Next.js", "PostgreSQL", "RAG", "Vector-DB", "OpenAI"]
+features: ["AI RAG Tutor", "RBAC Permissions", "Competency Analytics", "Assessment Engine"]
+github: "Private"
+pinned: true
+images:
+  hero: "/placeholder.jpg"
+  gallery: []
+---
+
+This is probably the biggest project I’ve worked on so far. I'm building it for an organization to help train veterinary forensic professionals in TVET programs. It’s been a massive learning curve because it’s not just about the code; it’s about making sure the AI is accurate enough for medical and legal standards.
+
+### Anchoring the AI with RAG
+One of the big things I wanted to solve was AI "hallucinations." In veterinary forensics, you can't have an AI just making things up. I used **Retrieval-Augmented Generation (RAG)** to anchor the AI’s answers strictly to vetted forensic manuals and documents. 
+
+I’ve been working on a pipeline that takes technical PDFs, chunks them up, and stores them in a Vector Database. When a student asks a question, the system finds the exact right paragraph from the manual to help the AI answer. 
+
+### More than just a Chatbot
+The system is more than just a chat window. I had to build a proper **RBAC (Role-Based Access Control)** system for Admins, Trainers, and Trainees, which was my first time dealing with such complex permissions. I also built a "Competency Mapper" that takes quiz results and maps them to specific academic units, so trainers can see exactly what skills students are missing.
+
+### Why this is hard
+The hardest part hasn't been the backend, but actually tuning the RAG model. Getting it to prioritize forensic standards over general internet knowledge took a lot of trial and error with prompt engineering and different chunking strategies. I also had to think a lot about data privacy, making sure the organization’s data stays secure.
+
+It’s been a huge experience learning how to build a production-grade AI system from the ground up, even if the repo itself is private.

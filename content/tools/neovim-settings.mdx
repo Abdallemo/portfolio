@@ -7,31 +7,27 @@ github: "https://github.com/Abdallemo/neovim-settings"
 type: "dotfiles"
 ---
 
-I used to use VS Code, but I wanted a more lightweight, terminal-based editor. I spent a lot of time tinkering with different setups and eventually landed on a configuration that works for my full-stack workflow.
+I used to be a die-hard VS Code user, but I always felt like it was a bit too "heavy." I wanted something that lived in the terminal and didn't take five seconds to open. That’s how I fell down the Neovim rabbit hole. My configuration is a mix of **NvChad** and **LazyVim** patterns that I’ve tweaked over the months to fit my full-stack workflow.
 
-### My Setup
-My configuration isn't something I wrote entirely from scratch. It's a mix of **NvChad** and **LazyVim** patterns that I combined with different plugins I found useful. I wanted something that was fast but still had the IDE features I'm used to, like LSP (Language Server Protocol) and auto-formatting.
-
-### How I use it
-- **LSP Integration**: I use `nvim-lspconfig` to manage my language servers. It's really helpful for Go and TypeScript because it gives me definitions and auto-completion without having to leave the terminal.
-- **Go Support**: I've optimized it for Go development, so it works well with `gopls` and other Go-specific tools.
-- **Plugin Management**: I use `lazy.nvim` to manage everything. It's really efficient and makes sure only the plugins I need are loaded.
-
-### Tinkering with Lua
-One of the best parts of using Neovim is that the configuration is written in Lua. It took me a while to get used to it, but it's really satisfying to be able to script my editor.
+### The Lua Learning Curve
+One of the coolest (and most frustrating) parts of Neovim is that the entire configuration is written in **Lua**. It took me a while to get the hang of it, but it's really satisfying to be able to script your own editor exactly how you want it.
 
 ```lua
--- A look at how I set up keybindings for LSP
+-- A look at how I set up my LSP keybindings
 local on_attach = function(client, bufnr)
   local nmap = function(keys, func, desc)
     if desc then desc = 'LSP: ' .. desc end
     vim.keymap.set('n', keys, func, { buffer = bufnr, desc = desc })
   end
+
   nmap('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
   nmap('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
   nmap('gd', vim.lsp.buf.definition, '[G]oto [D]efinition')
 end
 ```
 
-### What's next
-I'm always tweaking my setup. I want to improve my **Treesitter** configuration for better syntax highlighting and maybe try out some new debuggers. It's a never-ending hobby.
+### Why I stick with it
+It’s not just about being "elite"—it’s about the speed. Having my editor, compiler, and Git all in the same terminal window just makes my Go and TypeScript development feel so much more fluid. I’ve optimized my setup specifically for `gopls` and `tsserver` so I get all the IDE-like features (autocomplete, definitions) without the bloat.
+
+### A Never-ending Hobby
+I'm always messing with my `init.lua`. Whether it's testing a new **Treesitter** parser for better highlighting or trying out a different fuzzy finder, my Neovim setup is never really "finished." It’s become a bit of a hobby in itself, but it makes coding every day just a little bit more fun.

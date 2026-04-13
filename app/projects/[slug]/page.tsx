@@ -84,13 +84,15 @@ export default async function ProjectPage({
                 {project.meta.category}
               </div>
               <div className="flex gap-4 pt-2">
-                <a
-                  href={project.meta.github}
-                  target="_blank"
-                  className="p-2 border border-[#1a1a1a] hover:border-[#3b82f6] hover:text-[#3b82f6] transition-all"
-                >
-                  <Github size={16} />
-                </a>
+                {project.meta.github !== "Private" && (
+                  <a
+                    href={project.meta.github}
+                    target="_blank"
+                    className="p-2 border border-[#1a1a1a] hover:border-[#3b82f6] hover:text-[#3b82f6] transition-all"
+                  >
+                    <Github size={16} />
+                  </a>
+                )}
                 {project.meta.npm && (
                   <a
                     href={project.meta.npm}

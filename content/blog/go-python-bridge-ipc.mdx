@@ -1,0 +1,197 @@
+---
+title: "Building a bridge: Running Python from Go without the headache"
+date: "2024-08-10"
+category: "technical"
+tags: ["Go", "Python", "IPC", "Systems"]
+excerpt: "I love Go, but Python has all the AI tools. Here is how I built a thread-safe bridge to run Python scripts from Go without spinning up multiple servers."
+---
+
+I’ve been working on a RAG (AI) project lately, and I ran into a classic problem: I really like **Go** for my backend, but let’s be honest—Python is where all the AI libraries live. 
+
+I didn't want to maintain two separate servers or deal with the overhead of a full REST API just to call one Python function. I also didn't want both languages to need knowledge of the database. So, I decided to build a "bridge"—a thread-safe way to spawn an isolated Python process and talk to it via standard I/O using JSON.
+
+### The Core Idea: Mini IPC
+Instead of a server, I treat Python as a worker. I use Go to manage its lifecycle, and we communicate over `stdin` and `stdout`. To keep things fast and isolated, I use the **`uv`** package manager to spawn the process.
+
+Here is the `bridge` package I wrote to handle the dirty work:
+
+```go
+// Package bridge provides a thread-safe execution environment for embedded Python scripts.
+package bridge
+
+import (
+	_ "embed"
+	"encoding/json"
+	"fmt"
+	"io"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"sync"
+	"syscall"
+)
+
+type PythonBridge struct {
+	mu        sync.Mutex
+	cmd       *exec.Cmd
+	stdin     io.WriteCloser
+	stdout    io.ReadCloser
+	decoder   *json.Decoder
+	tasksDone int
+
+	scriptSrc []byte
+	uvArgs    []string
+	maxTasks  int
+}
+
+func New(script []byte, maxTasks int, uvArgs ...string) (*PythonBridge, error) {
+	b := &PythonBridge{
+		scriptSrc: script,
+		maxTasks:  maxTasks,
+		uvArgs:    uvArgs,
+	}
+	return b, b.spawn()
+}
+
+func (b *PythonBridge) spawn() error {
+	dir, err := os.MkdirTemp("", "py_bridge_*")
+	if err != nil {
+		return err
+	}
+
+	runtimePath := filepath.Join(dir, "runtime.py")
+	if err := os.WriteFile(runtimePath, runtimePy, 0644); err != nil {
+		os.RemoveAll(dir)
+		return err
+	}
+
+	scriptPath := filepath.Join(dir, "script.py")
+	if err := os.WriteFile(scriptPath, b.scriptSrc, 0644); err != nil {
+		os.RemoveAll(dir)
+		return err
+	}
+
+	args := append([]string{"run", "--quiet"}, b.uvArgs...)
+	args = append(args, "python", "script.py")
+
+	cmd := exec.Command("uv", args...)
+	cmd.Dir = dir
+
+	stdin, err := cmd.StdinPipe()
+	if err != nil {
+		os.RemoveAll(dir)
+		return err
+	}
+
+	stdout, err := cmd.StdoutPipe()
+	if err != nil {
+		os.RemoveAll(dir)
+		return err
+	}
+
+	cmd.Stderr = os.Stderr
+
+	if err := cmd.Start(); err != nil {
+		os.RemoveAll(dir)
+		return err
+	}
+
+	b.cmd = cmd
+	b.stdin = stdin
+	b.stdout = stdout
+	b.decoder = json.NewDecoder(stdout)
+	b.tasksDone = 0
+
+	go func() {
+		_ = cmd.Wait()
+		os.RemoveAll(dir)
+	}()
+
+	return nil
+}
+
+//go:embed runtime.py
+var runtimePy []byte
+
+func (b *PythonBridge) Call(req any, out any, binary []byte) error {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+
+	isDead := b.cmd == nil || b.cmd.Process == nil || b.cmd.Process.Signal(syscall.Signal(0)) != nil
+	if b.tasksDone >= b.maxTasks || isDead {
+		b.stopInternal()
+		if err := b.spawn(); err != nil {
+			return err
+		}
+	}
+
+	if err := json.NewEncoder(b.stdin).Encode(req); err != nil {
+		return fmt.Errorf("failed to encode request: %w", err)
+	}
+
+	if len(binary) > 0 {
+		if _, err := b.stdin.Write(binary); err != nil {
+			return fmt.Errorf("failed to write binary data: %w", err)
+		}
+	}
+
+	if err := b.decoder.Decode(out); err != nil {
+		return fmt.Errorf("failed to decode response: %w,received:%+v", err, out)
+	}
+
+	b.tasksDone++
+	return nil
+}
+
+func (b *PythonBridge) stopInternal() {
+	if b.stdin != nil {
+		b.stdin.Close()
+	}
+	if b.stdout != nil {
+		b.stdout.Close()
+	}
+	if b.cmd != nil && b.cmd.Process != nil {
+		_ = b.cmd.Process.Kill()
+	}
+}
+
+func (b *PythonBridge) Stop() {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+	b.stopInternal()
+}
+```
+
+### The Python Side
+On the Python side, I needed a way to listen to that `stdin` stream and respond back. I wrote a small `runtime.py` that handles the JSON parsing and executes whatever "handler" I pass to it.
+
+```python
+import json
+import sys
+from typing import Any, BinaryIO, Callable, Dict
+
+def run(handler: Callable[[Dict[str, Any], BinaryIO], Dict[str, Any]]) -> None:
+    stdin_buffer = sys.stdin.buffer
+
+    while True:
+        line = stdin_buffer.readline()
+        if not line:
+            break
+
+        try:
+            req: Dict[str, Any] = json.loads(line.decode("utf-8"))
+            resp: Dict[str, Any] = handler(req, stdin_buffer)
+        except Exception as e:
+            resp = {"error": str(e)}
+
+        sys.stdout.write(json.dumps(resp) + "\n")
+        sys.stdout.flush()
+```
+
+### Why this approach?
+It's not a "real" protocol, but it mimics one well enough for my needs. It gives me:
+1. **Memory Safety**: I added a `maxTasks` limit. If the Python process hits 500 requests, the bridge kills it and starts a fresh one to prevent memory leaks from heavy libraries.
+2. **Speed**: It uses binary streams, so I can pass large PDF bytes directly without encoding them to Base64 (which is a huge performance win).
+3. **Simplicity**: No networking, no ports, no messy environment variables. Just Go and Python talking.
+
+Next up, I'll show how I actually use this to extract text from PDFs.

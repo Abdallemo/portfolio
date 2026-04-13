@@ -1,30 +1,24 @@
 ---
 title: "LearnHub"
-date: "2025-01-13"
+date: "2023-11-20"
+year: "2023"
+category: "Web Platform"
 excerpt: "A tutorial platform I built for sharing knowledge with other students."
 tech: ["Node.js", "Express.js", "MongoDB", "Passport.js", "Multer"]
 features: ["Auth system", "Markdown support", "File uploads", "Profile management"]
 github: "https://github.com/Abdallemo/Web-Dev-Final-Project-UTHM"
-category: "Web Platform"
-year: "2023"
 pinned: false
 images:
   hero: "/webdevTuto.png"
   gallery: ["/tutorialHub1.png", "/tutorialHub2.png", "/tutorialHub3.png"]
 ---
 
-I built **LearnHub** as my final project for a course at UTHM. I wanted to see if I could build a platform where students could help each other by contributing tutorials.
+LearnHub was my final project for a web development course at UTHM. Most university assignments are just static sites, but I wanted to build something with a real database where users could actually create and share content.
 
-### Why I made this
-Most university projects are just static sites, but I wanted to try building something with a database where users could actually create content. I focused on making a simple markdown editor so students could easily share code snippets.
+### Sharing code snippets
+I noticed that we were always sharing tutorial links and code snippets in WhatsApp groups, but they’d always get lost in the chat history. I built this central hub using the **MEN stack** (MongoDB, Express, Node.js) to have a more permanent place for our guides.
 
-### How it works
-- **Express & MongoDB**: I used the MEN stack (Express and MongoDB) because it's a great way to learn about document-based databases and server-side routing.
-- **Authentication**: I used Passport.js to handle the login and registration. It was my first time working with actual security logic.
-- **File Uploads**: Students can upload images or documents to their tutorials. I used Multer to handle the file streams.
-
-### Handling file uploads
-Handling files on the backend was a bit of a hurdle. I had to learn how to validate file types and sizes so the server wouldn't get overwhelmed.
+I focused on making a simple markdown editor so students could easily share code. It was my first time really diving into things like **Authentication** (using Passport.js) and **File Uploads** for attachments.
 
 ```javascript
 // A simple look at how I set up the file storage
@@ -39,8 +33,7 @@ const storage = multer.diskStorage({
 });
 ```
 
-### Things I learned
-Using EJS for server-side rendering was a good lesson in how the web used to work before everything moved to modern frameworks like React. It made me appreciate the simplicity of just rendering HTML on the server.
+### Lessons from EJS
+Since this was a course project, I used **EJS** for server-side rendering. It was a great lesson in how the web works under the hood before jumping into modern frameworks like React. It’s a bit more manual, but it makes you appreciate how data is actually injected into HTML on the server.
 
-### What's next
-If I were to rebuild this, I'd probably use Next.js to make the interface feel more responsive. I also want to try adding a search feature so tutorials are easier to find.
+If I were to rebuild this today, I'd probably move it to Next.js for better performance, but as a first "real" project, it taught me the fundamentals of full-stack development. I also want to try adding a search feature so tutorials are easier to find.

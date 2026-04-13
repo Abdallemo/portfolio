@@ -1,6 +1,6 @@
 ---
 title: "@abdallemo/routegen-client"
-date: "2026-03-06"
+date: "2024-04-12"
 year: "2024"
 category: "Frontend Library"
 excerpt: "Strictly-typed Axios wrapper for go-route-gen routes."
@@ -14,16 +14,12 @@ images:
   gallery: []
 ---
 
-This is the NPM package I built to work alongside **go-route-gen**. While the Go tool finds the routes, this package is what I actually use in my frontend to make sure my API calls are safe.
+This is the NPM package I built to work alongside my Go CLI tool. While the Go tool does the heavy lifting of finding the routes, this package is what I actually use in my frontend projects to make sure my API calls are safe.
 
-### Why I made this
-I wanted a way to consume my Go APIs without having to manually type every endpoint string and every parameter. I wanted the TypeScript compiler to yell at me if I tried to hit a route that didn't exist or if I forgot a required ID.
+### The "Type-Safe" Goal
+I wanted a way to consume my Go APIs without having to manually type every endpoint string and every parameter. It’s so annoying when you misspell a route and spend 10 minutes debugging a 404. I wanted the TypeScript compiler to yell at me if I tried to hit a route that didn't exist or if I forgot a required ID.
 
-### How it works
 It's basically a very thin wrapper around Axios that uses a lot of TypeScript generics. It takes the JSON file from the CLI tool and uses template literal types to enforce the `METHOD /path` format.
-
-### Type-Safe Requests
-The best part is how it handles path parameters. If I have a route like `GET /users/{id}`, the package knows that I need to provide an `id` object.
 
 ```typescript
 // src/lib/api.ts
@@ -55,8 +51,7 @@ export const api = new GoApiClient<typeof API_ROUTES>({
 })
 ```
 
-### Things I learned
-Building this taught me a lot about advanced TypeScript features like `infer` and recursive types. I had to learn how to parse strings at the type level, which was a huge challenge but really rewarding when it finally worked.
+### Learning to parse strings in Types
+The hardest part was getting path parameters to work. If I have a route like `GET /users/{id}`, I wanted the client to know that I *need* to provide an `id` object. 
 
-### What's next
-I'm looking into adding automatic retries and maybe some basic caching logic so I don't have to keep reimplementing those in every project.
+Building this taught me a lot about advanced TypeScript features like `infer` and recursive types. I had to learn how to parse strings at the type level, which was a huge challenge but really rewarding when it finally worked. I'm thinking about adding automatic retries and maybe some basic caching logic next so I don't have to keep reimplementing those in every project.

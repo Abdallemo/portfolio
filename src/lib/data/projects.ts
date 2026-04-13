@@ -139,5 +139,29 @@ export const projects: Project[] = [
     date: "2024-04-12",
     excerpt: "Strictly-typed Axios wrapper for go-route-gen routes.",
     content: ""
+  },
+  {
+    slug: "vet-forensic-rag-platform",
+    title: "AI-Powered Veterinary Forensic e-Learning",
+    description: "Enterprise e-learning platform with RAG-based AI Tutoring",
+    longDescription: "A specialized TVET platform for veterinary forensic training, featuring an AI Tutor powered by Retrieval-Augmented Generation (RAG). Includes complex modules for RBAC, assessments, and competency analytics.",
+    tech: ["Go", "Next.js", "PostgreSQL", "RAG", "Vector-DB", "OpenAI"],
+    features: [
+      "AI RAG Tutor system",
+      "Enterprise RBAC Permissions",
+      "Competency Achievement Analytics",
+      "Dynamic Assessment Engine"
+    ],
+    github: "Private",
+    category: "Enterprise AI Solution",
+    year: "2024",
+    pinned: true,
+    images: {
+      hero: "/placeholder.jpg",
+      gallery: []
+    },
+    date: "2024-08-01",
+    excerpt: "A specialized TVET platform using RAG (Retrieval-Augmented Generation) to train veterinary forensic professionals.",
+    content: ""
   }
 ];

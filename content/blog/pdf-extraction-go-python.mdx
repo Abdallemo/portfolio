@@ -1,0 +1,105 @@
+---
+title: "Handling PDFs in Go by 'borrowing' Python's ecosystem"
+date: "2024-08-12"
+category: "technical"
+tags: ["Go", "Python", "PDF", "PyMuPDF"]
+excerpt: "Parsing PDFs in Go is okay, but PyMuPDF in Python is incredible. Here is how I used my bridge package to get the best of both worlds."
+---
+
+In my [last post](/blog/go-python-bridge-ipc), I talked about building a thread-safe bridge to run Python from Go. Now, I want to show a real use case: **PDF Extraction**.
+
+If you've ever tried parsing complex PDFs in Go, you know it can be a bit hit-or-miss. On the other hand, Python has **PyMuPDF (fitz)**, which is basically the gold standard for speed and accuracy. Instead of settling for a less mature Go library, I used my bridge to "borrow" PyMuPDF.
+
+### The Implementation
+I created a `pdfextractor` package. It embeds a small Python script directly into the Go binary using `//go:embed`. When the Go code starts, it spawns the Python worker and passes the PDF bytes over the bridge.
+
+Here is the Go side:
+
+```go
+package pdfextractor
+
+import (
+	_ "embed"
+	"errors"
+	"io"
+	"log"
+	"github.com/Abdallemo/bridge" // My bridge package
+)
+
+//go:embed script.py
+var pdfScript []byte
+
+type Extractor struct {
+	py BridgeCaller
+}
+
+func New() (*Extractor, error) {
+	// Start bridge with pymupdf dependency using 'uv'
+	b, err := bridge.New(pdfScript, 500, "--with", "pymupdf")
+	if err != nil {
+		return nil, err
+	}
+	return &Extractor{py: b}, nil
+}
+
+func (e *Extractor) Extract(r io.Reader) (Extract, error) {
+	pdfBytes, err := io.ReadAll(r)
+	if err != nil {
+		return Extract{}, err
+	}
+
+	req := ExtractorRequest{
+		Type: "bytes",
+		Size: len(pdfBytes),
+	}
+
+	var resp ExtractorResponse
+	// Send bytes directly over the bridge!
+	if err := e.py.Call(req, &resp, pdfBytes); err != nil {
+		return Extract{}, err
+	}
+
+	if resp.Error != "" {
+		return Extract{}, errors.New(resp.Error)
+	}
+
+	return Extract{
+		Content:    resp.Text,
+		TotalPages: resp.TotalPages,
+	}, nil
+}
+```
+
+### The "Borrowed" Python Script
+The Python script is surprisingly simple. It just uses the `runtime.py` I showed in the last post to listen for requests, parses the PDF bytes using `fitz`, and returns the text as JSON.
+
+```python
+from typing import Any, BinaryIO, Dict
+import fitz
+from runtime import run
+
+def handler(req: Dict[str, Any], stdin_buffer: BinaryIO) -> Dict[str, Any]:
+    if req["type"] == "bytes":
+        size = req["size"]
+        pdf_bytes = stdin_buffer.read(size)
+    else:
+        raise ValueError("invalid request type")
+
+    # PyMuPDF doing the heavy lifting
+    doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+    count = doc.page_count
+    text = "".join(str(page.get_text()) for page in doc)
+    doc.close()
+
+    return {"text": text, "total_pages": count}
+
+if __name__ == "__main__":
+    run(handler)
+```
+
+### Why I like this setup
+Because the Python script is embedded in the Go binary, the deployment is still just a single executable (provided `uv` is installed on the machine). 
+
+I don't have to worry about Python's global interpreter lock (GIL) for the whole app, and I get the rock-solid accuracy of PyMuPDF. If the Python process ever leaks memory (which it often does with large PDFs), the bridge just kills it and restarts it after 500 tasks.
+
+This setup has been a lifesaver for my RAG pipeline. Next, I'll talk about how I actually chunk all this extracted text using a recursive splitter I ported to Go.

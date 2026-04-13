@@ -1,6 +1,6 @@
 ---
 title: "SolveIt"
-date: "2026-01-15"
+date: "2024-05-15"
 excerpt: "A platform I built for students to exchange academic help and mentoring safely."
 tech: ["Next.js", "Go", "PostgreSQL", "Stripe", "WebSocket", "OpenAI"]
 features: ["Task categorization", "Stripe payments", "Real-time chat", "Bidding system"]
@@ -13,22 +13,14 @@ images:
   gallery: ["/solveit0.png", "/solveit1.png", "/solveit2.png"]
 ---
 
-This project actually started as one of my university assignments, but I decided to push it much further than what was required. I noticed that student communities often use WhatsApp or Discord to ask for academic help, but it's hard to track tasks and payments aren't always secure. I wanted to see if I could build a centralized, more advanced platform to solve that.
+This project started as a university assignment, but I wanted to build something I’d actually use. I noticed that most students use WhatsApp or Discord to find academic help, but it’s hard to track tasks and payments aren’t always secure. I wanted a way to make mentoring a more professional and safe experience for everyone.
 
-### Why I made this
-I wanted to solve the friction in peer-to-peer help. By making a dedicated dashboard, students can post what they need help with, and others can bid to mentor them. I used it as a way to practice building a real-world SaaS architecture with proper payment flows and real-time features.
+### Building the Core
+I spent a lot of time on the real-time features. Since I’m using **Go** for the backend, I built a custom **WebSocket hub** to handle everything from notifications to mentor chats. Go's concurrency model made it much easier to keep everything in sync without any lag.
 
-### How it works
-- **Next.js & Tailwind**: The main interface is built with Next.js. I kept the design clean so it's easy to use.
-- **Go for Real-time**: I built a custom WebSocket hub in Go to handle the chat, notifications, and signalling. I used Go because its concurrency model is perfect for keeping everything in sync without lag.
-- **AI Categorization**: I integrated OpenAI to help sort the tasks. It reads the student's description and suggests the subject automatically.
-- **Payments**: I used Stripe to handle the transactions securely, ensuring that mentoring is a safe exchange for everyone.
-
-### The WebSocket Implementation
-One of the most interesting parts to build was the communication hub. I had to manage different channels for notifications, comments, and mentor chats while keeping track of active connections.
+One of the more interesting parts was the "Task Categorization" feature. I integrated **OpenAI** to automatically read a student's description and suggest the right subject category. It helps keep the platform organized without making students fill out massive forms.
 
 ```go
-
 func (h *WsHub) handleWS(w http.ResponseWriter, r *http.Request, appChan chan IncomingMessage) {
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
@@ -76,8 +68,9 @@ func (h *WsHub) handleWS(w http.ResponseWriter, r *http.Request, appChan chan In
 }
 ```
 
-### Things I learned
-I struggled with database performance as the project grew. I realized that just adding fields to PostgreSQL wasn't enough; I had to learn about proper indexing on `mentorId` and other foreign keys to keep the dashboard fast. It was a great lesson in how real-time apps put pressure on the database.
+### What I Struggled With
+Database performance was a huge challenge as I added more features. I initially thought just having PostgreSQL would be enough, but I had to learn how to properly index foreign keys like `mentorId` to keep the dashboard snappy. It was a great lesson in how real-world apps put pressure on the database.
 
-### What's next
-I'm thinking about adding video mentoring using WebRTC so mentors can explain things better, and maybe adding more automated ways to verify the quality of the tutoring.
+I also used **Stripe** to handle payments safely. It was my first time dealing with real-world transactions, and making sure the "bidding" and "escrow" process worked correctly was a huge part of the development process. 
+
+I’m currently looking at adding **WebRTC** for video mentoring, so mentors can actually jump on a call and explain things directly when text isn't enough.
