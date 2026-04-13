@@ -76,6 +76,19 @@ func scrapeRoutes(dir string) (map[string]string, error) {
 ```
 
 ### The result
+```bash
+✔ Generated  89 routes to route.ts
+
+ ___  ____  __  ____________   _________   __
+/ _ \/ __ \/ / / /_  __/ __/  / ___/ __/__/ /
+/ , _/ /_/ / /_/ / / / / _/   / (_ / _// _  /
+/_/|_|\____/\____/ /_/ /___/   \___/___/\_,_/
+	
+Target  ➜ ./internal/api/handlers
+Output  ➜ ../apps/web/packages/shared/src/api/route.ts
+Watching for changes...
+
+```
 Now, the tool scrapes my Go code, finds where I've defined `net/http` routes, and generates a strictly-typed TypeScript client. My frontend uses template literal types, so the compiler actually yells at me if I try to request a route that doesn't exist.
 
 It’s not perfect—I still want to add support for response body types so the whole thing is truly end-to-end typed—but for now, it's saved me hours of debugging "404 Not Found" errors.

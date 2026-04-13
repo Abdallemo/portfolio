@@ -17,7 +17,7 @@ export default function Navbar() {
       <div className="max-w-4xl mx-auto px-6 h-14 flex items-center justify-between font-mono">
         <Link
           href="/"
-          className="text-sm font-bold tracking-tighter hover:text-[#3b82f6] transition-colors"
+          className="text-sm font-bold tracking-tighter hover:text-[#3b82f6] transition-colors text-[#ededed]"
         >
           Abdallemo.dev
         </Link>
@@ -26,10 +26,10 @@ export default function Navbar() {
             <Link
               key={link.href}
               href={link.href}
-              className={`text-[10px] uppercase tracking-[0.2em] hover:text-[#3b82f6] transition-colors ${
+              className={`text-[10px] uppercase tracking-[0.2em] hover:text-[#3b82f6] transition-colors font-bold ${
                 pathname.startsWith(link.href)
-                  ? "text-[#3b82f6] font-bold"
-                  : "text-[#555]"
+                  ? "text-[#3b82f6]"
+                  : "text-[#888]"
               }`}
             >
               {link.name}

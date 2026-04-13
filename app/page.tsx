@@ -25,10 +25,18 @@ export default async function Home() {
             </p>
           </div>
           <div className="flex flex-wrap gap-4 text-xs font-mono uppercase tracking-widest text-[#555]">
-            <a href={siteConfig.links.github} target="_blank" rel="me" className="flex items-center gap-1.5 hover:text-[#3b82f6] transition-colors">
+            <a
+              href={siteConfig.links.github}
+              target="_blank"
+              rel="me"
+              className="flex items-center gap-1.5 hover:text-[#3b82f6] transition-colors"
+            >
               <Github size={14} /> Github
             </a>
-            <a href={`mailto:${siteConfig.email}`} className="flex items-center gap-1.5 hover:text-[#3b82f6] transition-colors">
+            <a
+              href={`mailto:${siteConfig.email}`}
+              className="flex items-center gap-1.5 hover:text-[#3b82f6] transition-colors"
+            >
               <Mail size={14} /> Contact
             </a>
             <span className="flex items-center gap-1.5 cursor-default">
@@ -184,11 +192,11 @@ export default async function Home() {
         </div>
       </section>
 
-      <footer className="pt-20 border-t border-[#1a1a1a] flex flex-col md:flex-row justify-between items-center gap-4 font-mono">
-        <span className="text-[10px] text-[#333] uppercase tracking-[0.2em]">
+      <footer className="pt-20 border-t border-[#1a1a1a] flex flex-col md:flex-row justify-end items-center gap-4 font-mono">
+        {/*<span className="text-[10px] text-[#666] uppercase tracking-[0.2em]">
           Built with Go, TypeScript, and Arch Linux
-        </span>
-        <div className="flex gap-6 text-[10px] text-[#555] uppercase tracking-widest">
+        </span>*/}
+        <div className="flex gap-6 text-[10px] text-[#888] uppercase tracking-widest">
           <a
             href={siteConfig.links.github}
             target="_blank"
