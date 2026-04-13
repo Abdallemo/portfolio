@@ -25,17 +25,10 @@ export default async function Home() {
             </p>
           </div>
           <div className="flex flex-wrap gap-4 text-xs font-mono uppercase tracking-widest text-[#555]">
-            <a
-              href={siteConfig.links.github}
-              target="_blank"
-              className="flex items-center gap-1.5 hover:text-[#3b82f6] transition-colors"
-            >
+            <a href={siteConfig.links.github} target="_blank" rel="me" className="flex items-center gap-1.5 hover:text-[#3b82f6] transition-colors">
               <Github size={14} /> Github
             </a>
-            <a
-              href={`mailto:${siteConfig.email}`}
-              className="flex items-center gap-1.5 hover:text-[#3b82f6] transition-colors"
-            >
+            <a href={`mailto:${siteConfig.email}`} className="flex items-center gap-1.5 hover:text-[#3b82f6] transition-colors">
               <Mail size={14} /> Contact
             </a>
             <span className="flex items-center gap-1.5 cursor-default">

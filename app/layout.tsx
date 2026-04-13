@@ -49,8 +49,8 @@ export const metadata: Metadata = {
     images: [
       {
         url: "/abdallemo.jpg",
-        width: 1200,
-        height: 630,
+        width: 1050,
+        height: 1087,
         alt: siteConfig.name,
       },
     ],
