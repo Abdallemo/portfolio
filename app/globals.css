@@ -2,92 +2,127 @@
 @import "highlight.js/styles/github-dark.css";
 
 @theme {
-  --font-sans: var(--font-sans), system-ui, sans-serif;
-  --font-mono: var(--font-mono), monospace;
-  --color-background: #0a0a0a;
-  --color-foreground: #ededed;
-  --color-border: #1a1a1a;
-  --color-accent: #3b82f6;
+    --font-sans: var(--font-sans), system-ui, sans-serif;
+    --font-mono: var(--font-mono), monospace;
+    --color-background: #0a0a0a;
+    --color-foreground: #ededed;
+    --color-border: #1a1a1a;
+    --color-accent: #3b82f6;
 }
 
 :root {
-  --background: #0a0a0a;
-  --foreground: #ededed;
-  --border: #1a1a1a;
-  --accent: #3b82f6;
-  --radius: 0px;
-  font-size: 110%; /* Global scale for desktop */
+    --background: #0a0a0a;
+    --foreground: #ededed;
+    --border: #1a1a1a;
+    --accent: #3b82f6;
+    --radius: 0px;
+    font-size: 110%;
 }
 
 body {
-  background-color: var(--background);
-  color: #a1a1aa; /* zinc-400 */
-  font-family: var(--font-sans);
-  font-size: 1rem;
-  line-height: 1.7;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-smoothing: grayscale;
+    background-color: var(--background);
+    color: #a1a1aa;
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-smoothing: grayscale;
 }
 
-pre, code, .font-mono {
-  font-family: var(--font-mono);
+pre,
+code,
+.font-mono {
+    font-family: var(--font-mono);
 }
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-sans);
-  font-weight: 700;
-  letter-spacing: -0.025em;
-  color: #ededed;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    color: #ededed;
 }
 
-.prose h1, .prose h2, .prose h3 {
-  font-family: var(--font-sans);
-  margin-top: 2.5rem;
-  margin-bottom: 1.25rem;
-  color: #ededed;
+.prose h1,
+.prose h2,
+.prose h3 {
+    font-family: var(--font-sans);
+    margin-top: 2.5rem;
+    margin-bottom: 1.25rem;
+    color: #ededed;
 }
 
 .prose p {
-  margin-bottom: 1.5rem;
-  line-height: 1.8;
+    margin-bottom: 1.5rem;
+    line-height: 1.8;
 }
 
-/* Reset prose pre to avoid double boxing */
+.prose a {
+    color: #3b82f6;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(59, 130, 246, 0.3);
+    transition: border-color 0.2s ease;
+}
+
+.prose a:hover {
+    border-bottom-color: #3b82f6;
+}
+
 .prose pre {
-  background-color: transparent !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  border: none !important;
+    background-color: transparent !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
 }
 
 .sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border-width: 0;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
 }
 
 * {
-  border-color: var(--border);
+    border-color: var(--border);
 }
 
 ::selection {
-  background-color: #3b82f640;
-  color: #3b82f6;
+    background-color: #3b82f640;
+    color: #3b82f6;
 }
 
 .card {
-  border: 1px solid #1a1a1a;
-  padding: 1.5rem;
-  transition: all 0.2s ease;
+    border: 1px solid #1a1a1a;
+    padding: 1.5rem;
+    transition: all 0.2s ease;
 }
 
 .card:hover {
-  border-color: #2a2a2a;
-  background-color: #0d0d0d;
+    border-color: #2a2a2a;
+    background-color: #0d0d0d;
+}
+::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+}
+
+::-webkit-scrollbar-track {
+    @apply bg-background;
+}
+
+::-webkit-scrollbar-thumb {
+    @apply bg-border rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    @apply bg-foreground;
 }

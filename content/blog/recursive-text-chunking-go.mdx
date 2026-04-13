@@ -6,7 +6,7 @@ tags: ["Go", "AI", "RAG", "Algorithms"]
 excerpt: "LangChain has great text splitters, but I wanted something native to Go for my latest project. Here is how I built a recursive character splitter."
 ---
 
-When building a RAG pipeline, how you split your text is just as important as how you retrieve it. If your chunks are too small, you lose context. If they’re too big, you hit the LLM’s token limit. 
+When building a RAG pipeline, how you split your text is just as important as how you retrieve it. After [extracting text from my PDFs](/blog/pdf-extraction-go-python), the next big challenge was chunking. If your chunks are too small, you lose context. If they’re too big, you hit the LLM’s token limit. 
 
 I’ve used LangChain in Python before, and I really liked their `RecursiveCharacterTextSplitter`. Since I'm doing most of my heavy lifting in **Go**, I decided to port that logic over. It’s a fun recursive algorithm that tries to split text at the most "semantically meaningful" points first (like paragraphs), falling back to smaller separators (like spaces or individual characters) only when necessary.
 

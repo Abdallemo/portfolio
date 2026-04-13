@@ -102,4 +102,4 @@ Because the Python script is embedded in the Go binary, the deployment is still 
 
 I don't have to worry about Python's global interpreter lock (GIL) for the whole app, and I get the rock-solid accuracy of PyMuPDF. If the Python process ever leaks memory (which it often does with large PDFs), the bridge just kills it and restarts it after 500 tasks.
 
-This setup has been a lifesaver for my RAG pipeline. Next, I'll talk about how I actually chunk all this extracted text using a recursive splitter I ported to Go.
+This setup has been a lifesaver for my RAG pipeline. Next, I'll talk about how I actually chunk all this extracted text using a [recursive splitter](/blog/recursive-text-chunking-go) I ported to Go.
