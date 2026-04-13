@@ -2,29 +2,6 @@ import { Tool } from "../types";
 
 export const tools: Tool[] = [
   {
-    slug: "go-route-gen",
-    title: "go-route-gen",
-    description: "End-to-end type-safe routing for Go 1.22+ and TypeScript.",
-    tech: ["Go", "TypeScript", "AST"],
-    github: "https://github.com/Abdallemo/go-route-gen",
-    type: "cli",
-    date: "2024-04-10",
-    excerpt: "End-to-end type-safe routing for Go 1.22+ and TypeScript.",
-    content: ""
-  },
-  {
-    slug: "routegen-client",
-    title: "@abdallemo/routegen-client",
-    description: "Strictly-typed Axios wrapper for go-route-gen routes.",
-    tech: ["TypeScript", "Axios"],
-    github: "https://github.com/Abdallemo/go-route-gen",
-    npm: "https://www.npmjs.com/package/@abdallemo/routegen-client",
-    type: "cli",
-    date: "2024-04-12",
-    excerpt: "Strictly-typed Axios wrapper for go-route-gen routes.",
-    content: ""
-  },
-  {
     slug: "arch-setup",
     title: "Arch-Setup",
     description: "Daily driver reproducible Arch Linux setup with automated scripts.",

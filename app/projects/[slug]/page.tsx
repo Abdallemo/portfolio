@@ -91,6 +91,15 @@ export default async function ProjectPage({
                 >
                   <Github size={16} />
                 </a>
+                {project.meta.npm && (
+                  <a
+                    href={project.meta.npm}
+                    target="_blank"
+                    className="p-2 border border-[#1a1a1a] hover:border-[#3b82f6] hover:text-[#3b82f6] transition-all text-[10px] font-bold flex items-center justify-center"
+                  >
+                    NPM
+                  </a>
+                )}
                 {project.meta.live && (
                   <a
                     href={project.meta.live}

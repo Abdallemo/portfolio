@@ -91,5 +91,53 @@ export const projects: Project[] = [
     date: "2024-02-15",
     excerpt: "DoorDash-style food delivery with real-time location tracking.",
     content: ""
+  },
+  {
+    slug: "go-route-gen",
+    title: "go-route-gen",
+    description: "End-to-end type-safe routing for Go 1.22+ and TypeScript.",
+    longDescription: "A CLI tool that uses Go's AST to scrape net/http routes and generate TypeScript definitions for type-safe API communication.",
+    tech: ["Go", "TypeScript", "AST"],
+    features: [
+      "Go AST parsing",
+      "Type-safe route generation",
+      "TS client integration",
+      "Support for path parameters"
+    ],
+    github: "https://github.com/Abdallemo/go-route-gen",
+    category: "Developer Tool",
+    year: "2024",
+    pinned: true,
+    images: {
+      hero: "/placeholder.jpg",
+      gallery: []
+    },
+    date: "2024-04-10",
+    excerpt: "End-to-end type-safe routing for Go 1.22+ and TypeScript.",
+    content: ""
+  },
+  {
+    slug: "routegen-client",
+    title: "@abdallemo/routegen-client",
+    description: "Strictly-typed Axios wrapper for go-route-gen routes.",
+    longDescription: "The frontend counterpart to go-route-gen, providing a type-safe Axios wrapper that enforces route and parameter safety at compile time.",
+    tech: ["TypeScript", "Axios", "Generics"],
+    features: [
+      "Template literal types",
+      "Path parameter safety",
+      "Strictly-typed Axios wrapper",
+      "NPM package"
+    ],
+    github: "https://github.com/Abdallemo/go-route-gen",
+    category: "Frontend Library",
+    year: "2024",
+    pinned: false,
+    images: {
+      hero: "/placeholder.jpg",
+      gallery: []
+    },
+    date: "2024-04-12",
+    excerpt: "Strictly-typed Axios wrapper for go-route-gen routes.",
+    content: ""
   }
 ];
