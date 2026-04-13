@@ -1,7 +1,7 @@
 ---
 title: "go-route-gen"
-date: "2024-04-10"
-year: "2024"
+date: "2026-03-03"
+year: "2026"
 category: "Developer Tool"
 excerpt: "A tool I built to get type-safe routes between my Go backends and TypeScript frontends."
 tech: ["Go", "TypeScript", "AST"]
@@ -22,19 +22,56 @@ I originally tried to solve this with simple regex to scrape my Go files for rou
 That’s when I decided to learn about **Abstract Syntax Trees (AST)**. Instead of treating my code like a big string, I used Go's `go/ast` and `go/parser` packages to actually parse the language. It was a huge learning curve, but it made the scraper 100% more reliable.
 
 ```go
-func (v *Visitor) Visit(node ast.Node) ast.Visitor {
-    call, ok := node.(*ast.CallExpr)
-    if !ok { return v }
-    sel, ok := call.Fun.(*ast.SelectorExpr)
-    if !ok { return v }
-    if sel.Sel.Name == "HandleFunc" || sel.Sel.Name == "Handle" {
-        if len(call.Args) > 0 {
-            if lit, ok := call.Args[0].(*ast.BasicLit); ok {
-                v.Routes = append(v.Routes, lit.Value)
-            }
-        }
-    }
-    return v
+func scrapeRoutes(dir string) (map[string]string, error) {
+	routes := make(map[string]string)
+	fset := token.NewFileSet()
+
+	err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
+
+		if err != nil || info.IsDir() || !strings.HasSuffix(path, ".go") {
+			return nil
+		}
+
+		node, err := parser.ParseFile(fset, path, nil, 0)
+		if err != nil {
+			return nil
+		}
+
+		ast.Inspect(node, func(n ast.Node) bool {
+			call, ok := n.(*ast.CallExpr)
+			if !ok {
+				return true
+			}
+
+			sel, ok := call.Fun.(*ast.SelectorExpr)
+			if !ok || (sel.Sel.Name != "Handle" && sel.Sel.Name != "HandleFunc") {
+				return true
+			}
+
+			if len(call.Args) > 0 {
+				if lit, ok := call.Args[0].(*ast.BasicLit); ok && lit.Kind == token.STRING {
+					rawRoute := strings.Trim(lit.Value, "\"")
+					parts := strings.Split(rawRoute, " ")
+					if len(parts) == 2 {
+						method := parts[0]
+						pathUrl := parts[1]
+
+						key := strings.ReplaceAll(pathUrl, "/", "_")
+						key = strings.ReplaceAll(key, "-", "_")
+						key = strings.ReplaceAll(key, "{", "")
+						key = strings.ReplaceAll(key, "}", "")
+						fullKey := fmt.Sprintf("%s_%s", method, strings.ToUpper(strings.Trim(key, "_")))
+
+						routes[fullKey] = rawRoute
+					}
+				}
+			}
+			return true
+		})
+		return nil
+	})
+
+	return routes, err
 }
 ```
 

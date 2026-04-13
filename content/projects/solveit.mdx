@@ -1,19 +1,19 @@
 ---
 title: "SolveIt"
-date: "2024-05-15"
+date: "2026-01-15"
 excerpt: "A platform I built for students to exchange academic help and mentoring safely."
-tech: ["Next.js", "Go", "PostgreSQL", "Stripe", "WebSocket", "OpenAI"]
+tech: ["Go", "React","Next.js","PostgreSQL", "WebRTC","Stripe", "WebSocket", "OpenAI"]
 features: ["Task categorization", "Stripe payments", "Real-time chat", "Bidding system"]
 github: "https://github.com/Abdallemo/solveit"
 category: "Full-Stack SaaS"
-year: "2024"
+year: "2026"
 pinned: true
 images:
   hero: "/solveit1.1.png"
   gallery: ["/solveit0.png", "/solveit1.png", "/solveit2.png"]
 ---
 
-This project started as a university assignment, but I wanted to build something I’d actually use. I noticed that most students use WhatsApp or Discord to find academic help, but it’s hard to track tasks and payments aren’t always secure. I wanted a way to make mentoring a more professional and safe experience for everyone.
+This project started as a university final year project, but I wanted to build something I’d actually use. I noticed that most students use WhatsApp or Discord to find academic help, but it’s hard to track tasks and payments aren’t always secure. I wanted a way to make mentoring a more professional and safe experience for everyone.
 
 ### Building the Core
 I spent a lot of time on the real-time features. Since I’m using **Go** for the backend, I built a custom **WebSocket hub** to handle everything from notifications to mentor chats. Go's concurrency model made it much easier to keep everything in sync without any lag.
