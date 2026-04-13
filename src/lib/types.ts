@@ -1,3 +1,11 @@
+export interface BaseContent {
+  slug: string;
+  title: string;
+  date: string;
+  excerpt: string;
+  content: string;
+}
+
 export interface SiteConfig {
   name: string;
   role: string;
@@ -18,20 +26,19 @@ export interface SiteConfig {
   };
   stats: {
     githubRanking: string;
+    location: string;
+    status: string;
   };
 }
 
-export interface Project {
-  slug: string;
-  title: string;
-  description: string;
-  longDescription: string;
+export interface Project extends BaseContent {
   tech: string[];
   features: string[];
   github: string;
   live?: string;
   category: string;
   year: string;
+  pinned: boolean;
   images: {
     hero: string;
     gallery: string[];
@@ -45,13 +52,9 @@ export interface Tool {
   tech: string[];
   github: string;
   npm?: string;
-  type: "cli" | "script" | "dotfiles";
+  type: "cli" | "script" | "dotfiles" | "tool";
+  isPinned?: boolean;
 }
 
-export interface Log {
-  slug: string;
-  title: string;
-  date: string;
-  excerpt: string;
-  content: string;
-}
+export interface Log extends BaseContent {}
+export interface BlogPost extends BaseContent {}

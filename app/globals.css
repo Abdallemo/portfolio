@@ -1,11 +1,12 @@
 @import "tailwindcss";
 
 @theme {
-  --font-mono: "JetBrains Mono", "Fira Code", "Courier New", monospace;
+  --font-sans: var(--font-sans), system-ui, sans-serif;
+  --font-mono: var(--font-mono), monospace;
   --color-background: #0a0a0a;
   --color-foreground: #ededed;
   --color-border: #2a2a2a;
-  --color-accent: #3b82f6; /* Subtle blue */
+  --color-accent: #3b82f6; /* Arch Blue */
 }
 
 :root {
@@ -13,14 +14,29 @@
   --foreground: #ededed;
   --border: #2a2a2a;
   --accent: #3b82f6;
+  --radius: 0px;
 }
 
 body {
   background-color: var(--background);
   color: var(--foreground);
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+pre, code, .font-mono {
+  font-family: var(--font-mono);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
+.prose h1, .prose h2, .prose h3 {
+  font-family: var(--font-sans);
 }
 
 * {
@@ -32,10 +48,10 @@ body {
   color: #fff;
 }
 
-/* Scrollbar styling - minimalist */
+/* Minimalist Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 4px;
+  height: 4px;
 }
 
 ::-webkit-scrollbar-track {
@@ -43,9 +59,34 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #2a2a2a;
+  background: #1a1a1a;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #3a3a3a;
+  background: #2a2a2a;
+}
+
+/* Custom Utilities */
+.glass {
+  background: rgba(10, 10, 10, 0.8);
+  backdrop-filter: blur(8px);
+}
+
+.border-subtle {
+  border: 1px solid #1a1a1a;
+}
+
+.hover-border:hover {
+  border-color: var(--accent);
+}
+
+.card {
+  border: 1px solid #1a1a1a;
+  padding: 1.5rem;
+  transition: all 0.2s ease;
+}
+
+.card:hover {
+  border-color: #2a2a2a;
+  background-color: #0d0d0d;
 }

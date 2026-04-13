@@ -1,22 +1,22 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
-import type React from "react";
 import "./globals.css";
+import Navbar from "@/src/components/layout/Navbar";
+import CommandPalette from "@/src/components/layout/CommandPalette";
 
-const _inter = Inter({ subsets: ["latin"] });
-const _jetbrainsMono = JetBrains_Mono({ subsets: ["latin"] });
+const sans = Inter({
+  subsets: ["latin"],
+  variable: "--font-sans",
+});
+
+const mono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono",
+});
 
 export const metadata: Metadata = {
-  title: "Abdullahi Mohamed - Software Developer Portfolio",
-  description:
-    "Full-stack developer and IT student specializing in TypeScript, Next.js, and modern web technologies. View my projects and get in touch.",
-  openGraph: {
-    title: "Abdullahi Mohamed - Software Developer Portfolio",
-    description:
-      "Full-stack developer specializing in TypeScript, Next.js, and modern web technologies",
-    type: "website",
-    
-  },
+  title: "abdallemo.dev // Engineering Home Base",
+  description: "Software Engineer focused on high-performance backend systems and developer tooling.",
 };
 
 export default function RootLayout({
@@ -25,8 +25,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
-      <body className={`font-sans antialiased`}>{children}</body>
+    <html lang="en" className={`${sans.variable} ${mono.variable}`}>
+      <body className="bg-[#0a0a0a] text-[#ededed] antialiased selection:bg-[#3b82f6] selection:text-white">
+        <Navbar />
+        <CommandPalette />
+        <div className="min-h-screen">
+          {children}
+        </div>
+      </body>
     </html>
   );
 }

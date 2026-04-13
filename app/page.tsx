@@ -1,89 +1,136 @@
 import Terminal from "@/src/components/Terminal";
 import { projects } from "@/src/lib/data/projects";
-import { tools } from "@/src/lib/data/tools";
-import { getAllLogs } from "@/src/lib/mdx";
+import { siteConfig } from "@/src/lib/data/config";
+import { getAllContent } from "@/src/lib/mdx";
 import Link from "next/link";
+import { ArrowUpRight, Github, Twitter, Mail, MapPin, Activity } from "lucide-react";
 
 export default async function Home() {
-  const logs = await getAllLogs();
+  const logs = (await getAllContent("logs")).slice(0, 3);
+  const pinnedProjects = projects.filter(p => p.pinned).slice(0, 3);
 
   return (
-    <main className="max-w-4xl mx-auto px-6 py-12 space-y-20 font-mono">
-      {/* Hero / Terminal Section */}
-      <section className="space-y-6">
-        <header className="space-y-2">
-          <h1 className="text-2xl font-bold tracking-tight">abdallemo.dev</h1>
-          <p className="text-[#888] text-sm">Software Engineer // Johor, Malaysia</p>
-        </header>
+    <main className="max-w-4xl mx-auto px-6 py-12 md:py-20 space-y-24">
+      {/* System Status / Hero Section */}
+      <section className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
+        <div className="md:col-span-2 space-y-6">
+          <div className="space-y-2">
+            <h1 className="text-4xl md:text-5xl font-bold tracking-tighter text-[#ededed]">
+              {siteConfig.name.split(" ")[0]}
+              <span className="text-[#3b82f6]">.</span>
+              dev
+            </h1>
+            <p className="text-lg text-[#888] font-medium leading-relaxed max-w-lg">
+              {siteConfig.bio}
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-4 text-xs font-mono uppercase tracking-widest text-[#555]">
+            <a href={siteConfig.links.github} target="_blank" className="flex items-center gap-1.5 hover:text-[#3b82f6] transition-colors">
+              <Github size={14} /> Github
+            </a>
+            <a href={`mailto:${siteConfig.email}`} className="flex items-center gap-1.5 hover:text-[#3b82f6] transition-colors">
+              <Mail size={14} /> Contact
+            </a>
+            <span className="flex items-center gap-1.5 cursor-default">
+              <MapPin size={14} /> {siteConfig.stats.location}
+            </span>
+          </div>
+        </div>
+        
+        <div className="border border-[#1a1a1a] p-5 space-y-4 bg-[#0d0d0d]/50">
+          <div className="flex items-center justify-between border-b border-[#1a1a1a] pb-2">
+            <span className="text-[10px] font-mono text-[#555] uppercase tracking-widest flex items-center gap-2">
+              <Activity size={12} /> System Status
+            </span>
+            <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+          </div>
+          <div className="space-y-3 font-mono">
+            <div className="flex justify-between text-[11px]">
+              <span className="text-[#444]">REGIONAL_RANK</span>
+              <span className="text-[#3b82f6]">{siteConfig.stats.githubRanking}</span>
+            </div>
+            <div className="flex justify-between text-[11px]">
+              <span className="text-[#444]">STATUS</span>
+              <span className="text-green-500">{siteConfig.stats.status}</span>
+            </div>
+            <div className="flex justify-between text-[11px]">
+              <span className="text-[#444]">TECH_STACK</span>
+              <span className="text-[#ededed]">Go/TS/Arch</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Terminal Section */}
+      <section className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-[#333]">
+            // Interactive Shell
+          </h2>
+        </div>
         <Terminal />
       </section>
 
-      {/* Projects Section */}
+      {/* Pinned Projects Section */}
       <section className="space-y-8">
-        <h2 className="text-sm font-bold uppercase tracking-widest text-[#555] border-b border-[#2a2a2a] pb-2">
-          Selected Projects
-        </h2>
+        <div className="flex items-center justify-between border-b border-[#1a1a1a] pb-4">
+          <h2 className="text-sm font-bold uppercase tracking-widest text-[#ededed]">Pinned Projects</h2>
+          <Link href="/projects" className="text-[10px] font-mono uppercase tracking-widest text-[#555] hover:text-[#3b82f6] flex items-center gap-1 transition-colors">
+            View All <ArrowUpRight size={12} />
+          </Link>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {projects.map((project) => (
-            <div key={project.slug} className="group border border-[#2a2a2a] p-5 hover:border-[#3b82f6] transition-colors">
-              <h3 className="text-lg font-bold mb-2">{project.title}</h3>
-              <p className="text-sm text-[#888] mb-4 line-clamp-2">{project.description}</p>
-              <div className="flex flex-wrap gap-2">
-                {project.tech.slice(0, 3).map((t) => (
-                  <span key={t} className="text-[10px] uppercase border border-[#2a2a2a] px-2 py-0.5 text-[#666]">
-                    {t}
-                  </span>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Tools Section */}
-      <section className="space-y-6">
-        <h2 className="text-sm font-bold uppercase tracking-widest text-[#555] border-b border-[#2a2a2a] pb-2">
-          Tools & Infrastructure
-        </h2>
-        <div className="space-y-4">
-          {tools.map((tool) => (
-            <div key={tool.slug} className="flex flex-col md:flex-row md:items-baseline justify-between gap-2 border-b border-[#1a1a1a] pb-4">
-              <div>
-                <h3 className="text-sm font-bold text-[#ededed]">{tool.title}</h3>
-                <p className="text-xs text-[#888]">{tool.description}</p>
-              </div>
-              <div className="flex gap-4 text-xs font-bold text-[#3b82f6]">
-                <a href={tool.github} target="_blank" rel="noopener noreferrer" className="hover:underline">GitHub</a>
-                {tool.npm && <a href={tool.npm} target="_blank" rel="noopener noreferrer" className="hover:underline">NPM</a>}
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Logs Section */}
-      <section className="space-y-6">
-        <h2 className="text-sm font-bold uppercase tracking-widest text-[#555] border-b border-[#2a2a2a] pb-2">
-          Technical Logs
-        </h2>
-        <div className="space-y-4">
-          {logs.map((log) => (
-            <Link 
-              key={log.slug} 
-              href={`/logs/${log.slug}`}
-              className="block group"
-            >
-              <div className="flex justify-between items-baseline border-b border-[#1a1a1a] pb-4 group-hover:border-[#3b82f6] transition-colors">
-                <span className="text-sm font-bold group-hover:text-[#3b82f6]">{log.meta.title}</span>
-                <span className="text-xs text-[#555]">{log.meta.date}</span>
+          {pinnedProjects.map((project) => (
+            <Link key={project.slug} href={`/projects/${project.slug}`} className="group card flex flex-col justify-between">
+              <div className="space-y-4">
+                <div className="flex justify-between items-start">
+                  <h3 className="text-lg font-bold group-hover:text-[#3b82f6] transition-colors">{project.title}</h3>
+                  <ArrowUpRight size={16} className="text-[#333] group-hover:text-[#3b82f6] transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </div>
+                <p className="text-sm text-[#888] leading-relaxed">{project.excerpt}</p>
+                <div className="flex flex-wrap gap-2">
+                  {project.tech.map((t) => (
+                    <span key={t} className="text-[10px] font-mono uppercase border border-[#1a1a1a] px-2 py-0.5 text-[#555]">
+                      {t}
+                    </span>
+                  ))}
+                </div>
               </div>
             </Link>
           ))}
         </div>
       </section>
 
-      <footer className="pt-20 text-[10px] text-[#444] text-center uppercase tracking-[0.2em]">
-        Built with Go, TypeScript, and Arch Linux // 2024
+      {/* Technical Logs Section */}
+      <section className="space-y-8">
+        <div className="flex items-center justify-between border-b border-[#1a1a1a] pb-4">
+          <h2 className="text-sm font-bold uppercase tracking-widest text-[#ededed]">Latest Technical Logs</h2>
+          <Link href="/logs" className="text-[10px] font-mono uppercase tracking-widest text-[#555] hover:text-[#3b82f6] flex items-center gap-1 transition-colors">
+            Read Logs <ArrowUpRight size={12} />
+          </Link>
+        </div>
+        <div className="space-y-2">
+          {logs.map((log) => (
+            <Link key={log.slug} href={`/logs/${log.slug}`} className="flex items-center justify-between p-4 border border-transparent hover:border-[#1a1a1a] hover:bg-[#0d0d0d] transition-all group">
+              <div className="flex items-center gap-4">
+                <span className="text-[10px] font-mono text-[#333] w-20">{log.meta.date}</span>
+                <span className="text-sm font-bold group-hover:text-[#3b82f6]">{log.meta.title}</span>
+              </div>
+              <ArrowUpRight size={14} className="text-[#222] group-hover:text-[#3b82f6]" />
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <footer className="pt-20 border-t border-[#1a1a1a] flex flex-col md:flex-row justify-between items-center gap-4">
+        <span className="text-[10px] font-mono text-[#333] uppercase tracking-[0.2em]">
+          Built with Go, TypeScript, and Arch Linux
+        </span>
+        <div className="flex gap-6 text-[10px] font-mono text-[#555] uppercase tracking-widest">
+          <a href={siteConfig.links.github} target="_blank" className="hover:text-[#3b82f6]">Github</a>
+          <a href={siteConfig.links.twitter} target="_blank" className="hover:text-[#3b82f6]">Twitter</a>
+          <a href={`mailto:${siteConfig.email}`} className="hover:text-[#3b82f6]">Contact</a>
+        </div>
       </footer>
     </main>
   );

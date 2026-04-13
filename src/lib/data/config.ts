@@ -9,8 +9,8 @@ export const siteConfig: SiteConfig = {
   links: {
     github: "https://github.com/Abdallemo",
     twitter: "https://twitter.com/AbdullahiM3816",
-    linkedin: "https://linkedin.com/in/abdallemo", // Assumed handle
-    discord: "https://discord.com/users/abdallemo", // Assumed handle
+    linkedin: "https://linkedin.com/in/abdallemo",
+    discord: "https://discord.com/users/abdallemo",
   },
   subdomains: {
     lab: "https://lab.abdallemo.dev",
@@ -19,6 +19,8 @@ export const siteConfig: SiteConfig = {
     git: "https://git.abdallemo.dev",
   },
   stats: {
-    githubRanking: "#27 in Malaysia (Committers.top)",
+    githubRanking: "#27 in Malaysia",
+    location: "Johor, MY",
+    status: "Active // Internship",
   },
 };

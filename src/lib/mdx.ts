@@ -2,26 +2,34 @@ import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
 
-const logsDirectory = path.join(process.cwd(), "content/logs");
+export type ContentType = "projects" | "logs" | "blog";
 
-export async function getLogSlugs() {
-  return fs.readdirSync(logsDirectory);
+export function getDirectory(type: ContentType) {
+  return path.join(process.cwd(), `content/${type}`);
 }
 
-export async function getLogBySlug(slug: string) {
+export async function getSlugs(type: ContentType) {
+  const dir = getDirectory(type);
+  if (!fs.existsSync(dir)) return [];
+  return fs.readdirSync(dir).filter(f => f.endsWith(".mdx"));
+}
+
+export async function getContentBySlug(type: ContentType, slug: string) {
   const realSlug = slug.replace(/\.mdx$/, "");
-  const fullPath = path.join(logsDirectory, `${realSlug}.mdx`);
+  const fullPath = path.join(getDirectory(type), `${realSlug}.mdx`);
+  if (!fs.existsSync(fullPath)) throw new Error(`File not found: ${fullPath}`);
+  
   const fileContents = fs.readFileSync(fullPath, "utf8");
   const { data, content } = matter(fileContents);
 
   return { slug: realSlug, meta: data, content };
 }
 
-export async function getAllLogs() {
-  const slugs = await getLogSlugs();
-  const logs = await Promise.all(
-    slugs.map((slug) => getLogBySlug(slug))
+export async function getAllContent(type: ContentType) {
+  const slugs = await getSlugs(type);
+  const items = await Promise.all(
+    slugs.map((slug) => getContentBySlug(type, slug))
   );
 
-  return logs.sort((a, b) => (a.meta.date > b.meta.date ? -1 : 1));
+  return items.sort((a, b) => (a.meta.date > b.meta.date ? -1 : 1));
 }
