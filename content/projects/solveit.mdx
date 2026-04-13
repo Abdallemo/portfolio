@@ -28,7 +28,7 @@ I wanted to solve the friction in peer-to-peer help. By making a dedicated dashb
 One of the most interesting parts to build was the communication hub. I had to manage different channels for notifications, comments, and mentor chats while keeping track of active connections.
 
 ```go
-// My actual Hub implementation for handling multiple WebSocket channels
+
 func (h *WsHub) handleWS(w http.ResponseWriter, r *http.Request, appChan chan IncomingMessage) {
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {

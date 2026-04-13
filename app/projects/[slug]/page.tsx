@@ -1,3 +1,4 @@
+import CodeBlock from "@/src/components/ui/CodeBlock";
 import { getContentBySlug, getSlugs } from "@/src/lib/mdx";
 import {
   ArrowLeft,
@@ -56,6 +57,9 @@ export default async function ProjectPage({
           <div className="prose prose-invert max-w-none prose-sm">
             <MDXRemote
               source={project.content}
+              components={{
+                pre: CodeBlock,
+              }}
               options={{
                 mdxOptions: {
                   rehypePlugins: [rehypeHighlight],
@@ -65,17 +69,17 @@ export default async function ProjectPage({
           </div>
         </div>
 
-        <aside className="md:col-span-1 space-y-8 font-mono">
+        <aside className="md:col-span-1 space-y-8 font-mono text-xs">
           <div className="space-y-2">
             <h3 className="text-[10px] font-bold uppercase tracking-widest text-[#333] border-b border-[#1a1a1a] pb-2">
               Meta
             </h3>
             <div className="space-y-4 pt-2">
-              <div className="flex items-center gap-2 text-xs text-[#888]">
+              <div className="flex items-center gap-2 text-[#888]">
                 <Calendar size={14} className="text-[#333]" />{" "}
                 {project.meta.year}
               </div>
-              <div className="flex items-center gap-2 text-xs text-[#888]">
+              <div className="flex items-center gap-2 text-[#888]">
                 <Tag size={14} className="text-[#333]" />{" "}
                 {project.meta.category}
               </div>

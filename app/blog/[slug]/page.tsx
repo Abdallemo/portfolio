@@ -1,3 +1,4 @@
+import CodeBlock from "@/src/components/ui/CodeBlock";
 import { getContentBySlug, getSlugs } from "@/src/lib/mdx";
 import { ArrowLeft, Calendar } from "lucide-react";
 import { MDXRemote } from "next-mdx-remote/rsc";
@@ -48,6 +49,9 @@ export default async function BlogPostPage({
         <div className="prose prose-invert max-w-none prose-sm border-t border-[#1a1a1a] pt-12">
           <MDXRemote
             source={post.content}
+            components={{
+              pre: CodeBlock,
+            }}
             options={{
               mdxOptions: {
                 rehypePlugins: [rehypeHighlight],

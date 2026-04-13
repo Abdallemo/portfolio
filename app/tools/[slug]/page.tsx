@@ -1,3 +1,4 @@
+import CodeBlock from "@/src/components/ui/CodeBlock";
 import { getContentBySlug, getSlugs } from "@/src/lib/mdx";
 import { ArrowLeft, ExternalLink, Github, Tag, Terminal } from "lucide-react";
 import { MDXRemote } from "next-mdx-remote/rsc";
@@ -55,6 +56,9 @@ export default async function ToolPage({
           <div className="prose prose-invert max-w-none prose-sm">
             <MDXRemote
               source={tool.content}
+              components={{
+                pre: CodeBlock,
+              }}
               options={{
                 mdxOptions: {
                   rehypePlugins: [rehypeHighlight],
