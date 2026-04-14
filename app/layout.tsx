@@ -39,6 +39,16 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: siteConfig.name, url: "https://abdallemo.dev" }],
   creator: siteConfig.name,
+  icons: {
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/icon.png", type: "image/png" },
+      { url: "/icon.svg", type: "image/svg+xml" },
+    ],
+    apple: [
+      { url: "/apple-icon.png" },
+    ],
+  },
   openGraph: {
     type: "website",
     locale: "en_US",

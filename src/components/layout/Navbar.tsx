@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -17,9 +18,16 @@ export default function Navbar() {
       <div className="max-w-4xl mx-auto px-6 h-14 flex items-center justify-between font-mono">
         <Link
           href="/"
-          className="text-sm font-bold tracking-tighter hover:text-accent transition-colors text-foreground"
+          className="flex items-center gap-2 text-sm font-bold tracking-tighter hover:text-accent transition-colors text-foreground"
         >
-          Abdallemo.dev
+          <Image
+            src="/web-app-manifest-192x192.png"
+            alt="abdallemo"
+            width={24}
+            height={24}
+            className="rounded-sm"
+          />
+          Abdallemo
         </Link>
         <div className="flex gap-6">
           {navLinks.map((link) => (
