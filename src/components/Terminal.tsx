@@ -46,7 +46,9 @@ type Line = {
 };
 
 export default function Terminal() {
-  const [history, setHistory] = useState<Line[]>([{ type: "fetch", content: null }]);
+  const [history, setHistory] = useState<Line[]>([
+    { type: "fetch", content: null },
+  ]);
   const [inputValue, setInputValue] = useState("");
   const [currentPath, setCurrentPath] = useState("/");
   const [commandHistory, setCommandHistory] = useState<string[]>([]);
@@ -76,8 +78,12 @@ export default function Terminal() {
     const directories = ["projects", "tools", "blog"];
     let response: any = null;
 
-    const newHistoryEntry: Line = { type: "cmd", content: trimmed, path: currentPath };
-    
+    const newHistoryEntry: Line = {
+      type: "cmd",
+      content: trimmed,
+      path: currentPath,
+    };
+
     // Command Logic
     switch (command) {
       case "help":
@@ -102,7 +108,7 @@ export default function Terminal() {
           response = [
             `ls: unknown option ${targetDir}`,
             "Usage: ls [directory]",
-            "Try 'ls --help' for more information."
+            "Try 'ls --help' for more information.",
           ];
           break;
         }
@@ -137,7 +143,7 @@ export default function Terminal() {
         } else {
           response = [
             `cd: no such directory: ${path}`,
-            "Usage: cd [directory]"
+            "Usage: cd [directory]",
           ];
         }
         break;
@@ -145,10 +151,7 @@ export default function Terminal() {
       case "cat":
         const file = args[0];
         if (!file) {
-          response = [
-            "cat: missing operand",
-            "Usage: cat [file]"
-          ];
+          response = ["cat: missing operand", "Usage: cat [file]"];
         } else {
           const item =
             projects.find((p) => p.slug === file) ||
@@ -167,7 +170,17 @@ export default function Terminal() {
         break;
 
       case "whoami":
-        response = [siteConfig.name, siteConfig.role, siteConfig.bio];
+        response = [
+          "USER:      " + siteConfig.name,
+          "ROLE:      " + siteConfig.role,
+          "EDUCATION: IT @ UTHM",
+          "STATUS:    " + siteConfig.stats.status,
+          "",
+          "A student explorer of backend systems and the Linux ecosystem.",
+          "Currently building tools that make my own life easier.",
+          "",
+          "Tip: Scroll down for the full story.",
+        ];
         break;
 
       case "open":
@@ -176,7 +189,7 @@ export default function Terminal() {
           const isCategory = directories.includes(target);
           const projectItem = projects.find((p) => p.slug === target);
           const toolItem = tools.find((t) => t.slug === target);
-          
+
           if (isCategory || projectItem || toolItem) {
             const path = isCategory
               ? `/${target}`
@@ -188,20 +201,21 @@ export default function Terminal() {
           } else {
             response = [
               `open: cannot open '${target}': No such entry`,
-              "Usage: open [target]"
+              "Usage: open [target]",
             ];
           }
         } else {
-          response = [
-            "open: missing target",
-            "Usage: open [target]"
-          ];
+          response = ["open: missing target", "Usage: open [target]"];
         }
         break;
 
       case "fastfetch":
       case "neofetch":
-        setHistory((prev) => [...prev, newHistoryEntry, { type: "fetch", content: null }]);
+        setHistory((prev) => [
+          ...prev,
+          newHistoryEntry,
+          { type: "fetch", content: null },
+        ]);
         setCommandHistory((prev) => [trimmed, ...prev]);
         setHistoryIndex(-1);
         return;
@@ -219,7 +233,7 @@ export default function Terminal() {
       default:
         response = [
           `zsh: command not found: ${command}`,
-          "Run 'help' for a list of available commands."
+          "Run 'help' for a list of available commands.",
         ];
     }
 
@@ -237,7 +251,12 @@ export default function Terminal() {
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     // Reset completions if any key other than Tab is pressed
-    if (e.key !== "Tab" && e.key !== "Enter" && e.key !== "ArrowUp" && e.key !== "ArrowDown") {
+    if (
+      e.key !== "Tab" &&
+      e.key !== "Enter" &&
+      e.key !== "ArrowUp" &&
+      e.key !== "ArrowDown"
+    ) {
       setCompletions([]);
       setCompletionIndex(-1);
     }
@@ -261,7 +280,9 @@ export default function Terminal() {
     if (e.key === "ArrowUp") {
       if (completions.length > 0) {
         e.preventDefault();
-        setCompletionIndex((prev) => (prev <= 0 ? completions.length - 1 : prev - 1));
+        setCompletionIndex((prev) =>
+          prev <= 0 ? completions.length - 1 : prev - 1,
+        );
         return;
       }
       e.preventDefault();
@@ -273,7 +294,9 @@ export default function Terminal() {
     } else if (e.key === "ArrowDown") {
       if (completions.length > 0) {
         e.preventDefault();
-        setCompletionIndex((prev) => (prev >= completions.length - 1 ? 0 : prev + 1));
+        setCompletionIndex((prev) =>
+          prev >= completions.length - 1 ? 0 : prev + 1,
+        );
         return;
       }
       e.preventDefault();
@@ -293,14 +316,26 @@ export default function Terminal() {
       const directories = ["projects", "tools", "blog"];
 
       if (completions.length > 0) {
-        setCompletionIndex((prev) => (prev >= completions.length - 1 ? 0 : prev + 1));
+        setCompletionIndex((prev) =>
+          prev >= completions.length - 1 ? 0 : prev + 1,
+        );
         return;
       }
 
       let matches: string[] = [];
 
       if (parts.length === 1) {
-        const commands = ["help", "ls", "cd", "cat", "open", "whoami", "fastfetch", "clear", "exit"];
+        const commands = [
+          "help",
+          "ls",
+          "cd",
+          "cat",
+          "open",
+          "whoami",
+          "fastfetch",
+          "clear",
+          "exit",
+        ];
         matches = commands.filter((c) => c.startsWith(cmd));
       } else if (parts.length === 2) {
         let options: string[] = [];

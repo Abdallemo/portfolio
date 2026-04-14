@@ -92,6 +92,22 @@ export default async function Home() {
           </p>
           <div className="space-y-3">
             <h2 className="text-xs font-mono font-bold uppercase tracking-[0.2em] text-foreground">
+              Who I am
+            </h2>
+            <p className="text-dim leading-relaxed text-[15px]">
+              I'm{" "}
+              <span className="font-semibold text-muted-foreground">
+                Abdullahi Mohamed
+              </span>
+              , an IT student at UTHM. I'm currently an intern navigating the
+              world of high-performance backend systems and developer tooling.
+              I'm a firm believer in the terminal-first workflow and spend most
+              of my time either in a shell or breaking (and then fixing) my Arch
+              Linux setup.
+            </p>
+          </div>
+          <div className="space-y-3">
+            <h2 className="text-xs font-mono font-bold uppercase tracking-[0.2em] text-foreground">
               What this is for
             </h2>
             <p className="text-dim leading-relaxed text-[15px]">
