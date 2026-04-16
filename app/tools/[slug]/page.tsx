@@ -31,7 +31,7 @@ export default async function ToolPage({
     <main className="max-w-4xl mx-auto px-6 py-12 md:py-20 space-y-16 font-mono">
       <Link
         href="/tools"
-        className="text-xs text-[#555] hover:text-[#3b82f6] transition-colors mb-12 flex items-center gap-2 uppercase tracking-widest"
+        className="text-xs text-dim hover:text-accent transition-colors mb-12 flex items-center gap-2 uppercase tracking-widest"
       >
         <ArrowLeft size={14} /> Back to workbench
       </Link>
@@ -39,16 +39,16 @@ export default async function ToolPage({
       <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
         <div className="md:col-span-3 space-y-12">
           <header className="space-y-4 font-sans">
-            <div className="flex items-center gap-3 text-[#3b82f6]">
+            <div className="flex items-center gap-3 text-accent">
               <Terminal size={24} />
-              <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#333]">
+              <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-dim">
                 /usr/bin/{slug}
               </span>
             </div>
-            <h1 className="text-4xl font-bold tracking-tighter text-[#ededed]">
+            <h1 className="text-4xl font-bold tracking-tighter text-foreground">
               {tool.meta.title}
             </h1>
-            <p className="text-lg text-[#a1a1aa] leading-relaxed max-w-2xl">
+            <p className="text-lg text-muted-foreground leading-relaxed max-w-2xl">
               {tool.meta.excerpt}
             </p>
           </header>
@@ -70,19 +70,19 @@ export default async function ToolPage({
 
         <aside className="md:col-span-1 space-y-8">
           <div className="space-y-2 text-xs">
-            <h3 className="text-[10px] font-bold uppercase tracking-widest text-[#333] border-b border-[#1a1a1a] pb-2">
+            <h3 className="text-[10px] font-bold uppercase tracking-widest text-dim border-b border-border pb-2">
               Technical Info
             </h3>
             <div className="space-y-4 pt-2">
-              <div className="flex items-center gap-2 text-[#888]">
-                <Tag size={14} className="text-[#333]" />{" "}
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <Tag size={14} className="text-dim" />{" "}
                 {tool.meta.type.toUpperCase()}
               </div>
               <div className="flex gap-4 pt-2">
                 <a
                   href={tool.meta.github}
                   target="_blank"
-                  className="p-2 border border-[#1a1a1a] hover:border-[#3b82f6] hover:text-[#3b82f6] transition-all flex items-center gap-2 text-[10px] uppercase tracking-widest font-bold"
+                  className="p-2 border border-border hover:border-accent hover:text-accent transition-all flex items-center gap-2 text-[10px] uppercase tracking-widest font-bold"
                 >
                   <Github size={16} /> Source
                 </a>
@@ -91,7 +91,7 @@ export default async function ToolPage({
                 <a
                   href={tool.meta.npm}
                   target="_blank"
-                  className="flex items-center gap-2 p-2 border border-[#1a1a1a] hover:border-[#3b82f6] hover:text-[#3b82f6] transition-all text-[10px] uppercase tracking-widest font-bold"
+                  className="flex items-center gap-2 p-2 border border-border hover:border-accent hover:text-accent transition-all text-[10px] uppercase tracking-widest font-bold"
                 >
                   <ExternalLink size={16} /> NPM Package
                 </a>
@@ -100,14 +100,14 @@ export default async function ToolPage({
           </div>
 
           <div className="space-y-2">
-            <h3 className="text-[10px] font-bold uppercase tracking-widest text-[#333] border-b border-[#1a1a1a] pb-2">
+            <h3 className="text-[10px] font-bold uppercase tracking-widest text-dim border-b border-border pb-2">
               Technologies
             </h3>
             <div className="flex flex-wrap gap-2 pt-2">
               {tool.meta.tech.map((t: string) => (
                 <span
                   key={t}
-                  className="text-[10px] uppercase border border-[#1a1a1a] px-2 py-0.5 text-[#555]"
+                  className="text-[10px] uppercase border border-border px-2 py-0.5 text-dim"
                 >
                   {t}
                 </span>
@@ -117,9 +117,9 @@ export default async function ToolPage({
         </aside>
       </div>
 
-      <footer className="pt-20 border-t border-[#1a1a1a] flex justify-between items-center text-[10px] text-[#333] uppercase tracking-widest">
+      <footer className="pt-20 border-t border-border flex justify-between items-center text-[10px] text-dim uppercase tracking-widest">
         <span>Process terminated // {tool.slug}</span>
-        <Link href="/tools" className="text-[#555] hover:text-[#3b82f6]">
+        <Link href="/tools" className="text-dim hover:text-accent">
           Return to index
         </Link>
       </footer>

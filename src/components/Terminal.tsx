@@ -368,7 +368,7 @@ export default function Terminal() {
     return (
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 left-6 bg-[#050505] border border-[#1a1a1a] p-3 text-[#3b82f6] hover:border-[#3b82f6] transition-all z-40 flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.2em] shadow-2xl"
+        className="fixed bottom-6 left-6 bg-[#050505] border border-border p-3 text-accent hover:border-accent transition-all z-40 flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.2em] shadow-2xl"
       >
         <TerminalIcon size={14} />
         <span>Resume Session</span>
@@ -377,9 +377,9 @@ export default function Terminal() {
   }
 
   return (
-    <div className="bg-[#050505] border border-[#1a1a1a] rounded-sm font-mono text-[11px] h-[400px] flex flex-col shadow-[0_20px_50px_rgba(0,0,0,0.5)] relative overflow-hidden group">
+    <div className="bg-[#050505] border border-border rounded-sm font-mono text-[11px] h-[400px] flex flex-col shadow-[0_20px_50px_rgba(0,0,0,0.5)] relative overflow-hidden group">
       {/* Kitty-style Header */}
-      <div className="flex items-center justify-between px-4 py-2 border-b border-[#1a1a1a] bg-[#0a0a0a]">
+      <div className="flex items-center justify-between px-4 py-2 border-b border-border bg-[#0a0a0a]">
         <div className="flex items-center gap-6">
           <div className="flex gap-2">
             <Circle
@@ -400,7 +400,7 @@ export default function Terminal() {
       </div>
 
       <div
-        className="flex-1 overflow-y-auto p-6 space-y-2 scrollbar-hide selection:bg-[#3b82f6]/30"
+        className="flex-1 overflow-y-auto p-6 space-y-2 scrollbar-hide selection:bg-accent/30"
         ref={scrollRef}
         onClick={() => {
           if (window.getSelection()?.toString() === "") {
@@ -413,29 +413,31 @@ export default function Terminal() {
             {item.type === "cmd" && (
               <div className="flex items-center gap-2">
                 <span className="text-[#10b981] font-bold text-xs">➜</span>
-                <span className="text-[#3b82f6] font-bold">
+                <span className="text-accent font-bold">
                   {item.path === "/" ? "~" : item.path?.replace("/", "")}
                 </span>
-                <span className="text-[#ededed]">{item.content}</span>
+                <span className="text-foreground">{item.content}</span>
               </div>
             )}
 
             {item.type === "fetch" && (
               <div className="flex flex-col md:flex-row gap-8 py-2">
-                <pre className="text-[#3b82f6] leading-tight whitespace-pre shrink-0">
+                <pre className="text-accent leading-tight whitespace-pre shrink-0">
                   {ARCH_ASCII.join("\n")}
                 </pre>
                 <div className="space-y-0.5 pt-2">
-                  <div className="text-[#ededed] font-bold text-sm mb-1">
+                  <div className="text-foreground font-bold text-sm mb-1">
                     abdallemo@arch-pc
                   </div>
                   <div className="text-[#444] mb-2">-----------------</div>
                   {SYSTEM_INFO.map((info) => (
                     <div key={info.key} className="flex gap-2">
-                      <span className="text-[#3b82f6] font-bold w-24 shrink-0">
+                      <span className="text-accent font-bold w-24 shrink-0">
                         {info.key}:
                       </span>
-                      <span className="text-[#888]">{info.value}</span>
+                      <span className="text-muted-foreground">
+                        {info.value}
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -450,7 +452,7 @@ export default function Terminal() {
                 ).map((line: string, j: number) => (
                   <pre
                     key={j}
-                    className="whitespace-pre-wrap break-all text-[#666] leading-relaxed italic"
+                    className="whitespace-pre-wrap break-all text-dim leading-relaxed italic"
                   >
                     {line}
                   </pre>
@@ -469,12 +471,12 @@ export default function Terminal() {
           className="flex items-center gap-2"
         >
           <span className="text-[#10b981] font-bold text-xs">➜</span>
-          <span className="text-[#3b82f6] font-bold">
+          <span className="text-accent font-bold">
             {currentPath === "/" ? "~" : currentPath.replace("/", "")}
           </span>
           <input
             ref={inputRef}
-            className="flex-1 bg-transparent border-none outline-none text-[#ededed] p-0 m-0 focus:ring-0"
+            className="flex-1 bg-transparent border-none outline-none text-foreground p-0 m-0 focus:ring-0"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onKeyDown={handleKeyDown}
@@ -484,14 +486,14 @@ export default function Terminal() {
         </form>
 
         {completions.length > 0 && (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 ml-6 pt-2 pb-4 border-l border-[#1a1a1a] pl-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 ml-6 pt-2 pb-4 border-l border-border pl-4">
             {completions.map((comp, i) => (
               <div
                 key={comp}
                 className={`text-[10px] px-2 py-0.5 font-bold transition-colors ${
                   i === completionIndex
-                    ? "bg-[#3b82f6] text-[#050505]"
-                    : "text-[#444] hover:text-[#888]"
+                    ? "bg-accent text-[#050505]"
+                    : "text-[#444] hover:text-muted-foreground"
                 }`}
               >
                 {comp}

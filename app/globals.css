@@ -26,7 +26,7 @@
     --color-destructive-foreground: #ededed;
 
     --color-dim: #71717a;
-    --color-card-bg: #0d0d0d;
+    --color-card: #0d0d0d;
 }
 
 :root {
@@ -107,7 +107,7 @@ a {
 
 .card:hover {
     border-color: #2a2a2a;
-    background-color: var(--color-card-bg);
+    background-color: var(--color-card);
 }
 
 ::-webkit-scrollbar {

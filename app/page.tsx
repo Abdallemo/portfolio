@@ -45,7 +45,7 @@ export default async function Home() {
           </div>
         </div>
 
-        <div className="border border-border p-5 space-y-4 bg-card-bg/50">
+        <div className="border border-border p-5 space-y-4 bg-card/50">
           <div className="flex items-center justify-between border-b border-border pb-2">
             <span className="text-[10px] font-mono text-dim uppercase tracking-widest flex items-center gap-2">
               <Activity size={12} /> System Status
@@ -191,7 +191,7 @@ export default async function Home() {
             <Link
               key={post.slug}
               href={`/blog/${post.slug}`}
-              className="flex items-center justify-between p-4 border border-transparent hover:border-border hover:bg-card-bg/50 transition-all group"
+              className="flex items-center justify-between p-4 border border-transparent hover:border-border hover:bg-card/50 transition-all group"
             >
               <div className="flex items-center gap-4">
                 <span className="text-[10px] font-mono text-dim w-20">

@@ -31,22 +31,22 @@ export default async function BlogPostPage({
     <main className="max-w-3xl mx-auto px-6 py-12 md:py-20 space-y-12">
       <Link
         href="/blog"
-        className="text-xs font-mono text-[#555] hover:text-[#3b82f6] transition-colors mb-12 flex items-center gap-2 uppercase tracking-widest"
+        className="text-xs font-mono text-dim hover:text-accent transition-colors mb-12 flex items-center gap-2 uppercase tracking-widest"
       >
         <ArrowLeft size={14} /> Back to blog
       </Link>
 
       <article className="space-y-12">
         <header className="space-y-4">
-          <h1 className="text-4xl font-bold tracking-tighter text-[#ededed]">
+          <h1 className="text-4xl font-bold tracking-tighter text-foreground">
             {post.meta.title}
           </h1>
-          <div className="flex items-center gap-4 text-xs font-mono text-[#555] uppercase tracking-widest">
-            <Calendar size={14} className="text-[#333]" /> {post.meta.date}
+          <div className="flex items-center gap-4 text-xs font-mono text-dim uppercase tracking-widest">
+            <Calendar size={14} className="text-dim" /> {post.meta.date}
           </div>
         </header>
 
-        <div className="prose prose-invert max-w-none prose-sm border-t border-[#1a1a1a] pt-12">
+        <div className="prose prose-invert max-w-none prose-sm border-t border-border pt-12">
           <MDXRemote
             source={post.content}
             components={{
@@ -61,9 +61,9 @@ export default async function BlogPostPage({
         </div>
       </article>
 
-      <footer className="pt-20 border-t border-[#1a1a1a] flex justify-between items-center text-[10px] font-mono text-[#333] uppercase tracking-widest">
+      <footer className="pt-20 border-t border-border flex justify-between items-center text-[10px] font-mono text-dim uppercase tracking-widest">
         <span>Segment closed // {post.slug}</span>
-        <Link href="/blog" className="text-[#555] hover:text-[#3b82f6]">
+        <Link href="/blog" className="text-dim hover:text-accent">
           Return to index
         </Link>
       </footer>

@@ -1,9 +1,9 @@
+import CommandPalette from "@/src/components/layout/CommandPalette";
+import Navbar from "@/src/components/layout/Navbar";
+import { siteConfig } from "@/src/lib/data/config";
 import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/src/components/layout/Navbar";
-import CommandPalette from "@/src/components/layout/CommandPalette";
-import { siteConfig } from "@/src/lib/data/config";
 
 const sans = Inter({
   subsets: ["latin"],
@@ -82,12 +82,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${sans.variable} ${mono.variable} dark`}>
-      <body className="bg-[#0a0a0a] text-[#a1a1aa] antialiased selection:bg-[#3b82f6]/30 selection:text-[#3b82f6]">
+      <body className="bg-[#0a0a0a] text-muted-foreground antialiased selection:bg-accent/30 selection:text-accent">
         <Navbar />
         <CommandPalette />
-        <div className="min-h-screen">
-          {children}
-        </div>
+        <div className="min-h-screen">{children}</div>
       </body>
     </html>
   );

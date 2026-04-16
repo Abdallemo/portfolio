@@ -21,8 +21,8 @@ export default function CodeBlock({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <div className="my-8 border border-[#1a1a1a] bg-[#0d1117] rounded-sm overflow-hidden">
-      <div className="flex items-center justify-end px-4 py-1.5 border-b border-[#1a1a1a] bg-[#161b22]">
+    <div className="my-8 border border-border bg-[#0d1117] rounded-sm overflow-hidden">
+      <div className="flex items-center justify-end px-4 py-1.5 border-b border-border bg-[#161b22]">
         {/*<span className="text-[10px] font-mono text-[#8b949e] uppercase tracking-widest">Code Block</span>*/}
         <button
           onClick={onCopy}
