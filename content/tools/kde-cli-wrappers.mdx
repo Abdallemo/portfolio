@@ -1,0 +1,51 @@
+---
+title: "KDE Plasma CLI Job Trackers"
+date: "2026-08-25"
+excerpt: "Native KDE Plasma notification integrations for heavy CLI tools like FFmpeg and Whisper AI."
+tech: ["C++", "Qt6", "KDE Frameworks", "FFmpeg"]
+github: "https://github.com/Abdallemo/kde-cli-wrappers"
+type: "script"
+---
+
+I love using the terminal for heavy media tasks, but I hate having to keep a terminal window open and focused just to monitor a 20-minute FFmpeg transcode or a Whisper AI transcription. I wanted these background operations to feel like native desktop tasks integrated directly into my Wayland/Plasma 6 environment.
+
+To solve this, I wrote a suite of C++ wrappers using Qt6 and KDE Frameworks. These tools execute standard CLI commands (`ffmpeg`, `whisper-cli`) as background processes and pipe their output directly into KDE's `KUiServerV2JobTracker`. 
+
+### The DaVinci Resolve Problem
+One of the primary drivers for this project was video editing on Linux. DaVinci Resolve on Linux is notoriously strict about codecs, often refusing to read standard H.264/AAC `.mp4` files or variable framerate screen recordings. 
+
+I built `ff-resolve-kde` to automate the fix. You pass it a video, and it silently transcodes it to an editing-friendly format (DNxHR SQ, YUV 4:2:2 10-bit with PCM audio) while showing a native progress bar on the desktop.
+
+### Intercepting FFmpeg Telemetry
+The core engineering challenge across all these wrappers was progress calculation. CLI tools stream raw text to standard output. By running FFmpeg with the `-progress pipe:1` flag, I configured my wrapper to intercept the data stream, parse the `key=value` pairs in real-time, and calculate the completion percentage based on the initial `ffprobe` duration.
+
+### Dolphin Context Menu Integration
+To make the tools completely frictionless, I integrated them directly into KDE's file manager (Dolphin) using ServiceMenus. By right-clicking any media file, I can trigger FFmpeg encodes or Whisper AI transcriptions directly from the context menu. The custom `.desktop` files ensure that the resulting native Plasma notifications display the correct application icons and branding.
+
+```cpp
+// Intercepting FFmpeg's stdout to update the KDE Plasma progress bar
+void readProgress() {
+  while (m_process->canReadLine()) {
+    const QString line = QString::fromUtf8(m_process->readLine()).trimmed();
+    const int separator = line.indexOf('=');
+
+    if (separator < 0) continue;
+
+    const QString key = line.left(separator);
+    const QString value = line.mid(separator + 1);
+
+    // We only care about the current timestamp being processed
+    if (key != "out_time_us") continue;
+
+    bool ok = false;
+    const double microseconds = value.toDouble(&ok);
+
+    if (!ok || m_duration <= 0) continue;
+
+    // Convert microseconds to seconds, then divide by total media duration
+    int percent = static_cast<int>((microseconds / 1000000.0) / m_duration * 100.0);
+
+    // Clamp the value between 0 and 100 to prevent UI crashes
+    setPercent(static_cast<unsigned long>(qBound(0, percent, 100)));
+  }
+}
