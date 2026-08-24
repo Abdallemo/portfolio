@@ -23,13 +23,14 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL("https://abdallemo.dev"),
   title: {
-    default: `${siteConfig.name} // Engineering Home Base`,
+    default: `${siteConfig.name} | ${siteConfig.role}`,
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.bio,
   keywords: [
     "Software Engineer",
     "Go Developer",
+    "Linux",
     "Arch Linux",
     "Full-stack Developer",
     "Developer Tooling",
@@ -43,7 +44,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_MY",
     url: "https://abdallemo.dev",
-    title: `${siteConfig.name} // Engineering Home Base`,
+    title: `${siteConfig.name} | ${siteConfig.role}`,
     description: siteConfig.bio,
     siteName: siteConfig.name,
     images: [
@@ -57,7 +58,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: `${siteConfig.name} // Engineering Home Base`,
+    title: `${siteConfig.name} | ${siteConfig.role}`,
     description: siteConfig.bio,
     creator: "@AbdullahiM3816",
     images: ["/abdallemo.jpg"],

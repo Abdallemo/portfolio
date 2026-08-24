@@ -6,7 +6,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "Abdallemo",
     short_name: "abdallemo",
-    description: "Engineering Home Base",
+    description: "Personal portfolio of Abdullahi Mohamed, a Software Engineer focused on backend systems and developer tooling.",
     start_url: "/",
     display: "standalone",
     background_color: "#0a0a0a",
