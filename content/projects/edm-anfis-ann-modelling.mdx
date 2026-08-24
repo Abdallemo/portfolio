@@ -1,0 +1,38 @@
+---
+title: "edm-anfis-ann-modelling"
+date: "2026-07-15"
+year: "2026"
+category: "Machine Learning / Research"
+excerpt: "PyTorch implementations of ANN and ANFIS models optimized with NGO for EDM surface roughness prediction."
+tech: ["Python", "PyTorch", "Machine Learning", "Mealpy"]
+features: ["Sugeno-type ANFIS", "Hybrid Global-Local training", "Northern Goshawk Optimization", "3D Surface Response Mapping"]
+github: "https://github.com/Abdallemo/edm-anfis-ann-modelling"
+npm: ""
+pinned: true
+images:
+  hero: "https://github.com/Abdallemo/edm-anfis-ann-modelling/raw/main/results/dataset2_ANN_CPU_model_results_academic_dashboard.png"
+  gallery: []
+---
+
+This was the core of my academic research project during my industrial training. The goal was to predict the surface roughness (Ra) of an aerospace-grade titanium alloy (Ti6Al4V) during Electrical Discharge Machining (EDM). Since EDM is a highly non-linear, stochastic process, traditional mathematical models just don't cut it. 
+
+### The "Digital Twin" Goal
+I wanted to build predictive models that could act as digital twins for the physical EDM machine. Instead of wasting expensive titanium on trial-and-error runs, a machinist could theoretically punch their dial settings (like Pulse-on Time, Duty Cycle, Peak Current, and Voltage) into the model and instantly know the expected surface roughness.
+
+To do this, I built two distinct predictive models from the ground up using PyTorch: a standard Artificial Neural Network (ANN) and a Sugeno-type Adaptive Neuro-Fuzzy Inference System (ANFIS). 
+
+<img src="https://github.com/Abdallemo/edm-anfis-ann-modelling/raw/main/results/dataset2_ANN_CPU_model_results_academic_dashboard.png" alt="ANN Dataset 2 Academic Dashboard" width="100%" />
+
+### The Optimization Challenge
+The hardest part wasn't just building the base models, but training them effectively to avoid overfitting. I integrated the Northern Goshawk Optimization (NGO) algorithm (via the Mealpy library) to act as a global searcher in a hybrid training pipeline. 
+
+For the ANN, the NGO swarm optimized the neural network weights. For the ANFIS, it tuned the Gaussian membership function boundaries (the bell centers and widths) before handing everything over for local fine-tuning. Building a custom PyTorch wrapper to expose the internal weights and tensors to the NGO swarm taught me a massive amount about how neural network architectures actually compile and calculate loss under the hood.
+
+<img src="https://github.com/Abdallemo/edm-anfis-ann-modelling/raw/main/results/dataset1_ANFIS_CPU_model_results_validation_plots.png" alt="ANFIS Dataset 1 Validation Plots" width="100%" />
+
+### The Results
+We evaluated the models using Leave-One-Out Cross-Validation across two fundamentally different datasets to test their stability. The results were incredibly solid. On Dataset 2, both models produced highly accurate predictions—the ANN hit an R² value of 0.9999, while the ANFIS achieved 0.9995.
+
+I open-sourced the entire repository under the GPLv3 license to ensure the academic community can reproduce the results while protecting the research. The team and I even co-authored a full comparative analysis paper based on this exact codebase, which is currently submitted for publication in the International Journal of Advanced Computer Science and Applications (IJACSA).
+
+<img src="https://github.com/Abdallemo/edm-anfis-ann-modelling/raw/main/results/dataset2_ANFIS_CPU_model_results_academic_dashboard.png" alt="ANFIS Dataset 2 Academic Dashboard" width="100%" />

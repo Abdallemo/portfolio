@@ -8,12 +8,12 @@ export default async function Home() {
   const allProjects = await getAllContent("projects");
   const allBlogs = await getAllContent("blog");
 
-  const pinnedProjects = allProjects.filter((p) => p.meta.pinned).slice(0, 3);
+  const pinnedProjects = allProjects.filter((p) => p.meta.pinned).slice(0, 4);
   const recentBlogs = allBlogs.slice(0, 3);
 
   return (
     <main className="max-w-4xl mx-auto px-6 py-12 md:py-20 space-y-24 font-sans">
-      {/* System Status / Hero Section */}
+
       <section className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
         <div className="md:col-span-2 space-y-6">
           <div className="space-y-2">
@@ -118,7 +118,7 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Pinned Projects Section */}
+
       <section className="space-y-8">
         <div className="flex items-center justify-between border-b border-border pb-4">
           <h2 className="text-sm font-bold uppercase tracking-widest text-foreground">

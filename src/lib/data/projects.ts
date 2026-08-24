@@ -163,5 +163,32 @@ export const projects: Project[] = [
     date: "2024-08-01",
     excerpt: "A specialized TVET platform using RAG (Retrieval-Augmented Generation) to train veterinary forensic professionals.",
     content: ""
-  }
+  },
+  {
+      slug: "edm-anfis-ann-modelling",
+      title: "edm-anfis-ann-modelling",
+      description: "PyTorch predictive modeling for EDM surface roughness.",
+      longDescription: "PyTorch implementations of Artificial Neural Network (ANN) and Sugeno-type Adaptive Neuro-Fuzzy Inference System (ANFIS) models optimized with Northern Goshawk Optimization (NGO) for predicting Electrical Discharge Machining (EDM) surface roughness.",
+      tech: ["Python", "PyTorch", "Machine Learning", "Mealpy"],
+      features: [
+        "Sugeno-type ANFIS",
+        "Hybrid Global-Local training",
+        "Northern Goshawk Optimization",
+        "3D Surface Response Mapping"
+      ],
+      github: "https://github.com/Abdallemo/edm-anfis-ann-modelling",
+      category: "Machine Learning / Research",
+      year: "2026",
+      pinned: true,
+      images: {
+        hero: "https://github.com/Abdallemo/edm-anfis-ann-modelling/raw/main/results/dataset2_ANN_CPU_model_results_academic_dashboard.png",
+        gallery: [
+          "https://github.com/Abdallemo/edm-anfis-ann-modelling/raw/main/results/dataset1_ANFIS_CPU_model_results_validation_plots.png",
+          "https://github.com/Abdallemo/edm-anfis-ann-modelling/raw/main/results/dataset2_ANFIS_CPU_model_results_academic_dashboard.png"
+        ]
+      },
+      date: "2026-08-25",
+      excerpt: "PyTorch implementations of ANN and ANFIS models optimized with NGO for EDM surface roughness prediction.",
+      content: ""
+    }
 ];
