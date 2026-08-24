@@ -32,11 +32,24 @@ const ARCH_ASCII = [
 const SYSTEM_INFO = [
   { key: "OS", value: "Arch Linux x86_64" },
   { key: "Host", value: "B550M AORUS ELITE" },
-  { key: "Kernel", value: "Linux 6.19.11-arch1-1" },
-  { key: "Shell", value: "zsh 5.9" },
-  { key: "DE", value: "KDE Plasma 6.6.4" },
+  { key: "Kernel", value: "Linux 7.1.9-arch1-2" },
+  { key: "Shell", value: "zsh 5.9.2" },
+  { key: "DE", value: "KDE Plasma 6.7.4" },
   { key: "WM", value: "KWin (Wayland)" },
   { key: "GPU", value: "AMD Radeon RX 6600 XT" },
+];
+const HelpResponse = [
+  "FS_NAVIGATION:",
+  "  ls [dir]    - List contents",
+  "  cd [dir]    - Change directory",
+  "  cat [file]  - Read entry",
+  "  open [file] - Launch page",
+  "",
+  "SYSTEM:",
+  "  whoami      - Identity fetch",
+  "  fastfetch   - Hardware specs",
+  "  clear       - Reset buffer",
+  "  exit        - Terminate session",
 ];
 
 type Line = {
@@ -47,7 +60,7 @@ type Line = {
 
 export default function Terminal() {
   const [history, setHistory] = useState<Line[]>([
-    { type: "fetch", content: null },
+    { type: "resp", content: HelpResponse },
   ]);
   const [inputValue, setInputValue] = useState("");
   const [currentPath, setCurrentPath] = useState("/");
@@ -87,19 +100,7 @@ export default function Terminal() {
     // Command Logic
     switch (command) {
       case "help":
-        response = [
-          "FS_NAVIGATION:",
-          "  ls [dir]    - List contents",
-          "  cd [dir]    - Change directory",
-          "  cat [file]  - Read entry",
-          "  open [file] - Launch page",
-          "",
-          "SYSTEM:",
-          "  whoami      - Identity fetch",
-          "  fastfetch   - Hardware specs",
-          "  clear       - Reset buffer",
-          "  exit        - Terminate session",
-        ];
+        response = HelpResponse;
         break;
 
       case "ls":

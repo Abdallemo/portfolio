@@ -50,7 +50,7 @@ export default async function Home() {
             <span className="text-[10px] font-mono text-dim uppercase tracking-widest flex items-center gap-2">
               <Activity size={12} /> System Status
             </span>
-            <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+
           </div>
           <div className="space-y-3 font-mono">
             <div className="flex justify-between text-[11px]">
@@ -67,7 +67,7 @@ export default async function Home() {
             </div>
             <div className="flex justify-between text-[11px]">
               <span className="text-dim">TECH_STACK</span>
-              <span className="text-foreground font-bold">Go/TS/Arch</span>
+              <span className="text-foreground font-bold">Go/TS</span>
             </div>
           </div>
         </div>
@@ -87,7 +87,7 @@ export default async function Home() {
           <p className="text-muted-foreground leading-relaxed italic">
             "I've always spent a lot of time messing with computers and trying
             out new tools. I wanted to build a place where I could keep track of
-            everything I'm working on, from my Arch Linux setup to the random
+            everything I'm working on, from my Linux setup to the random
             CLI tools I build during my internship."
           </p>
           <div className="space-y-3">
@@ -100,10 +100,7 @@ export default async function Home() {
                 Abdullahi Mohamed
               </span>
               , an IT student at UTHM. I'm currently an intern navigating the
-              world of high-performance backend systems and developer tooling.
-              I'm a firm believer in the terminal-first workflow and spend most
-              of my time either in a shell or breaking (and then fixing) my Arch
-              Linux setup.
+              world of backend systems and developer tooling.
             </p>
           </div>
           <div className="space-y-3">
@@ -111,14 +108,11 @@ export default async function Home() {
               What this is for
             </h2>
             <p className="text-dim leading-relaxed text-[15px]">
-              This site is basically my{" "}
-              <span className="font-semibold text-muted-foreground">
+              This website serves as a{" "}
+              <span className=" text-muted-foreground">
                 digital notebook.
               </span>{" "}
-              I'm not here to teach anyone—I'm just a student who likes to
-              tinker and build things. I wanted a way to show my work that feels
-              authentic to how I actually code, which is usually in a terminal
-              or a highly customized editor.
+              My intention is not to instruct anyone—I'm merely a learner who enjoys experimenting and creating things. I sought a method to display my projects that accurately reflects the way I typically code, which is often in a terminal or a specially tailored editor.
             </p>
           </div>
         </div>

@@ -3,7 +3,7 @@ import { SiteConfig } from "../types";
 export const siteConfig: SiteConfig = {
   name: "Abdullahi Mohamed",
   role: "Software Engineer",
-  bio: "Focused on high-performance backend systems and developer tooling.",
+  bio: "Focused on backend systems and developer tooling.",
   location: "Johor, Malaysia",
   email: "engabdallemo@gmail.com",
   links: {
