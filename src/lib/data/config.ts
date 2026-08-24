@@ -21,6 +21,6 @@ export const siteConfig: SiteConfig = {
   stats: {
     githubRanking: "Active // Public",
     location: "Johor, MY",
-    status: "Available // Internship",
+    status: "Unavailable // Master",
   },
 };

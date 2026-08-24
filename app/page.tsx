@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import Terminal from "@/src/components/Terminal";
 import { siteConfig } from "@/src/lib/data/config";
 import { getAllContent } from "@/src/lib/mdx";
@@ -61,7 +62,7 @@ export default async function Home() {
             </div>
             <div className="flex justify-between text-[11px]">
               <span className="text-dim">STATUS</span>
-              <span className="text-green-500 font-bold">
+              <span className={cn("font-bold",siteConfig.stats.status.includes("Unavailable") ? "text-red-500":"text-green-500")}>
                 {siteConfig.stats.status}
               </span>
             </div>
@@ -99,8 +100,7 @@ export default async function Home() {
               <span className="font-semibold text-muted-foreground">
                 Abdullahi Mohamed
               </span>
-              , an IT student at UTHM. I'm currently an intern navigating the
-              world of backend systems and developer tooling.
+              , an IT student and incoming Master's student at UTHM, focused on building backend systems and developer tooling.
             </p>
           </div>
           <div className="space-y-3">
